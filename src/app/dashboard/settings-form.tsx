@@ -1,6 +1,7 @@
 "use client";
 import { useActionState } from "react";
 import { updateBusiness } from "./actions";
+import { LogoUpload } from "./logo-upload";
 
 type B = { businessName: string; description: string | null; logoUrl: string | null; googleReviewUrl: string };
 export function SettingsForm({ b }: { b: B }) {
@@ -13,9 +14,9 @@ export function SettingsForm({ b }: { b: B }) {
       <div><h2 className="text-base font-semibold">Pengaturan bisnis</h2><p className="mt-0.5 text-sm text-slate-500">Perubahan langsung berlaku tanpa mengganti QR fisik.</p></div>
       <div className="grid gap-4 sm:grid-cols-2">
         {f("businessName", "Nama toko")}{f("description", "Deskripsi singkat")}
-        {f("logoUrl", "URL logo (https)", "url")}
       </div>
-      {f("googleReviewUrl", "Link Google Review", "url")}
+      <LogoUpload defaultValue={b.logoUrl ?? ""} />
+      {f("googleReviewUrl", "Tautan Google Review", "url")}
       {s?.error && <p role="alert" className="rounded-xl bg-rose-50 px-3.5 py-2.5 text-sm text-rose-700 ring-1 ring-rose-200">{s.error}</p>}
       {s?.ok && <p className="rounded-xl bg-emerald-50 px-3.5 py-2.5 text-sm text-emerald-700 ring-1 ring-emerald-200">Tersimpan. QR fisik tidak berubah.</p>}
       <button className="btn" disabled={pending}>{pending ? "Menyimpan…" : "Simpan perubahan"}</button>

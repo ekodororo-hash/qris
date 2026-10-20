@@ -21,10 +21,16 @@ export const activationSchema = z.object({
   pin: z.string().regex(/^\d{6,8}$/, "PIN aktivasi terdiri dari 6 sampai 8 angka."),
 });
 
+// Logo: foto hasil unggah (data URL JPEG/PNG/WebP, tanpa SVG) atau tautan https lama.
+const logoValue = z.string().trim().max(100_000).refine(
+  (v) => v === "" || (v.length <= 500 && /^https:\/\/\S+$/.test(v)) || /^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/]+={0,2}$/.test(v),
+  "Logo tidak valid. Unggah foto berformat JPG, PNG, atau WebP.",
+);
+
 export const businessUpdateSchema = z.object({
   businessName: z.string().trim().min(2).max(100),
   description: z.string().trim().max(300).optional(),
-  logoUrl: z.string().trim().url().startsWith("https://").max(500).optional().or(z.literal("")),
+  logoUrl: logoValue.optional(),
   googleReviewUrl: googleUrl,
 });
 
