@@ -134,13 +134,17 @@ function BackBody({ token }: { token: string }) {
         <h2 style={{ margin: 0, fontSize: "6.4cqw", fontWeight: 800, color: "#202124" }}>Cara aktivasi</h2>
         <ol style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: "6cqw" }}>
           {STEPS.map((x, i) => (
-            <li key={i} style={{ display: "flex", alignItems: "center", gap: "4cqw" }}>
-              <span style={{ flex: "none", width: "8.5cqw", display: "grid", placeItems: "center", color: "#1a73e8", fontSize: "5.4cqw", fontWeight: 800 }}>{i + 1}</span>
+            <li key={i} style={{ display: "flex", alignItems: "baseline", gap: "3cqw" }}>
+              <span style={{ flex: "none", width: "5cqw", textAlign: "left", color: "#1a73e8", fontSize: "4.3cqw", lineHeight: 1.3, fontWeight: 800 }}>{i + 1}</span>
               <span style={{ fontSize: "4.3cqw", fontWeight: 500, lineHeight: 1.3, color: "#202124" }}>{x}</span>
             </li>
           ))}
         </ol>
-        <div style={{ marginTop: "auto", display: "flex", flexDirection: "column", alignItems: "center", gap: "2.4cqw", textAlign: "center" }}>
+        <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "2cqw", textAlign: "center" }}>
+          <IconGoogleG style={{ fontSize: "15cqw" }} />
+          <p style={{ margin: 0, fontSize: "4.6cqw", fontWeight: 700, color: "#202124" }}>Google Review</p>
+        </div>
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "2.4cqw", textAlign: "center" }}>
           <p style={{ margin: 0, fontSize: "2.6cqw", fontWeight: 700, letterSpacing: "0.18em", color: "#5f6368" }}>KODE QR</p>
           <p style={{ margin: 0, fontFamily: "ui-monospace, monospace", fontSize: "5.4cqw", fontWeight: 700, color: "#174ea6", whiteSpace: "nowrap" }}>{token}</p>
           <div style={{ width: "100%", height: "0.3cqw", background: "#e2e8f0", margin: "1cqw 0" }} />
