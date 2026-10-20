@@ -3,10 +3,10 @@ import { useState } from "react";
 import { useFormStatus } from "react-dom";
 import { IconCheck, IconCopy, IconPrinter } from "./icons";
 
-export function CopyButton({ text, label = "Salin URL" }: { text: string; label?: string }) {
+export function CopyButton({ text, label = "Salin URL", className = "btn-ghost" }: { text: string; label?: string; className?: string }) {
   const [done, setDone] = useState(false);
   return (
-    <button type="button" className="btn-ghost" onClick={async () => { await navigator.clipboard.writeText(text); setDone(true); setTimeout(() => setDone(false), 1500); }}>
+    <button type="button" className={className} onClick={async () => { await navigator.clipboard.writeText(text); setDone(true); setTimeout(() => setDone(false), 1500); }}>
       {done ? <IconCheck className="size-4 text-emerald-600" /> : <IconCopy className="size-4" />}
       {done ? "Tersalin" : label}
     </button>

@@ -180,7 +180,7 @@ function TplPicker({ value, onChange }: { value: TplKey; onChange: (v: TplKey) =
   );
 }
 
-export function TemplateStudio({ options, initialId }: { options: QrOption[]; initialId?: string }) {
+export function TemplateStudio({ options, initialId, owner = false }: { options: QrOption[]; initialId?: string; owner?: boolean }) {
   const first = options.find((o) => o.id === initialId) ?? options.find((o) => o.status === "ACTIVE") ?? options[0];
   const [qrId, setQrId] = useState(first?.id ?? "");
   const [size, setSize] = useState<SizeKey>("a6");
@@ -233,6 +233,7 @@ export function TemplateStudio({ options, initialId }: { options: QrOption[]; in
   return (
     <div className="grid gap-6 lg:grid-cols-[22rem_minmax(0,1fr)] print:block">
       <div className="card space-y-4 print:hidden">
+        {!owner && (
         <div>
           <label className="label" htmlFor="tpl-qr">QR yang dipakai</label>
           <select id="tpl-qr" className="input" value={qrId} onChange={(e) => setQrId(e.target.value)}>
@@ -257,6 +258,7 @@ export function TemplateStudio({ options, initialId }: { options: QrOption[]; in
             </p>
           )}
         </div>
+        )}
 
         <div><span className="label">Ukuran</span><Seg value={size} onChange={setSize} options={(Object.keys(SIZES) as SizeKey[]).map((k) => ({ value: k, label: SIZES[k].label, hint: SIZES[k].hint }))} /></div>
         <div><span className="label">Template</span><TplPicker value={tpl} onChange={setTpl} /></div>
