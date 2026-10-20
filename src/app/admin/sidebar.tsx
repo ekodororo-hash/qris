@@ -46,14 +46,14 @@ export function AdminSidebar() {
 
   return (
     <>
-      <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-slate-200 bg-white/85 px-4 backdrop-blur lg:hidden print:hidden">
+      <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-slate-200 bg-white px-4 lg:hidden print:hidden">
         <Link href="/admin"><Logo /></Link>
         <button type="button" onClick={() => setOpen(true)} aria-label="Buka menu" className="grid size-9 place-items-center rounded-lg border border-slate-200 bg-white"><IconMenu className="size-5" /></button>
       </header>
 
       {open && (
         <div className="fixed inset-0 z-40 lg:hidden print:hidden">
-          <button type="button" aria-label="Tutup menu" className="absolute inset-0 bg-slate-900/40 backdrop-blur-[2px]" onClick={() => setOpen(false)} />
+          <button type="button" aria-label="Tutup menu" className="absolute inset-0 bg-slate-900/40" onClick={() => setOpen(false)} />
           <aside className="absolute inset-y-0 left-0 w-72 max-w-[85%] bg-white shadow-2xl">
             <button type="button" onClick={() => setOpen(false)} aria-label="Tutup" className="absolute right-3 top-4 grid size-8 place-items-center rounded-lg text-slate-500 hover:bg-slate-100"><IconClose className="size-5" /></button>
             <Panel pathname={pathname} />

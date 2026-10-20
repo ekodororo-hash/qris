@@ -9,16 +9,18 @@ import { QrTable } from "./qr-table";
 
 export default async function AdminPage() {
   await requireRole("ADMIN");
-  const [recent, total, active, pending, scans] = await Promise.all([
+  const [recent, byStatus, scans] = await Promise.all([
     prisma.qrCode.findMany({
       where: { status: { not: "ARCHIVED" } }, orderBy: { createdAt: "desc" }, take: 5,
       include: { business: { select: { businessName: true, ownerName: true, phone: true, address: true, googleReviewUrl: true } }, _count: { select: { scanEvents: true } } },
     }),
-    prisma.qrCode.count(),
-    prisma.qrCode.count({ where: { status: "ACTIVE" } }),
-    prisma.qrCode.count({ where: { status: "UNACTIVATED" } }),
+    prisma.qrCode.groupBy({ by: ["status"], _count: { _all: true } }), // 1 query untuk semua hitungan status
     prisma.scanEvent.count({ where: { eventType: "SCAN" } }),
   ]);
+  const countOf = (st: string) => byStatus.find((x) => x.status === st)?._count._all ?? 0;
+  const total = byStatus.reduce((a, x) => a + x._count._all, 0);
+  const active = countOf("ACTIVE");
+  const pending = countOf("UNACTIVATED");
   const stats = [
     { label: "Total QR", value: total, icon: IconQr, tone: "bg-brand-50 text-brand-600" },
     { label: "QR aktif", value: active, icon: IconCheck, tone: "bg-emerald-50 text-emerald-600" },
