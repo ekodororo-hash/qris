@@ -1,8 +1,9 @@
 "use client";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { CopyButton } from "@/components/buttons";
 import { IconArrowRight, IconClose, IconDownload } from "@/components/icons";
+import { deleteQr } from "./actions";
 import { StatusBadge } from "@/components/status-badge";
 import type { QrRow } from "./qr-table";
 
@@ -10,6 +11,8 @@ export function QrModal({ row, onClose }: { row: QrRow; onClose: () => void }) {
   const url = `${process.env.NEXT_PUBLIC_APP_URL ?? window.location.origin}/q/${row.publicToken}`;
   const [svg, setSvg] = useState("");
   const b = row.business;
+  const [confirming, setConfirming] = useState(false);
+  const [pending, start] = useTransition();
 
   useEffect(() => {
     let alive = true;
@@ -64,8 +67,21 @@ export function QrModal({ row, onClose }: { row: QrRow; onClose: () => void }) {
           </div>
         )}
 
-        <div className="mt-6 text-right">
-          <Link href={`/admin/qr/${row.id}`} className="inline-flex items-center gap-1 text-sm font-medium text-brand-600 hover:text-brand-700">Buka halaman penuh / cetak <IconArrowRight className="size-4" /></Link>
+        <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 pt-5">
+          {confirming ? (
+            <div className="w-full space-y-3 rounded-xl bg-rose-50 p-4 ring-1 ring-rose-200">
+              <p className="text-sm text-rose-800">Hapus permanen QR ini{b ? <>, bisnis <b>{b.businessName}</b>,</> : ""} beserta {row._count.scanEvents} data scan? Tindakan ini tidak bisa dibatalkan. Kalau hanya ingin menyembunyikan, pakai Arsipkan.</p>
+              <div className="flex gap-2">
+                <button type="button" disabled={pending} className="btn !bg-rose-600 hover:!bg-rose-700" onClick={() => start(async () => { await deleteQr(row.id); onClose(); })}>{pending ? "Menghapus…" : "Ya, hapus"}</button>
+                <button type="button" disabled={pending} className="btn-ghost" onClick={() => setConfirming(false)}>Batal</button>
+              </div>
+            </div>
+          ) : (
+            <>
+              <button type="button" className="btn-ghost text-rose-600 hover:!border-rose-200 hover:!bg-rose-50" onClick={() => setConfirming(true)}>Hapus QR</button>
+              <Link href={`/admin/qr/${row.id}`} className="inline-flex items-center gap-1 text-sm font-medium text-brand-600 hover:text-brand-700">Buka halaman penuh / cetak <IconArrowRight className="size-4" /></Link>
+            </>
+          )}
         </div>
       </div>
     </div>

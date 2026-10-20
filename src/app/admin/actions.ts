@@ -38,3 +38,15 @@ export async function unarchiveQr(fd: FormData) {
   await prisma.auditLog.create({ data: { actorId: s.id, action: "QR_UNARCHIVED", targetId: id } });
   revalidatePath("/admin", "layout");
 }
+export async function deleteQr(id: string) {
+  const s = await requireRole("ADMIN");
+  const qr = await prisma.qrCode.findUnique({ where: { id } });
+  if (!qr) return;
+  // scanEvents ikut terhapus (onDelete: Cascade); bisnis terkait dihapus agar tidak yatim
+  await prisma.$transaction([
+    prisma.qrCode.delete({ where: { id } }),
+    ...(qr.businessId ? [prisma.business.delete({ where: { id: qr.businessId } })] : []),
+    prisma.auditLog.create({ data: { actorId: s.id, action: "QR_DELETED", targetId: id } }),
+  ]);
+  revalidatePath("/admin", "layout");
+}
