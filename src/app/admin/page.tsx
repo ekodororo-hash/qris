@@ -1,52 +1,49 @@
 import Link from "next/link";
 import { prisma } from "@/lib/db";
 import { requireRole } from "@/lib/session";
-import { logout } from "../login/actions";
-import { archiveQr, toggleQr, unarchiveQr } from "./actions";
+import { IconArrowRight, IconCheck, IconQr, IconScan, IconStore } from "@/components/icons";
+import { PageHeader } from "@/components/page-header";
+import type { QrStatusKey } from "@/lib/qr-status";
 import { CreateQr } from "./create-qr";
-import { AutoFilter } from "./auto-filter";
+import { QrTable } from "./qr-table";
 
-const LABEL = { UNACTIVATED: "Belum Aktif", ACTIVE: "Aktif", DISABLED: "Dinonaktifkan", ARCHIVED: "Diarsipkan" } as const;
-export default async function AdminPage({ searchParams }: { searchParams: Promise<{ status?: string; q?: string }> }) {
+export default async function AdminPage() {
   await requireRole("ADMIN");
-  const sp = await searchParams;
-  const status = sp.status && sp.status in LABEL ? (sp.status as keyof typeof LABEL) : undefined;
-  const q = sp.q?.trim();
-  const [qrs, total, active, scans] = await Promise.all([
+  const [recent, total, active, pending, scans] = await Promise.all([
     prisma.qrCode.findMany({
-      where: { ...(status ? { status } : { status: { not: "ARCHIVED" } }), ...(q ? { OR: [{ publicToken: { contains: q } }, { business: { businessName: { contains: q, mode: "insensitive" } } }] } : {}) },
-      orderBy: { createdAt: "desc" }, take: 100,
+      where: { status: { not: "ARCHIVED" } }, orderBy: { createdAt: "desc" }, take: 5,
       include: { business: { select: { businessName: true } }, _count: { select: { scanEvents: true } } },
     }),
-    prisma.qrCode.count(), prisma.qrCode.count({ where: { status: "ACTIVE" } }), prisma.scanEvent.count({ where: { eventType: "SCAN" } }),
+    prisma.qrCode.count(),
+    prisma.qrCode.count({ where: { status: "ACTIVE" } }),
+    prisma.qrCode.count({ where: { status: "UNACTIVATED" } }),
+    prisma.scanEvent.count({ where: { eventType: "SCAN" } }),
   ]);
+  const stats = [
+    { label: "Total QR", value: total, icon: IconQr, tone: "bg-brand-50 text-brand-600" },
+    { label: "QR aktif", value: active, icon: IconCheck, tone: "bg-emerald-50 text-emerald-600" },
+    { label: "Belum aktivasi", value: pending, icon: IconStore, tone: "bg-amber-50 text-amber-600" },
+    { label: "Total scan", value: scans, icon: IconScan, tone: "bg-sky-50 text-sky-600" },
+  ];
   return (
-    <main className="mx-auto max-w-5xl space-y-6 p-6">
-      <header className="flex items-center justify-between"><h1 className="text-2xl font-semibold">Admin</h1><form action={logout}><button className="btn-ghost">Keluar</button></form></header>
-      <div className="grid grid-cols-3 gap-3">
-        {[["Total QR", total], ["QR aktif", active], ["Total scan", scans]].map(([l, v]) => (<div key={l as string} className="card"><p className="text-sm text-neutral-500">{l}</p><p className="text-2xl font-semibold">{v}</p></div>))}
+    <div className="space-y-8">
+      <PageHeader title="Ringkasan" desc="Pantau semua QR dan aktivitas scan di satu tempat." />
+      <div className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
+        {stats.map((s) => (
+          <div key={s.label} className="card flex items-center gap-4">
+            <span className={`grid size-11 shrink-0 place-items-center rounded-xl ${s.tone}`}><s.icon className="size-5" /></span>
+            <div className="min-w-0"><p className="truncate text-xs font-medium text-slate-500">{s.label}</p><p className="text-2xl font-bold tabular-nums tracking-tight">{s.value}</p></div>
+          </div>
+        ))}
       </div>
       <CreateQr />
-      <AutoFilter q={q ?? ""} status={status ?? ""} options={Object.entries(LABEL).map(([value, label]) => ({ value, label }))} />
-      <div className="card overflow-x-auto p-0">
-        <table className="w-full text-left text-sm">
-          <thead className="border-b bg-neutral-50 text-neutral-500"><tr><th className="p-3">Token</th><th>Status</th><th>PIN</th><th>Bisnis</th><th>Scan</th><th>Aktivasi</th><th /></tr></thead>
-          <tbody>{qrs.map((r) => (
-            <tr key={r.id} className="border-b last:border-0">
-              <td className="p-3 font-mono"><Link className="text-blue-600" href={`/admin/qr/${r.id}`}>{r.publicToken}</Link></td>
-              <td>{LABEL[r.status]}</td><td className="font-mono">{!r.businessId && r.pin ? r.pin : "—"}</td><td>{r.business?.businessName ?? "—"}</td><td>{r._count.scanEvents}</td>
-              <td>{r.activatedAt ? r.activatedAt.toLocaleDateString("id-ID") : "—"}</td>
-              <td className="flex gap-2 p-3">
-                {(r.status === "ACTIVE" || r.status === "DISABLED") && <form action={toggleQr}><input type="hidden" name="id" value={r.id} /><button className="btn-ghost">{r.status === "ACTIVE" ? "Nonaktifkan" : "Aktifkan"}</button></form>}
-                {r.status === "ARCHIVED"
-                  ? <form action={unarchiveQr}><input type="hidden" name="id" value={r.id} /><button className="btn-ghost">Batal arsip</button></form>
-                  : <form action={archiveQr}><input type="hidden" name="id" value={r.id} /><button className="btn-ghost">Arsipkan</button></form>}
-              </td>
-            </tr>))}
-            {qrs.length === 0 && <tr><td colSpan={7} className="p-6 text-center text-neutral-500">Belum ada QR.</td></tr>}
-          </tbody>
-        </table>
-      </div>
-    </main>
+      <section className="space-y-3">
+        <div className="flex items-center justify-between">
+          <h2 className="text-base font-semibold">QR terbaru</h2>
+          <Link href="/admin/qr" className="inline-flex items-center gap-1 text-sm font-medium text-brand-600 hover:text-brand-700">Lihat semua <IconArrowRight className="size-4" /></Link>
+        </div>
+        <QrTable rows={recent.map((r) => ({ ...r, status: r.status as QrStatusKey }))} />
+      </section>
+    </div>
   );
 }

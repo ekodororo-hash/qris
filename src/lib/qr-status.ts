@@ -1,0 +1,2 @@
+export const QR_LABEL = { UNACTIVATED: "Belum Aktif", ACTIVE: "Aktif", DISABLED: "Dinonaktifkan", ARCHIVED: "Diarsipkan" } as const;
+export type QrStatusKey = keyof typeof QR_LABEL;
