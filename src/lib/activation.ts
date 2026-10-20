@@ -1,9 +1,9 @@
 import bcrypt from "bcryptjs";
 import { prisma } from "./db";
 import { verifyPin } from "./tokens";
+import { MAX_PIN_ATTEMPTS } from "./qr-status";
 import { activationSchema } from "./validators";
 
-const MAX_ATTEMPTS = 5;
 type Result = { ok: true } | { ok: false; error: string };
 
 export async function activateQr(input: unknown): Promise<Result> {
@@ -13,7 +13,7 @@ export async function activateQr(input: unknown): Promise<Result> {
 
   const qr = await prisma.qrCode.findUnique({ where: { publicToken: d.token } });
   if (!qr || qr.status !== "UNACTIVATED") return { ok: false, error: "QR tidak dapat diaktivasi." };
-  if (qr.failedPinAttempts >= MAX_ATTEMPTS) return { ok: false, error: "Terlalu banyak percobaan. Hubungi admin." };
+  if (qr.failedPinAttempts >= MAX_PIN_ATTEMPTS) return { ok: false, error: "Terlalu banyak percobaan. Hubungi admin." };
   if (!(await verifyPin(d.pin, qr.pin, qr.pinHash))) {
     await prisma.qrCode.update({ where: { id: qr.id }, data: { failedPinAttempts: { increment: 1 } } });
     return { ok: false, error: "PIN salah." };

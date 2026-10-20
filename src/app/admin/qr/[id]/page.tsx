@@ -7,6 +7,7 @@ import { CopyButton, PrintButton } from "@/components/buttons";
 import { IconArrowLeft, IconDownload } from "@/components/icons";
 import { StatusBadge } from "@/components/status-badge";
 import type { QrStatusKey } from "@/lib/qr-status";
+import { BusinessEditForm } from "./business-edit-form";
 
 export default async function QrDetail({ params }: { params: Promise<{ id: string }> }) {
   await requireRole("ADMIN");
@@ -41,6 +42,7 @@ export default async function QrDetail({ params }: { params: Promise<{ id: strin
           <dl className="mt-5 grid gap-5 sm:grid-cols-2">
             {row("Pemilik", b.ownerName)}{row("Telepon", b.phone)}{row("Alamat", b.address)}{row("Link review", b.googleReviewUrl)}
           </dl>
+          <BusinessEditForm qrId={qr.id} b={{ businessName: b.businessName, ownerName: b.ownerName, phone: b.phone, address: b.address, googleMapsUrl: b.googleMapsUrl, googleReviewUrl: b.googleReviewUrl }} />
         </div>
       )}
     </div>

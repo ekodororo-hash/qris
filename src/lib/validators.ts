@@ -26,3 +26,5 @@ export const businessUpdateSchema = z.object({
   googleMapsUrl: googleUrl,
   googleReviewUrl: googleUrl,
 });
+
+export const adminBusinessSchema = activationSchema.pick({ businessName: true, ownerName: true, phone: true, address: true, googleMapsUrl: true, googleReviewUrl: true });

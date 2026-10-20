@@ -24,6 +24,8 @@ export const IconCopy = (p: P) => <Svg {...p}><rect width="14" height="14" x="8"
 export const IconPrinter = (p: P) => <Svg {...p}><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" /><rect width="12" height="8" x="6" y="14" /></Svg>;
 export const IconStar = (p: P) => <Svg {...p} fill="currentColor" strokeWidth={1}><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z" /></Svg>;
 export const IconExternal = (p: P) => <Svg {...p}><path d="M15 3h6v6M10 14 21 3M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /></Svg>;
+export const IconEye = (p: P) => <Svg {...p}><path d="M2.06 12.35a1 1 0 0 1 0-.7 10.75 10.75 0 0 1 19.88 0 1 1 0 0 1 0 .7 10.75 10.75 0 0 1-19.88 0" /><circle cx="12" cy="12" r="3" /></Svg>;
+export const IconEyeOff = (p: P) => <Svg {...p}><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c4.5 0 8.4 2.6 10 7a10.7 10.7 0 0 1-1.67 2.68M6.61 6.61A10.7 10.7 0 0 0 2 12c1.6 4.4 5.5 7 10 7a10.4 10.4 0 0 0 5.39-1.61M14.12 14.12a3 3 0 1 1-4.24-4.24M2 2l20 20" /></Svg>;
 export const IconStore = (p: P) => <Svg {...p}><path d="M3 9h18l-1.5-5h-15zM5 9v11h14V9M9 20v-6h6v6" /></Svg>;
 
 export function Logo({ className = "", dark = false }: { className?: string; dark?: boolean }) {

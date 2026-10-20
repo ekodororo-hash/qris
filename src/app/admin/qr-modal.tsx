@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useEffect, useState, useTransition } from "react";
 import { CopyButton, Spinner } from "@/components/buttons";
 import { IconArrowRight, IconClose, IconDownload } from "@/components/icons";
-import { deleteQr } from "./actions";
+import { deleteQr, resetActivation } from "./actions";
 import { StatusBadge } from "@/components/status-badge";
 import type { QrRow } from "./qr-table";
 
@@ -12,6 +12,7 @@ export function QrModal({ row, onClose }: { row: QrRow; onClose: () => void }) {
   const [svg, setSvg] = useState("");
   const b = row.business;
   const [confirming, setConfirming] = useState(false);
+  const [resetting, setResetting] = useState(false);
   const [pending, start] = useTransition();
 
   useEffect(() => {
@@ -68,7 +69,15 @@ export function QrModal({ row, onClose }: { row: QrRow; onClose: () => void }) {
         )}
 
         <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 pt-5">
-          {confirming ? (
+          {resetting ? (
+            <div className="w-full space-y-3 rounded-xl bg-amber-50 p-4 ring-1 ring-amber-200">
+              <p className="text-sm text-amber-900">Reset aktivasi QR ini? Bisnis <b>{b?.businessName}</b> dan akun pemilik lama akan dilepas, status kembali ke Belum Aktif, dan dibuat PIN baru. Token dan QR yang sudah tercetak tetap sama.</p>
+              <div className="flex gap-2">
+                <button type="button" disabled={pending} className="btn !bg-amber-600 hover:!bg-amber-700" onClick={() => start(async () => { await resetActivation(row.id); onClose(); })}>{pending && <Spinner />}{pending ? "Mereset…" : "Ya, reset"}</button>
+                <button type="button" disabled={pending} className="btn-ghost" onClick={() => setResetting(false)}>Batal</button>
+              </div>
+            </div>
+          ) : confirming ? (
             <div className="w-full space-y-3 rounded-xl bg-rose-50 p-4 ring-1 ring-rose-200">
               <p className="text-sm text-rose-800">Hapus permanen QR ini{b ? <>, bisnis <b>{b.businessName}</b>,</> : ""}? Tindakan ini tidak bisa dibatalkan. Kalau hanya ingin menyembunyikan, pakai Arsipkan.</p>
               <div className="flex gap-2">
@@ -78,7 +87,10 @@ export function QrModal({ row, onClose }: { row: QrRow; onClose: () => void }) {
             </div>
           ) : (
             <>
-              <button type="button" className="btn-ghost text-rose-600 hover:!border-rose-200 hover:!bg-rose-50" onClick={() => setConfirming(true)}>Hapus QR</button>
+              <div className="flex flex-wrap gap-2">
+                <button type="button" className="btn-ghost text-rose-600 hover:!border-rose-200 hover:!bg-rose-50" onClick={() => setConfirming(true)}>Hapus QR</button>
+                {row.businessId && row.status !== "ARCHIVED" && <button type="button" className="btn-ghost" onClick={() => setResetting(true)}>Reset aktivasi</button>}
+              </div>
               <Link href={`/admin/qr/${row.id}`} className="inline-flex items-center gap-1 text-sm font-medium text-brand-600 hover:text-brand-700">Buka halaman penuh / cetak <IconArrowRight className="size-4" /></Link>
             </>
           )}

@@ -2,6 +2,7 @@
 import { useActionState } from "react";
 import { activate } from "./actions";
 import { AuthShell } from "@/components/auth-shell";
+import { PasswordInput } from "@/components/password-input";
 
 type Field = [name: string, label: string, type: string];
 const GROUPS: { title: string; fields: Field[] }[] = [
@@ -23,7 +24,9 @@ export function ActivationForm({ token }: { token: string }) {
           <fieldset key={g.title} className="space-y-4">
             <legend className="mb-1 flex items-center gap-2 text-sm font-semibold text-slate-900"><span className="grid size-6 place-items-center rounded-full bg-brand-600 text-xs font-bold text-white">{i + 1}</span>{g.title}</legend>
             {g.fields.map(([n, l, t]) => (
-              <label key={n} className="block"><span className="label">{l}</span><input name={n} type={t} required className="input" inputMode={n.startsWith("pin") ? "numeric" : undefined} /></label>
+              <label key={n} className="block"><span className="label">{l}</span>{t === "password"
+                ? <PasswordInput name={n} required defaultValue={state?.values?.[n] ?? ""} inputMode={n === "pin" ? "numeric" : undefined} />
+                : <input name={n} type={t} required className="input" defaultValue={state?.values?.[n] ?? ""} />}</label>
             ))}
           </fieldset>
         ))}
