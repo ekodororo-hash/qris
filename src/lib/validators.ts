@@ -4,7 +4,7 @@ const ALLOWED = [/^search\.google\.com$/, /^g\.page$/, /^maps\.app\.goo\.gl$/, /
 export function isSafeGoogleUrl(raw: string) {
   try { const u = new URL(raw); return u.protocol === "https:" && ALLOWED.some((r) => r.test(u.hostname)); } catch { return false; }
 }
-export const googleUrl = z.string().trim().url().max(500).refine(isSafeGoogleUrl, "Harus tautan Google resmi (https).");
+export const googleUrl = z.string().trim().url().max(500).refine(isSafeGoogleUrl, "Masukkan tautan Google yang valid (diawali https://).");
 
 const optionalGoogleUrl = z.union([googleUrl, z.literal("")]).optional();
 
@@ -12,13 +12,13 @@ export const activationSchema = z.object({
   token: z.string().min(8).max(32),
   businessName: z.string().trim().min(2).max(100),
   ownerName: z.string().trim().min(2).max(100),
-  phone: z.string().trim().regex(/^(\+62|62|0)8\d{7,12}$/, "Nomor WhatsApp tidak valid"),
+  phone: z.string().trim().regex(/^(\+62|62|0)8\d{7,12}$/, "Nomor WhatsApp tidak valid. Gunakan format 08xxxxxxxxxx."),
   address: z.string().trim().min(5).max(300),
   googleMapsUrl: optionalGoogleUrl, // otomatis dari pilihan Maps / dibuat dari nama + alamat
   googleReviewUrl: googleUrl,
-  email: z.string().trim().toLowerCase().email("Email tidak valid"),
-  password: z.string().min(8, "Password minimal 8 karakter").max(100),
-  pin: z.string().regex(/^\d{6,8}$/, "PIN 6-8 digit"),
+  email: z.string().trim().toLowerCase().email("Alamat email tidak valid."),
+  password: z.string().min(8, "Kata sandi minimal 8 karakter.").max(100),
+  pin: z.string().regex(/^\d{6,8}$/, "PIN aktivasi terdiri dari 6 sampai 8 angka."),
 });
 
 export const businessUpdateSchema = z.object({

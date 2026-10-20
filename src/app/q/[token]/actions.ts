@@ -8,7 +8,7 @@ export type ActivateState = { error?: string; values?: Record<string, string> } 
 export async function activate(_: ActivateState, fd: FormData): Promise<ActivateState> {
   // Kembalikan isian (kecuali PIN) supaya form tidak kosong lagi saat ada error
   const { pin: _pin, ...values } = Object.fromEntries(fd) as Record<string, string>;
-  if (!(await allow("activate", 10))) return { error: "Terlalu banyak percobaan. Coba lagi nanti.", values };
+  if (!(await allow("activate", 10))) return { error: "Terlalu banyak percobaan. Silakan coba lagi nanti.", values };
   const r = await activateQr(Object.fromEntries(fd));
   if (!r.ok) return { error: r.error, values };
   redirect(`/q/${String(fd.get("token"))}/activated`);

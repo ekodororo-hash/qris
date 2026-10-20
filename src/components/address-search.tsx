@@ -26,15 +26,15 @@ export function AddressSearch({ id, defaultValue = "", defaultMapsUrl = "", name
       setLoading(true);
       try {
         const r = await fetch(`/api/places/search?q=${encodeURIComponent(q)}`, { signal: ctrl.signal });
-        if (r.status === 503) { setResults([]); setNote("Pencarian lokasi belum aktif. Ketik alamat lengkap secara manual."); return; }
-        if (r.status === 429) { setResults([]); setNote("Terlalu banyak pencarian. Tunggu sebentar atau ketik alamat manual."); return; }
+        if (r.status === 503) { setResults([]); setNote("Pencarian lokasi belum tersedia. Silakan ketik alamat lengkap secara manual."); return; }
+        if (r.status === 429) { setResults([]); setNote("Terlalu banyak pencarian. Silakan coba lagi sesaat lagi atau ketik alamat secara manual."); return; }
         if (!r.ok) throw new Error("search");
         const d = (await r.json()) as { places: Place[] };
         setResults(d.places);
-        setNote(d.places.length ? "" : "Tidak ketemu. Coba kata kunci lain atau ketik alamat manual.");
+        setNote(d.places.length ? "" : "Hasil tidak ditemukan. Coba kata kunci lain atau ketik alamat secara manual.");
         setOpen(true);
       } catch (e) {
-        if ((e as Error).name !== "AbortError") { setResults([]); setNote("Gagal mencari. Ketik alamat manual saja."); }
+        if ((e as Error).name !== "AbortError") { setResults([]); setNote("Pencarian gagal. Silakan ketik alamat secara manual."); }
       } finally {
         if (!ctrl.signal.aborted) setLoading(false);
       }
@@ -87,7 +87,7 @@ export function AddressSearch({ id, defaultValue = "", defaultMapsUrl = "", name
       <p className="mt-1.5 flex items-center gap-1.5 text-xs text-slate-500">
         {mapsUrl
           ? <><IconCheck className="size-3.5 text-emerald-600" /><span className="text-emerald-700">Lokasi dipilih dari hasil pencarian.</span></>
-          : "Ketik nama bisnis, lalu pilih hasil yang benar."}
+          : "Ketik nama bisnis, lalu pilih hasil yang sesuai."}
         <span className="ml-auto">
           Powered by{" "}
           <a href="https://www.geoapify.com/" target="_blank" rel="noopener noreferrer" className="underline hover:text-slate-700">Geoapify</a>

@@ -13,13 +13,13 @@ export async function activateQr(input: unknown): Promise<Result> {
   const d = parsed.data;
 
   const qr = await prisma.qrCode.findUnique({ where: { publicToken: d.token } });
-  if (!qr || qr.status !== "UNACTIVATED") return { ok: false, error: "QR tidak dapat diaktivasi." };
-  if (qr.failedPinAttempts >= MAX_PIN_ATTEMPTS) return { ok: false, error: "Terlalu banyak percobaan. Hubungi admin." };
+  if (!qr || qr.status !== "UNACTIVATED") return { ok: false, error: "QR ini tidak dapat diaktifkan." };
+  if (qr.failedPinAttempts >= MAX_PIN_ATTEMPTS) return { ok: false, error: "Terlalu banyak percobaan. Silakan hubungi administrator." };
   if (!(await verifyPin(d.pin, qr.pin, qr.pinHash))) {
     await prisma.qrCode.update({ where: { id: qr.id }, data: { failedPinAttempts: { increment: 1 } } });
-    return { ok: false, error: "PIN salah." };
+    return { ok: false, error: "PIN aktivasi tidak sesuai." };
   }
-  if (await prisma.user.findUnique({ where: { email: d.email } })) return { ok: false, error: "Email sudah terdaftar." };
+  if (await prisma.user.findUnique({ where: { email: d.email } })) return { ok: false, error: "Email ini sudah terdaftar." };
   const passwordHash = await bcrypt.hash(d.password, 12);
 
   try {
@@ -32,8 +32,8 @@ export async function activateQr(input: unknown): Promise<Result> {
       await tx.auditLog.create({ data: { actorId: user.id, action: "QR_ACTIVATED", targetId: qr.id } });
     });
   } catch (e) {
-    if ((e as Error).message === "ALREADY_ACTIVATED") return { ok: false, error: "QR sudah diaktivasi." };
-    return { ok: false, error: "Email sudah terdaftar atau terjadi kesalahan." };
+    if ((e as Error).message === "ALREADY_ACTIVATED") return { ok: false, error: "QR ini sudah diaktifkan." };
+    return { ok: false, error: "Aktivasi gagal. Email mungkin sudah terdaftar atau terjadi kendala sementara. Silakan coba lagi." };
   }
   return { ok: true };
 }
