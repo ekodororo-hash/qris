@@ -125,23 +125,28 @@ function Body({ cfg, svg }: { cfg: Cfg; svg: string }) {
 
 const STEPS = ["Scan QR di sisi depan dengan kamera HP.", "Isi data bisnis, email, dan kata sandi.", "Masukkan PIN aktivasi, lalu kirim."];
 
-// Sisi belakang: token lengkap (untuk mencocokkan PIN) + cara aktivasi. PIN sengaja tidak dicetak.
+// Sisi belakang (gaya Google): cara aktivasi + token kecil di bawah untuk mencocokkan PIN. PIN sengaja tidak dicetak.
 function BackBody({ token }: { token: string }) {
   return (
-    <div style={{ ...col, height: "100%", padding: "9cqw 9cqw 7cqw", gap: "3.2cqw", justifyContent: "flex-start" }}>
-      <p style={{ margin: 0, fontSize: "3.4cqw", fontWeight: 700, letterSpacing: "0.18em", color: "#64748b" }}>KODE QR</p>
-      <div style={{ background: "#eef2ff", borderRadius: "4cqw", padding: "3.4cqw 4cqw", fontFamily: "ui-monospace, monospace", fontSize: "9.2cqw", fontWeight: 800, letterSpacing: "0.03em", lineHeight: 1.1, color: "#4338ca", whiteSpace: "nowrap" }}>{token}</div>
-      <div style={{ width: "100%", height: "0.3cqw", background: "#e2e8f0", margin: "1.5cqw 0" }} />
-      <h2 style={{ margin: 0, fontSize: "5.4cqw", fontWeight: 800 }}>Cara aktivasi</h2>
-      <ol style={{ listStyle: "none", margin: 0, padding: 0, width: "100%", display: "flex", flexDirection: "column", gap: "3.4cqw", textAlign: "left" }}>
-        {STEPS.map((x, i) => (
-          <li key={i} style={{ display: "flex", alignItems: "center", gap: "3.4cqw" }}>
-            <span style={{ flex: "none", width: "7.5cqw", height: "7.5cqw", borderRadius: "50%", background: "#4f46e5", color: "#fff", display: "grid", placeItems: "center", fontSize: "4cqw", fontWeight: 700 }}>{i + 1}</span>
-            <span style={{ fontSize: "3.9cqw", fontWeight: 500, lineHeight: 1.3, color: "#1e293b" }}>{x}</span>
-          </li>
-        ))}
-      </ol>
-      <p style={{ margin: "auto 0 0", fontSize: "3cqw", color: "#64748b", textWrap: "balance" }}>Setelah aktif, QR di sisi depan langsung mengarahkan pelanggan ke Google Review Anda.</p>
+    <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
+      <div style={{ height: "2.6cqw", background: `linear-gradient(90deg,${G.blue} 0 25%,${G.red} 25% 50%,${G.yellow} 50% 75%,${G.green} 75%)` }} />
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", padding: "11cqw 9cqw 8cqw", gap: "7cqw" }}>
+        <h2 style={{ margin: 0, fontSize: "6.4cqw", fontWeight: 800, color: "#202124" }}>Cara aktivasi</h2>
+        <ol style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: "6cqw" }}>
+          {STEPS.map((x, i) => (
+            <li key={i} style={{ display: "flex", alignItems: "center", gap: "4cqw" }}>
+              <span style={{ flex: "none", width: "8.5cqw", height: "8.5cqw", borderRadius: "50%", background: "#1a73e8", color: "#fff", display: "grid", placeItems: "center", fontSize: "4.4cqw", fontWeight: 700 }}>{i + 1}</span>
+              <span style={{ fontSize: "4.3cqw", fontWeight: 500, lineHeight: 1.3, color: "#202124" }}>{x}</span>
+            </li>
+          ))}
+        </ol>
+        <div style={{ marginTop: "auto", display: "flex", flexDirection: "column", alignItems: "center", gap: "2.4cqw", textAlign: "center" }}>
+          <p style={{ margin: 0, fontSize: "3cqw", lineHeight: 1.45, color: "#5f6368", textWrap: "balance" }}>Setelah aktif, QR di sisi depan langsung mengarahkan pelanggan ke Google Review Anda.</p>
+          <div style={{ width: "100%", height: "0.3cqw", background: "#e2e8f0", margin: "1cqw 0" }} />
+          <p style={{ margin: 0, fontSize: "2.6cqw", fontWeight: 700, letterSpacing: "0.18em", color: "#5f6368" }}>KODE QR</p>
+          <p style={{ margin: 0, fontFamily: "ui-monospace, monospace", fontSize: "5.4cqw", fontWeight: 700, color: "#174ea6", whiteSpace: "nowrap" }}>{token}</p>
+        </div>
+      </div>
     </div>
   );
 }
