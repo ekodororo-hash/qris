@@ -13,7 +13,7 @@ export default async function QrListPage({ searchParams }: { searchParams: Promi
   const rows = await prisma.qrCode.findMany({
     where: { ...(status ? { status } : { status: { not: "ARCHIVED" } }), ...(q ? { OR: [{ publicToken: { contains: q } }, { business: { businessName: { contains: q, mode: "insensitive" } } }] } : {}) },
     orderBy: { createdAt: "desc" }, take: 100,
-    include: { business: { select: { businessName: true } }, _count: { select: { scanEvents: true } } },
+    include: { business: { select: { businessName: true, ownerName: true, phone: true, address: true, googleReviewUrl: true } }, _count: { select: { scanEvents: true } } },
   });
   return (
     <div className="space-y-6">

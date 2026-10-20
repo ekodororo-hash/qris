@@ -1,28 +1,34 @@
-import Link from "next/link";
+"use client";
+import { useState } from "react";
 import { StatusBadge } from "@/components/status-badge";
 import type { QrStatusKey } from "@/lib/qr-status";
 import { archiveQr, toggleQr, unarchiveQr } from "./actions";
+import { QrModal } from "./qr-modal";
 
 export type QrRow = {
   id: string; publicToken: string; status: QrStatusKey; pin: string | null; businessId: string | null;
-  activatedAt: Date | null; business: { businessName: string } | null; _count: { scanEvents: number };
+  activatedAt: Date | null; _count: { scanEvents: number };
+  business: { businessName: string; ownerName: string; phone: string; address: string; googleReviewUrl: string } | null;
 };
 
 export function QrTable({ rows, empty = "Belum ada QR." }: { rows: QrRow[]; empty?: string }) {
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const selected = rows.find((r) => r.id === selectedId) ?? null;
   return (
     <div className="card overflow-hidden p-0">
       <div className="overflow-x-auto">
-        <table className="w-full min-w-[56rem] text-left text-sm">
+        <table className="w-full min-w-[60rem] text-left text-sm">
           <thead>
             <tr className="border-b border-slate-200 bg-slate-50/80 text-xs font-semibold uppercase tracking-wide text-slate-500">
-              <th className="px-5 py-3">Token</th><th className="px-3 py-3">Status</th><th className="px-3 py-3">PIN</th><th className="px-3 py-3">Bisnis</th>
+              <th className="w-12 px-5 py-3">No</th><th className="px-3 py-3">Token</th><th className="px-3 py-3">Status</th><th className="px-3 py-3">PIN</th><th className="px-3 py-3">Bisnis</th>
               <th className="px-3 py-3 text-right">Scan</th><th className="px-3 py-3">Aktivasi</th><th className="px-5 py-3 text-right">Aksi</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
-            {rows.map((r) => (
+            {rows.map((r, i) => (
               <tr key={r.id} className="transition hover:bg-slate-50/70">
-                <td className="px-5 py-3.5"><Link className="font-mono text-[13px] font-medium text-brand-600 hover:underline" href={`/admin/qr/${r.id}`}>{r.publicToken}</Link></td>
+                <td className="px-5 py-3.5 tabular-nums text-slate-400">{i + 1}</td>
+                <td className="px-3 py-3.5"><button type="button" className="cursor-pointer font-mono text-[13px] font-medium text-brand-600 hover:underline" onClick={() => setSelectedId(r.id)}>{r.publicToken}</button></td>
                 <td className="px-3 py-3.5"><StatusBadge status={r.status} /></td>
                 <td className="px-3 py-3.5">{!r.businessId && r.pin ? <code className="rounded-md bg-slate-100 px-2 py-1 font-mono text-[13px] tracking-wider">{r.pin}</code> : <span className="text-slate-300">—</span>}</td>
                 <td className="px-3 py-3.5 font-medium text-slate-800">{r.business?.businessName ?? <span className="font-normal text-slate-300">—</span>}</td>
@@ -38,10 +44,11 @@ export function QrTable({ rows, empty = "Belum ada QR." }: { rows: QrRow[]; empt
                 </td>
               </tr>
             ))}
-            {rows.length === 0 && <tr><td colSpan={7} className="px-5 py-14 text-center text-slate-500">{empty}</td></tr>}
+            {rows.length === 0 && <tr><td colSpan={8} className="px-5 py-14 text-center text-slate-500">{empty}</td></tr>}
           </tbody>
         </table>
       </div>
+      {selected && <QrModal row={selected} onClose={() => setSelectedId(null)} />}
     </div>
   );
 }
