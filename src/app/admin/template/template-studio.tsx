@@ -135,16 +135,16 @@ function BackBody({ token }: { token: string }) {
         <ol style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: "6cqw" }}>
           {STEPS.map((x, i) => (
             <li key={i} style={{ display: "flex", alignItems: "center", gap: "4cqw" }}>
-              <span style={{ flex: "none", width: "8.5cqw", height: "8.5cqw", borderRadius: "50%", background: "#1a73e8", color: "#fff", display: "grid", placeItems: "center", fontSize: "4.4cqw", fontWeight: 700 }}>{i + 1}</span>
+              <span style={{ flex: "none", width: "8.5cqw", display: "grid", placeItems: "center", color: "#1a73e8", fontSize: "5.4cqw", fontWeight: 800 }}>{i + 1}</span>
               <span style={{ fontSize: "4.3cqw", fontWeight: 500, lineHeight: 1.3, color: "#202124" }}>{x}</span>
             </li>
           ))}
         </ol>
         <div style={{ marginTop: "auto", display: "flex", flexDirection: "column", alignItems: "center", gap: "2.4cqw", textAlign: "center" }}>
-          <p style={{ margin: 0, fontSize: "3cqw", lineHeight: 1.45, color: "#5f6368", textWrap: "balance" }}>Setelah aktif, QR di sisi depan langsung mengarahkan pelanggan ke Google Review Anda.</p>
-          <div style={{ width: "100%", height: "0.3cqw", background: "#e2e8f0", margin: "1cqw 0" }} />
           <p style={{ margin: 0, fontSize: "2.6cqw", fontWeight: 700, letterSpacing: "0.18em", color: "#5f6368" }}>KODE QR</p>
           <p style={{ margin: 0, fontFamily: "ui-monospace, monospace", fontSize: "5.4cqw", fontWeight: 700, color: "#174ea6", whiteSpace: "nowrap" }}>{token}</p>
+          <div style={{ width: "100%", height: "0.3cqw", background: "#e2e8f0", margin: "1cqw 0" }} />
+          <p style={{ margin: 0, fontSize: "3cqw", lineHeight: 1.45, color: "#5f6368", textWrap: "balance" }}>Setelah aktif, QR di sisi depan langsung mengarahkan pelanggan ke Google Review Anda.</p>
         </div>
       </div>
     </div>
