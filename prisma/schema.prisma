@@ -58,6 +58,7 @@ model Business {
 model QrCode {
   id           String      @id @default(cuid())
   publicToken  String      @unique            // di URL /q/[token]; tidak pernah berubah
+  pinHash      String                          // legacy: tetap diisi agar skema DB tidak berubah (tidak dipakai admin)
   pin          String?                         // PIN aktivasi (plain, terlihat admin selama QR belum aktif)
   businessId   String?     @unique             // unik: 1 QR = 1 bisnis
   business     Business?   @relation(fields: [businessId], references: [id])
