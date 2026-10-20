@@ -17,8 +17,7 @@ export const activationSchema = z.object({
   email: z.string().trim().toLowerCase().email("Email tidak valid"),
   password: z.string().min(8, "Password minimal 8 karakter").max(100),
   pin: z.string().regex(/^\d{6,8}$/, "PIN 6-8 digit"),
-  pinConfirm: z.string(),
-}).refine((d) => d.pin === d.pinConfirm, { path: ["pinConfirm"], message: "Konfirmasi PIN tidak cocok" });
+});
 
 export const businessUpdateSchema = z.object({
   businessName: z.string().trim().min(2).max(100),

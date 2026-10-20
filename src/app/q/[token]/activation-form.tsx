@@ -5,7 +5,7 @@ const F: [string, string, string][] = [
   ["businessName", "Nama toko / bisnis", "text"], ["ownerName", "Nama pemilik", "text"], ["phone", "Nomor WhatsApp (08…)", "tel"],
   ["address", "Alamat bisnis", "text"], ["googleMapsUrl", "Link Google Maps bisnis", "url"], ["googleReviewUrl", "Google Review URL", "url"],
   ["email", "Email (untuk login dashboard)", "email"], ["password", "Password dashboard (min. 8)", "password"],
-  ["pin", "PIN aktivasi dari admin", "password"], ["pinConfirm", "Konfirmasi PIN", "password"],
+  ["pin", "PIN aktivasi dari admin", "password"],
 ];
 export function ActivationForm({ token }: { token: string }) {
   const [state, action, pending] = useActionState(activate, null);
