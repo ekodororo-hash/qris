@@ -136,7 +136,7 @@ export default function Home() {
         <div className="relative mx-auto max-w-6xl overflow-hidden rounded-3xl bg-gradient-to-br from-brand-600 via-brand-700 to-brand-900 px-8 py-16 text-center text-white">
           <div className="pointer-events-none absolute -right-20 -top-20 size-72 rounded-full bg-white/10 blur-3xl" />
           <h2 className="relative mx-auto max-w-2xl text-balance text-3xl font-bold tracking-tight sm:text-4xl">Mulai kumpulkan ulasan Google lebih mudah hari ini.</h2>
-          <p className="relative mx-auto mt-4 max-w-lg text-brand-100">Sudah punya QR dan PIN dari admin? Scan QR untuk aktivasi, atau masuk untuk membuka dashboard.</p>
+          <p className="relative mx-auto mt-4 max-w-lg text-brand-100">Sudah punya QR dan PIN aktivasi? Scan QR untuk aktivasi, atau masuk untuk membuka dashboard.</p>
           <Link href="/login" className="relative mt-8 inline-flex items-center gap-2 rounded-xl bg-white px-6 py-3 font-semibold text-brand-700 shadow-lg transition hover:bg-brand-50">Masuk <IconArrowRight className="size-4" /></Link>
         </div>
       </section>

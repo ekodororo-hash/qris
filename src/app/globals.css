@@ -22,7 +22,7 @@
 
 @layer components {
   .input { @apply w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-brand-500 focus:ring-4 focus:ring-brand-500/15; }
-  .label { @apply mb-1.5 block text-sm font-medium text-slate-700; }
+  .label { @apply mb-1 block text-sm font-medium text-slate-700; }
   .btn { @apply inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm shadow-brand-600/25 transition hover:bg-brand-700 active:scale-[.98] disabled:pointer-events-none disabled:opacity-50; }
   .btn-ghost { @apply inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm font-medium text-slate-700 transition hover:border-slate-300 hover:bg-slate-50 active:scale-[.98] disabled:pointer-events-none disabled:opacity-50; }
   .btn-sm { @apply rounded-lg px-2.5 py-1.5 text-xs; }
