@@ -33,6 +33,7 @@ export default async function QrDetail({ params }: { params: Promise<{ id: strin
             <a className="btn" href={`/api/qr/download?id=${qr.id}&fmt=png`}><IconDownload className="size-4" />PNG</a>
             <a className="btn-ghost" href={`/api/qr/download?id=${qr.id}&fmt=svg`}><IconDownload className="size-4" />SVG</a>
             <PrintButton /><CopyButton text={url} />
+            <Link className="btn-ghost" href={`/admin/template?qr=${qr.id}`}>Template cetak</Link>
           </div>
         </div>
       </div>
