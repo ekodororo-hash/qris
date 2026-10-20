@@ -12,7 +12,7 @@ export default async function AdminPage() {
   const [recent, byStatus] = await Promise.all([
     prisma.qrCode.findMany({
       where: { status: { not: "ARCHIVED" } }, orderBy: { createdAt: "desc" }, take: 5,
-      include: { business: { select: { businessName: true, ownerName: true, phone: true, address: true, googleReviewUrl: true } } },
+      include: { business: { select: { businessName: true, ownerName: true, phone: true, address: true, googleReviewUrl: true } }, salesperson: { select: { name: true } } },
     }),
     prisma.qrCode.groupBy({ by: ["status"], _count: { _all: true } }), // 1 query untuk semua hitungan status
   ]);

@@ -43,6 +43,8 @@ export default async function AuditPage({ searchParams }: { searchParams: Promis
     where: { OR: [{ id: { in: ids } }, { businessId: { in: ids } }] },
     select: { id: true, publicToken: true, businessId: true, business: { select: { businessName: true } } },
   }) : [];
+  const sales = ids.length ? await prisma.salesperson.findMany({ where: { id: { in: ids } }, select: { id: true, name: true } }) : [];
+  const salesById = new Map(sales.map((x) => [x.id, x.name]));
   const target = new Map<string, (typeof qrs)[number]>();
   for (const x of qrs) { target.set(x.id, x); if (x.businessId) target.set(x.businessId, x); }
 
@@ -73,6 +75,7 @@ export default async function AuditPage({ searchParams }: { searchParams: Promis
             <tbody className="divide-y divide-slate-100">
               {rows.map((r) => {
                 const t = r.targetId ? target.get(r.targetId) : undefined;
+                const salesName = r.targetId ? salesById.get(r.targetId) : undefined;
                 return (
                   <tr key={r.id} className="transition hover:bg-slate-50/70">
                     <td className="whitespace-nowrap px-5 py-3.5 text-slate-500">{r.createdAt.toLocaleString("id-ID", { timeZone: "Asia/Jakarta", dateStyle: "medium", timeStyle: "short" })} WIB</td>
@@ -80,7 +83,8 @@ export default async function AuditPage({ searchParams }: { searchParams: Promis
                     <td className="px-3 py-3.5 font-medium text-slate-800">{AUDIT_LABEL[r.action] ?? r.action}</td>
                     <td className="px-5 py-3.5">
                       {t ? <><Link href={`/admin/qr/${t.id}`} className="font-mono text-[13px] font-medium text-brand-600 hover:underline">{t.publicToken}</Link>{t.business && <p className="text-xs text-slate-500">{t.business.businessName}</p>}</>
-                        : r.targetId ? <span className="text-xs text-slate-400">QR sudah dihapus</span> : <span className="text-slate-300">—</span>}
+                        : salesName ? <Link href={`/admin/sales/${r.targetId}`} className="text-sm font-medium text-brand-600 hover:underline">Sales: {salesName}</Link>
+                        : r.targetId ? <span className="text-xs text-slate-400">{r.action.startsWith("SALES_") || r.action.startsWith("PAYMENT_") ? "Sales sudah dihapus" : "QR sudah dihapus"}</span> : <span className="text-slate-300">—</span>}
                     </td>
                   </tr>
                 );

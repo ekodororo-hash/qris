@@ -3,11 +3,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { logout } from "../login/actions";
-import { IconClose, IconDashboard, IconLogout, IconMenu, IconQr, IconScan, IconShield, Logo } from "@/components/icons";
+import { IconClose, IconDashboard, IconLogout, IconMenu, IconQr, IconScan, IconShield, IconStore, Logo } from "@/components/icons";
 
 const NAV = [
   { href: "/admin", label: "Ringkasan", icon: IconDashboard, exact: true },
   { href: "/admin/qr", label: "Daftar QR", icon: IconQr, exact: false },
+  { href: "/admin/sales", label: "Sales", icon: IconStore, exact: false },
   { href: "/admin/template", label: "Template QR", icon: IconScan, exact: false },
   { href: "/admin/audit", label: "Audit Log", icon: IconShield, exact: false },
 ];

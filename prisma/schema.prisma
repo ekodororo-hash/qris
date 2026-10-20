@@ -65,10 +65,15 @@ model QrCode {
   status       QrStatus    @default(UNACTIVATED)
   failedPinAttempts Int    @default(0)
   activatedAt  DateTime?
+  salespersonId String?                        // sales yang memegang QR ini (null = belum diserahkan)
+  salesperson  Salesperson? @relation(fields: [salespersonId], references: [id])
+  assignedAt   DateTime?                       // kapan diserahkan ke sales
+  price        Int?                            // setoran wajib per QR (rupiah), dikunci saat diserahkan
   scanEvents   ScanEvent[]
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
   @@index([status])
+  @@index([salespersonId])
 }
 
 model ScanEvent {
@@ -88,4 +93,31 @@ model AuditLog {
   targetId  String?
   createdAt DateTime @default(now())
   @@index([targetId])
+}
+
+// Sales: hanya nama yang dikelola admin (tanpa login). QR berstatus aktif milik sales = wajib setor.
+model Salesperson {
+  id        String    @id @default(cuid())
+  name      String
+  qrCodes   QrCode[]
+  payments  Payment[]
+  createdAt DateTime  @default(now())
+}
+
+// Catatan setoran dari sales ke admin (rupiah).
+model Payment {
+  id            String      @id @default(cuid())
+  salespersonId String
+  salesperson   Salesperson @relation(fields: [salespersonId], references: [id])
+  amount        Int
+  paidAt        DateTime
+  note          String?
+  createdAt     DateTime    @default(now())
+  @@index([salespersonId, paidAt])
+}
+
+// Pengaturan sederhana key-value, mis. QR_PRICE = setoran wajib per QR.
+model Setting {
+  key   String @id
+  value String
 }
