@@ -35,11 +35,11 @@ export default async function SalesPage() {
           <p className="text-sm text-slate-500">Total sisa setoran: <span className={`font-semibold tabular-nums ${totalBalance > 0 ? "text-rose-600" : "text-emerald-600"}`}>{rupiah(totalBalance)}</span></p>
         </div>
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[46rem] text-left text-sm">
+          <table className="w-full min-w-[50rem] text-left text-sm">
             <thead>
               <tr className="border-b border-slate-200 bg-slate-50/80 text-xs font-semibold uppercase tracking-wide text-slate-500">
                 <th className="px-5 py-3">Sales</th><th className="px-3 py-3 text-right">Dipegang</th><th className="px-3 py-3 text-right">Aktif (terjual)</th>
-                <th className="px-3 py-3 text-right">Wajib setor</th><th className="px-3 py-3 text-right">Sudah setor</th><th className="px-5 py-3 text-right">Sisa</th>
+                <th className="px-3 py-3 text-right">Wajib setor</th><th className="px-3 py-3 text-right">Sudah setor</th><th className="px-3 py-3 text-right">Sisa</th><th className="px-5 py-3 text-right">Aksi</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
@@ -55,10 +55,11 @@ export default async function SalesPage() {
                   <td className="px-3 py-3.5 text-right tabular-nums">{r.sold}</td>
                   <td className="px-3 py-3.5 text-right tabular-nums">{rupiah(r.owed)}</td>
                   <td className="px-3 py-3.5 text-right tabular-nums">{rupiah(r.paid)}</td>
-                  <td className={`px-5 py-3.5 text-right font-semibold tabular-nums ${r.balance > 0 ? "text-rose-600" : "text-emerald-600"}`}>{rupiah(r.balance)}</td>
+                  <td className={`px-3 py-3.5 text-right font-semibold tabular-nums ${r.balance > 0 ? "text-rose-600" : "text-emerald-600"}`}>{rupiah(r.balance)}</td>
+                  <td className="px-5 py-3.5 text-right"><Link href={`/admin/sales/${r.id}`} className="btn btn-sm">Kelola</Link></td>
                 </tr>
               ))}
-              {rows.length === 0 && <tr><td colSpan={6} className="px-5 py-14 text-center text-slate-500">Belum ada sales. Tambahkan nama sales di atas.</td></tr>}
+              {rows.length === 0 && <tr><td colSpan={7} className="px-5 py-14 text-center text-slate-500">Belum ada sales. Tambahkan nama sales di atas, lalu klik Kelola untuk menyerahkan QR.</td></tr>}
             </tbody>
           </table>
         </div>
