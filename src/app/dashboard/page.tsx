@@ -21,9 +21,9 @@ export default async function Dashboard() {
         {b.logoUrl
           ? /* eslint-disable-next-line @next/next/no-img-element */ <img src={b.logoUrl} alt="" className="size-12 shrink-0 rounded-xl object-cover ring-1 ring-slate-200" />
           : <span className="grid size-12 shrink-0 place-items-center rounded-xl bg-slate-100 text-slate-400"><IconStore className="size-6" /></span>}
-        <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1">
+        <div className="min-w-0">
           <h1 className="truncate text-xl font-bold tracking-tight sm:text-2xl">{b.businessName}</h1>
-          <StatusBadge status={qr.status as QrStatusKey} />
+          <div className="mt-1"><StatusBadge status={qr.status as QrStatusKey} /></div>
         </div>
       </div>
 
