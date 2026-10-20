@@ -1,5 +1,5 @@
 import { randomBytes, randomInt } from "crypto";
-import bcrypt from "bcryptjs";
+import { timingSafeEqual } from "crypto";
 
 // 12 karakter base62 dari crypto (~71 bit entropi), tidak bisa ditebak
 const ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789";
@@ -10,5 +10,8 @@ export function generatePublicToken(len = 12) {
 export function generatePin(len = 8) {
   return Array.from({ length: len }, () => randomInt(0, 10)).join("");
 }
-export const hashPin = (pin: string) => bcrypt.hash(pin, 12);
-export const verifyPin = (pin: string, hash: string) => bcrypt.compare(pin, hash);
+export function verifyPin(input: string, pin: string | null) {
+  if (!pin) return false;
+  const a = Buffer.from(input), b = Buffer.from(pin);
+  return a.length === b.length && timingSafeEqual(a, b);
+}

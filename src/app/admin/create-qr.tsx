@@ -12,7 +12,7 @@ export function CreateQr() {
         <div className="mt-4 space-y-2 text-sm">
           <p><b>URL:</b> {r.url}</p>
           <p><b>PIN aktivasi:</b> <code className="rounded bg-neutral-100 px-2 py-1 text-base">{r.pin}</code></p>
-          <p className="text-amber-700">PIN hanya ditampilkan sekali. Berikan ke pemilik secara terpisah dari QR.</p>
+          <p className="text-amber-700">PIN juga bisa dilihat lagi di daftar QR selama belum diaktivasi. Berikan ke pemilik secara terpisah dari QR.</p>
           <div className="flex gap-2"><CopyButton text={r.pin} /><a className="btn-ghost" href={`/admin/qr/${r.id}`}>Detail & download</a></div>
         </div>
       )}

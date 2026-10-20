@@ -8,7 +8,7 @@ npm run db:seed
 npm run dev
 
 ## Alur
-Login admin (/login) -> "Buat QR baru" (catat PIN, tampil sekali) -> download QR di detail ->
+Login admin (/login) -> "Buat QR baru" (PIN terlihat di daftar selama QR belum aktif) -> download QR di detail ->
 pemilik scan -> isi form aktivasi (PIN dari admin) -> login dashboard.
 
 ## Deploy Vercel

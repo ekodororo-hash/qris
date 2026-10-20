@@ -2,8 +2,9 @@ import Link from "next/link";
 import { prisma } from "@/lib/db";
 import { requireRole } from "@/lib/session";
 import { logout } from "../login/actions";
-import { archiveQr, toggleQr } from "./actions";
+import { archiveQr, toggleQr, unarchiveQr } from "./actions";
 import { CreateQr } from "./create-qr";
+import { AutoFilter } from "./auto-filter";
 
 const LABEL = { UNACTIVATED: "Belum Aktif", ACTIVE: "Aktif", DISABLED: "Dinonaktifkan", ARCHIVED: "Diarsipkan" } as const;
 export default async function AdminPage({ searchParams }: { searchParams: Promise<{ status?: string; q?: string }> }) {
@@ -26,25 +27,23 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
         {[["Total QR", total], ["QR aktif", active], ["Total scan", scans]].map(([l, v]) => (<div key={l as string} className="card"><p className="text-sm text-neutral-500">{l}</p><p className="text-2xl font-semibold">{v}</p></div>))}
       </div>
       <CreateQr />
-      <form className="flex flex-wrap gap-2">
-        <input name="q" defaultValue={q} placeholder="Cari token / nama bisnis" className="input max-w-xs" />
-        <select name="status" defaultValue={status ?? ""} className="input max-w-[11rem]"><option value="">Semua (tanpa arsip)</option>{Object.entries(LABEL).map(([k, v]) => <option key={k} value={k}>{v}</option>)}</select>
-        <button className="btn-ghost">Filter</button>
-      </form>
+      <AutoFilter q={q ?? ""} status={status ?? ""} options={Object.entries(LABEL).map(([value, label]) => ({ value, label }))} />
       <div className="card overflow-x-auto p-0">
         <table className="w-full text-left text-sm">
-          <thead className="border-b bg-neutral-50 text-neutral-500"><tr><th className="p-3">Token</th><th>Status</th><th>Bisnis</th><th>Scan</th><th>Aktivasi</th><th /></tr></thead>
+          <thead className="border-b bg-neutral-50 text-neutral-500"><tr><th className="p-3">Token</th><th>Status</th><th>PIN</th><th>Bisnis</th><th>Scan</th><th>Aktivasi</th><th /></tr></thead>
           <tbody>{qrs.map((r) => (
             <tr key={r.id} className="border-b last:border-0">
               <td className="p-3 font-mono"><Link className="text-blue-600" href={`/admin/qr/${r.id}`}>{r.publicToken}</Link></td>
-              <td>{LABEL[r.status]}</td><td>{r.business?.businessName ?? "—"}</td><td>{r._count.scanEvents}</td>
+              <td>{LABEL[r.status]}</td><td className="font-mono">{!r.businessId && r.pin ? r.pin : "—"}</td><td>{r.business?.businessName ?? "—"}</td><td>{r._count.scanEvents}</td>
               <td>{r.activatedAt ? r.activatedAt.toLocaleDateString("id-ID") : "—"}</td>
               <td className="flex gap-2 p-3">
                 {(r.status === "ACTIVE" || r.status === "DISABLED") && <form action={toggleQr}><input type="hidden" name="id" value={r.id} /><button className="btn-ghost">{r.status === "ACTIVE" ? "Nonaktifkan" : "Aktifkan"}</button></form>}
-                <form action={archiveQr}><input type="hidden" name="id" value={r.id} /><button className="btn-ghost">Arsipkan</button></form>
+                {r.status === "ARCHIVED"
+                  ? <form action={unarchiveQr}><input type="hidden" name="id" value={r.id} /><button className="btn-ghost">Batal arsip</button></form>
+                  : <form action={archiveQr}><input type="hidden" name="id" value={r.id} /><button className="btn-ghost">Arsipkan</button></form>}
               </td>
             </tr>))}
-            {qrs.length === 0 && <tr><td colSpan={6} className="p-6 text-center text-neutral-500">Belum ada QR.</td></tr>}
+            {qrs.length === 0 && <tr><td colSpan={7} className="p-6 text-center text-neutral-500">Belum ada QR.</td></tr>}
           </tbody>
         </table>
       </div>
