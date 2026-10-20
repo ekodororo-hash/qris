@@ -238,6 +238,12 @@ export function TemplateStudio({ options, initialId }: { options: QrOption[]; in
           <select id="tpl-qr" className="input" value={qrId} onChange={(e) => setQrId(e.target.value)}>
             {options.map((o) => <option key={o.id} value={o.id}>{o.publicToken}</option>)}
           </select>
+          {sel && sel.status === "ACTIVE" && (
+            <p className="mt-2 flex flex-wrap items-center gap-2 rounded-xl bg-emerald-50 p-2.5 text-xs text-emerald-800 ring-1 ring-emerald-200">
+              <StatusBadge status={sel.status} />
+              {sel.businessName ? `QR milik ${sel.businessName} sudah aktif.` : "QR sudah aktif."} Pelanggan yang scan langsung diarahkan ke Google.
+            </p>
+          )}
           {sel && sel.status === "UNACTIVATED" && (
             <p className="mt-2 flex flex-wrap items-center gap-2 rounded-xl bg-sky-50 p-2.5 text-xs text-sky-800 ring-1 ring-sky-200">
               <StatusBadge status={sel.status} />
@@ -271,10 +277,12 @@ export function TemplateStudio({ options, initialId }: { options: QrOption[]; in
           </div>
         </details>
 
-        <div className="flex flex-wrap gap-2 border-t border-slate-100 pt-4">
-          <button type="button" className="btn flex-1" onClick={() => window.print()}><IconPrinter className="size-4" />Cetak template</button>
-          <button type="button" className="btn-ghost" disabled={!svg || saving} onClick={saveImage}><IconDownload className="size-4" />{saving ? "Menyimpan..." : "Simpan gambar"}</button>
-          {sel && <a className="btn-ghost" href={`/api/qr/download?id=${sel.id}&fmt=png`}><IconDownload className="size-4" />QR saja</a>}
+        <div className="space-y-2 border-t border-slate-100 pt-4">
+          <button type="button" className="btn w-full" onClick={() => window.print()}><IconPrinter className="size-4" />Cetak template</button>
+          <div className="grid grid-cols-2 gap-2">
+            <button type="button" className="btn-ghost" disabled={!svg || saving} onClick={saveImage}><IconDownload className="size-4" />{saving ? "Menyimpan..." : "Simpan gambar"}</button>
+            {sel ? <a className="btn-ghost" href={`/api/qr/download?id=${sel.id}&fmt=png`}><IconDownload className="size-4" />QR saja</a> : <span />}
+          </div>
         </div>
         {saveErr && <p className="text-xs text-rose-600">{saveErr}</p>}
         <details className="text-xs text-slate-500">
