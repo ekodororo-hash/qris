@@ -1,16 +1,21 @@
-# ReviewQR — fondasi (tahap 1-3, 5-6 inti)
+# ReviewQR
 
-## Setup
-npx create-next-app@latest . --ts --tailwind --app --src-dir --import-alias "@/*"
-npm i @prisma/client zod qrcode bcryptjs next-auth@beta
-npm i -D prisma tsx @types/bcryptjs @types/qrcode
-cp .env.example .env   # isi nilai
-npx prisma migrate dev --name init
-npx tsx prisma/seed.ts
+## Jalankan lokal
+npm install
+cp .env.example .env        # isi DATABASE_URL, AUTH_SECRET, SEED_ADMIN_*
+npx prisma migrate dev --name init   # buat & commit folder prisma/migrations
+npm run db:seed
 npm run dev
 
-## Struktur target
-src/app/(marketing)/page.tsx | admin/{login,page,qr/new,qr/[id]} | dashboard/{page,settings,activity}
-src/app/q/[token]/{page.tsx,go/route.ts,activated/page.tsx} | src/lib/{db,tokens,validators,activation}.ts
-## Sudah ada: schema, token/PIN, validasi URL Google, aktivasi atomik, routing 3 kondisi.
-## Berikutnya: auth+role (middleware), admin buat QR + download PNG/SVG, form aktivasi, route /go, dashboard, deploy Vercel.
+## Alur
+Login admin (/login) -> "Buat QR baru" (catat PIN, tampil sekali) -> download QR di detail ->
+pemilik scan -> isi form aktivasi (PIN dari admin) -> login dashboard.
+
+## Deploy Vercel
+1. Push ke GitHub, import di Vercel.
+2. Env: DATABASE_URL, AUTH_SECRET, NEXT_PUBLIC_APP_URL (domain Vercel).
+3. Migrasi produksi (sekali, dari lokal): DATABASE_URL=<prod> npx prisma migrate deploy, lalu db:seed.
+4. Deploy.
+
+## Belum ada
+Reset aktivasi, OTP WhatsApp/email, halaman statistik terpisah, rate limit terdistribusi (Upstash), tes otomatis.

@@ -1,9 +1,29 @@
-generator client { provider = "prisma-client-js" }
-datasource db { provider = "postgresql"; url = env("DATABASE_URL") }
+generator client {
+  provider = "prisma-client-js"
+}
 
-enum Role { ADMIN OWNER }
-enum QrStatus { UNACTIVATED ACTIVE DISABLED ARCHIVED }
-enum EventType { SCAN REVIEW_CLICK }
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum Role {
+  ADMIN
+  OWNER
+}
+
+enum QrStatus {
+  UNACTIVATED
+  ACTIVE
+  DISABLED
+  ARCHIVED
+}
+
+enum EventType {
+  SCAN
+  REVIEW_CLICK
+}
 
 model User {
   id           String     @id @default(cuid())
