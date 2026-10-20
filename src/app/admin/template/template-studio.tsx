@@ -1,5 +1,6 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { toPng } from "html-to-image";
 import { IconDownload, IconGoogleG, IconPrinter, IconStar } from "@/components/icons";
 import { StatusBadge } from "@/components/status-badge";
 import type { QrStatusKey } from "@/lib/qr-status";
@@ -186,6 +187,9 @@ export function TemplateStudio({ options, initialId }: { options: QrOption[]; in
   const [tpl, setTpl] = useState<TplKey>("blok");
   const [edits, setEdits] = useState<Partial<Record<TplKey, Partial<Texts>>>>({});
   const [svg, setSvg] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [saveErr, setSaveErr] = useState("");
+  const sheetRef = useRef<HTMLDivElement>(null);
 
   const sel = options.find((o) => o.id === qrId);
   const token = sel?.publicToken;
@@ -202,6 +206,30 @@ export function TemplateStudio({ options, initialId }: { options: QrOption[]; in
 
   const cfg: Cfg = { size, tpl, t };
 
+  // simpan seluruh desain (bukan QR saja) sebagai PNG resolusi cetak 300 dpi
+  async function saveImage() {
+    const node = sheetRef.current?.querySelector<HTMLElement>(".tpl-sheet");
+    if (!node || !svg) return;
+    setSaving(true);
+    setSaveErr("");
+    try {
+      const targetPx = (SIZES[size].w / 25.4) * 300;
+      const dataUrl = await toPng(node, {
+        pixelRatio: targetPx / node.offsetWidth,
+        backgroundColor: "#ffffff",
+        style: { borderRadius: "0", boxShadow: "none" },
+      });
+      const a = document.createElement("a");
+      a.href = dataUrl;
+      a.download = `template-${tpl}-${size}-${token}.png`;
+      a.click();
+    } catch {
+      setSaveErr("Gagal menyimpan gambar. Coba lagi, atau pakai Cetak template lalu simpan sebagai PDF.");
+    } finally {
+      setSaving(false);
+    }
+  }
+
   return (
     <div className="grid gap-6 lg:grid-cols-[22rem_minmax(0,1fr)] print:block">
       <div className="card space-y-4 print:hidden">
@@ -210,10 +238,16 @@ export function TemplateStudio({ options, initialId }: { options: QrOption[]; in
           <select id="tpl-qr" className="input" value={qrId} onChange={(e) => setQrId(e.target.value)}>
             {options.map((o) => <option key={o.id} value={o.id}>{o.publicToken}</option>)}
           </select>
-          {sel && sel.status !== "ACTIVE" && (
+          {sel && sel.status === "UNACTIVATED" && (
+            <p className="mt-2 flex flex-wrap items-center gap-2 rounded-xl bg-sky-50 p-2.5 text-xs text-sky-800 ring-1 ring-sky-200">
+              <StatusBadge status={sel.status} />
+              Normal untuk QR baru: cetak dulu, pemilik bisnis mengaktifkannya belakangan lewat scan pertama.
+            </p>
+          )}
+          {sel && sel.status === "DISABLED" && (
             <p className="mt-2 flex flex-wrap items-center gap-2 rounded-xl bg-amber-50 p-2.5 text-xs text-amber-800 ring-1 ring-amber-200">
               <StatusBadge status={sel.status} />
-              {sel.status === "UNACTIVATED" ? "QR belum diaktivasi pemilik; pelanggan yang scan belum diarahkan ke Google." : "QR sedang nonaktif; pelanggan yang scan tidak diarahkan ke Google."}
+              QR sedang nonaktif; pelanggan yang scan tidak diarahkan ke Google.
             </p>
           )}
         </div>
@@ -239,8 +273,10 @@ export function TemplateStudio({ options, initialId }: { options: QrOption[]; in
 
         <div className="flex flex-wrap gap-2 border-t border-slate-100 pt-4">
           <button type="button" className="btn flex-1" onClick={() => window.print()}><IconPrinter className="size-4" />Cetak template</button>
+          <button type="button" className="btn-ghost" disabled={!svg || saving} onClick={saveImage}><IconDownload className="size-4" />{saving ? "Menyimpan..." : "Simpan gambar"}</button>
           {sel && <a className="btn-ghost" href={`/api/qr/download?id=${sel.id}&fmt=png`}><IconDownload className="size-4" />QR saja</a>}
         </div>
+        {saveErr && <p className="text-xs text-rose-600">{saveErr}</p>}
         <details className="text-xs text-slate-500">
           <summary className="cursor-pointer font-medium">Tips cetak</summary>
           <p className="mt-1.5 leading-relaxed">Di dialog cetak: margin <b>Tidak ada</b>, aktifkan <b>Background graphics</b>, skala <b>100%</b>. QR sengaja tetap hitam-putih supaya mudah discan.</p>
@@ -248,7 +284,7 @@ export function TemplateStudio({ options, initialId }: { options: QrOption[]; in
       </div>
 
       <div className="rounded-2xl bg-slate-100 p-4 sm:p-8 print:bg-transparent print:p-0">
-        <div className={`mx-auto w-full print:m-0 print:max-w-none ${size === "sticker" ? "max-w-[20rem]" : "max-w-[24rem]"}`}>
+        <div ref={sheetRef} className={`mx-auto w-full print:m-0 print:max-w-none ${size === "sticker" ? "max-w-[20rem]" : "max-w-[24rem]"}`}>
           <Sheet cfg={cfg} svg={svg} />
         </div>
         <p className="mt-5 text-center text-xs text-slate-500 print:hidden">Pratinjau · ukuran cetak asli {SIZES[size].hint}</p>
