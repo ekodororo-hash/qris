@@ -17,12 +17,10 @@ const STYLES = { solid: "Header warna", full: "Penuh warna", minimal: "Minimal" 
 type StyleKey = keyof typeof STYLES;
 
 const THEMES = {
-  indigo: { label: "Indigo", main: "#4f46e5", soft: "#eef2ff" },
-  emerald: { label: "Hijau", main: "#059669", soft: "#ecfdf5" },
-  rose: { label: "Merah", main: "#e11d48", soft: "#fff1f2" },
-  amber: { label: "Oranye", main: "#d97706", soft: "#fffbeb" },
-  slate: { label: "Hitam", main: "#0f172a", soft: "#f1f5f9" },
-  google: { label: "Google", main: "#4285F4", soft: "#e8f0fe" },
+  blue: { label: "Biru", main: "#4285F4", soft: "#e8f0fe" },
+  red: { label: "Merah", main: "#EA4335", soft: "#fce8e6" },
+  yellow: { label: "Kuning", main: "#FBBC05", soft: "#fef7e0" },
+  green: { label: "Hijau", main: "#34A853", soft: "#e6f4ea" },
 } as const;
 type ThemeKey = keyof typeof THEMES;
 
@@ -41,7 +39,6 @@ function Sheet({ cfg, svg }: { cfg: Cfg; svg: string }) {
   const accent = full ? "#fff" : t.main;
   const star = full || solid ? "#fde047" : "#f59e0b";
 
-  const isGoogle = cfg.color === "google";
   const GoogleBadge = ({ size }: { size: string }) => (
     <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "1.4cqw", background: "#fff", borderRadius: "999px", padding: "1.4cqw 3cqw", boxShadow: full ? "0 0.6cqw 2cqw rgba(15,23,42,.2)" : "none", border: full ? "none" : `0.3cqw solid ${t.soft}` }}>
       <IconGoogleG style={{ fontSize: size }} />
@@ -62,7 +59,7 @@ function Sheet({ cfg, svg }: { cfg: Cfg; svg: string }) {
       <div className="tpl-sheet w-full overflow-hidden rounded-2xl shadow-xl shadow-slate-900/10" style={{ containerType: "inline-size", aspectRatio: `${w} / ${h}`, background: full ? t.main : "#fff", color: fg }}>
         {sticker ? (
           <div style={{ height: "100%", boxSizing: "border-box", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "3cqw", padding: "6cqw", textAlign: "center", border: minimal ? `1.2cqw solid ${t.main}` : undefined, background: solid ? t.soft : undefined }}>
-            {isGoogle && <GoogleBadge size="7cqw" />}
+            <GoogleBadge size="7cqw" />
             <p style={{ margin: 0, fontSize: "5.2cqw", fontWeight: 800, lineHeight: 1.2, color: accent, textWrap: "balance" }}>{cfg.cta}</p>
             {panel("62cqw")}
             {cfg.showName && cfg.name && <p style={{ margin: 0, fontSize: "3.8cqw", fontWeight: 700 }}>{cfg.name}</p>}
@@ -78,7 +75,7 @@ function Sheet({ cfg, svg }: { cfg: Cfg; svg: string }) {
             </div>
             <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "4cqw", padding: "5cqw 8cqw" }}>
               {panel("64cqw")}
-              {isGoogle && <GoogleBadge size="5.5cqw" />}
+              <GoogleBadge size="5.5cqw" />
               <p style={{ margin: 0, fontSize: "4.6cqw", fontWeight: 700, textAlign: "center", color: accent, textWrap: "balance" }}>{cfg.cta}</p>
             </div>
             {cfg.steps && (
@@ -118,7 +115,7 @@ export function TemplateStudio({ options, initialId }: { options: QrOption[]; in
   const [qrId, setQrId] = useState(first?.id ?? "");
   const [size, setSize] = useState<SizeKey>("a6");
   const [style, setStyle] = useState<StyleKey>("solid");
-  const [color, setColor] = useState<ThemeKey>("indigo");
+  const [color, setColor] = useState<ThemeKey>("blue");
   const [headline, setHeadline] = useState("Suka dengan layanan kami?");
   const [sub, setSub] = useState("Ulasan Anda sangat berarti bagi kami dan pelanggan lain.");
   const [cta, setCta] = useState("Scan & beri ulasan di Google");
