@@ -2,12 +2,12 @@
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/db";
 import { requireRole } from "@/lib/session";
-import { generatePin, generatePublicToken } from "@/lib/tokens";
+import { generatePin, generatePublicToken, hashPin } from "@/lib/tokens";
 
 export async function createQr(): Promise<{ url: string; pin: string; id: string }> {
   const s = await requireRole("ADMIN");
   const pin = generatePin();
-  const qr = await prisma.qrCode.create({ data: { publicToken: generatePublicToken(), pin } });
+  const qr = await prisma.qrCode.create({ data: { publicToken: generatePublicToken(), pinHash: await hashPin(pin), pin } });
   await prisma.auditLog.create({ data: { actorId: s.id, action: "QR_CREATED", targetId: qr.id } });
   revalidatePath("/admin");
   return { url: `${process.env.NEXT_PUBLIC_APP_URL}/q/${qr.publicToken}`, pin, id: qr.id };

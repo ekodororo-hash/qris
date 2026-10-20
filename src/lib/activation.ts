@@ -14,7 +14,7 @@ export async function activateQr(input: unknown): Promise<Result> {
   const qr = await prisma.qrCode.findUnique({ where: { publicToken: d.token } });
   if (!qr || qr.status !== "UNACTIVATED") return { ok: false, error: "QR tidak dapat diaktivasi." };
   if (qr.failedPinAttempts >= MAX_ATTEMPTS) return { ok: false, error: "Terlalu banyak percobaan. Hubungi admin." };
-  if (!(verifyPin(d.pin, qr.pin))) {
+  if (!(await verifyPin(d.pin, qr.pin, qr.pinHash))) {
     await prisma.qrCode.update({ where: { id: qr.id }, data: { failedPinAttempts: { increment: 1 } } });
     return { ok: false, error: "PIN salah." };
   }
