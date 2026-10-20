@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { SubmitButton } from "@/components/buttons";
 import { StatusBadge } from "@/components/status-badge";
 import type { QrStatusKey } from "@/lib/qr-status";
 import { archiveQr, toggleQr, unarchiveQr } from "./actions";
@@ -36,10 +37,10 @@ export function QrTable({ rows, empty = "Belum ada QR." }: { rows: QrRow[]; empt
                 <td className="px-3 py-3.5 text-slate-500">{r.activatedAt ? r.activatedAt.toLocaleDateString("id-ID") : <span className="text-slate-300">—</span>}</td>
                 <td className="px-5 py-3.5">
                   <div className="flex justify-end gap-2">
-                    {(r.status === "ACTIVE" || r.status === "DISABLED") && <form action={toggleQr}><input type="hidden" name="id" value={r.id} /><button className="btn-ghost btn-sm">{r.status === "ACTIVE" ? "Nonaktifkan" : "Aktifkan"}</button></form>}
+                    {(r.status === "ACTIVE" || r.status === "DISABLED") && <form action={toggleQr}><input type="hidden" name="id" value={r.id} /><SubmitButton className="btn-ghost btn-sm" pendingText={r.status === "ACTIVE" ? "Menonaktifkan…" : "Mengaktifkan…"}>{r.status === "ACTIVE" ? "Nonaktifkan" : "Aktifkan"}</SubmitButton></form>}
                     {r.status === "ARCHIVED"
-                      ? <form action={unarchiveQr}><input type="hidden" name="id" value={r.id} /><button className="btn-ghost btn-sm">Batal arsip</button></form>
-                      : <form action={archiveQr}><input type="hidden" name="id" value={r.id} /><button className="btn-ghost btn-sm">Arsipkan</button></form>}
+                      ? <form action={unarchiveQr}><input type="hidden" name="id" value={r.id} /><SubmitButton className="btn-ghost btn-sm" pendingText="Memproses…">Batal arsip</SubmitButton></form>
+                      : <form action={archiveQr}><input type="hidden" name="id" value={r.id} /><SubmitButton className="btn-ghost btn-sm" pendingText="Mengarsipkan…">Arsipkan</SubmitButton></form>}
                   </div>
                 </td>
               </tr>

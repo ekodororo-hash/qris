@@ -4,13 +4,19 @@ import { prisma } from "@/lib/db";
 import { requireRole } from "@/lib/session";
 import { generatePin, generatePublicToken, hashPin } from "@/lib/tokens";
 
-export async function createQr(): Promise<{ url: string; pin: string; id: string }> {
+export async function createQr(count = 1): Promise<{ url: string; pin: string; id: string }[]> {
   const s = await requireRole("ADMIN");
-  const pin = generatePin();
-  const qr = await prisma.qrCode.create({ data: { publicToken: generatePublicToken(), pinHash: await hashPin(pin), pin } });
-  await prisma.auditLog.create({ data: { actorId: s.id, action: "QR_CREATED", targetId: qr.id } });
+  const n = Math.min(100, Math.max(1, Math.floor(Number(count)) || 1));
+  // pinHash hanya legacy (PIN plain yang dipakai); untuk batch pakai cost rendah agar tidak timeout
+  const rounds = n > 1 ? 4 : 12;
+  const data = await Promise.all(Array.from({ length: n }, async () => {
+    const pin = generatePin();
+    return { publicToken: generatePublicToken(), pin, pinHash: await hashPin(pin, rounds) };
+  }));
+  const created = await prisma.qrCode.createManyAndReturn({ data, select: { id: true, publicToken: true, pin: true } });
+  await prisma.auditLog.createMany({ data: created.map((q) => ({ actorId: s.id, action: "QR_CREATED", targetId: q.id })) });
   revalidatePath("/admin", "layout");
-  return { url: `${process.env.NEXT_PUBLIC_APP_URL}/q/${qr.publicToken}`, pin, id: qr.id };
+  return created.map((q) => ({ id: q.id, url: `${process.env.NEXT_PUBLIC_APP_URL}/q/${q.publicToken}`, pin: q.pin ?? "" }));
 }
 export async function toggleQr(fd: FormData) {
   const s = await requireRole("ADMIN");
