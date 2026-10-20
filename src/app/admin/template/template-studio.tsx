@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { IconDownload, IconPrinter, IconStar } from "@/components/icons";
+import { IconDownload, IconGoogleG, IconPrinter, IconStar } from "@/components/icons";
 import { StatusBadge } from "@/components/status-badge";
 import type { QrStatusKey } from "@/lib/qr-status";
 
@@ -22,6 +22,7 @@ const THEMES = {
   rose: { label: "Merah", main: "#e11d48", soft: "#fff1f2" },
   amber: { label: "Oranye", main: "#d97706", soft: "#fffbeb" },
   slate: { label: "Hitam", main: "#0f172a", soft: "#f1f5f9" },
+  google: { label: "Google", main: "#4285F4", soft: "#e8f0fe" },
 } as const;
 type ThemeKey = keyof typeof THEMES;
 
@@ -40,6 +41,14 @@ function Sheet({ cfg, svg }: { cfg: Cfg; svg: string }) {
   const accent = full ? "#fff" : t.main;
   const star = full || solid ? "#fde047" : "#f59e0b";
 
+  const isGoogle = cfg.color === "google";
+  const GoogleBadge = ({ size }: { size: string }) => (
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "1.4cqw", background: "#fff", borderRadius: "999px", padding: "1.4cqw 3cqw", boxShadow: full ? "0 0.6cqw 2cqw rgba(15,23,42,.2)" : "none", border: full ? "none" : `0.3cqw solid ${t.soft}` }}>
+      <IconGoogleG style={{ fontSize: size }} />
+      <span style={{ fontSize: "3.4cqw", fontWeight: 700, color: "#5f6368" }}>Google</span>
+    </div>
+  );
+
   const panel = (width: string) => (
     <div style={{ width, background: "#fff", padding: "4cqw", borderRadius: "5cqw", boxSizing: "border-box", boxShadow: minimal ? "none" : "0 1cqw 5cqw rgba(15,23,42,.18)", border: minimal ? `0.6cqw solid ${t.main}` : undefined }}>
       <div className="[&_svg]:block [&_svg]:h-auto [&_svg]:w-full" dangerouslySetInnerHTML={{ __html: svg }} />
@@ -53,6 +62,7 @@ function Sheet({ cfg, svg }: { cfg: Cfg; svg: string }) {
       <div className="tpl-sheet w-full overflow-hidden rounded-2xl shadow-xl shadow-slate-900/10" style={{ containerType: "inline-size", aspectRatio: `${w} / ${h}`, background: full ? t.main : "#fff", color: fg }}>
         {sticker ? (
           <div style={{ height: "100%", boxSizing: "border-box", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "3cqw", padding: "6cqw", textAlign: "center", border: minimal ? `1.2cqw solid ${t.main}` : undefined, background: solid ? t.soft : undefined }}>
+            {isGoogle && <GoogleBadge size="7cqw" />}
             <p style={{ margin: 0, fontSize: "5.2cqw", fontWeight: 800, lineHeight: 1.2, color: accent, textWrap: "balance" }}>{cfg.cta}</p>
             {panel("62cqw")}
             {cfg.showName && cfg.name && <p style={{ margin: 0, fontSize: "3.8cqw", fontWeight: 700 }}>{cfg.name}</p>}
@@ -68,6 +78,7 @@ function Sheet({ cfg, svg }: { cfg: Cfg; svg: string }) {
             </div>
             <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "4cqw", padding: "5cqw 8cqw" }}>
               {panel("64cqw")}
+              {isGoogle && <GoogleBadge size="5.5cqw" />}
               <p style={{ margin: 0, fontSize: "4.6cqw", fontWeight: 700, textAlign: "center", color: accent, textWrap: "balance" }}>{cfg.cta}</p>
             </div>
             {cfg.steps && (

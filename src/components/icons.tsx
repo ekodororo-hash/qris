@@ -28,6 +28,15 @@ export const IconEye = (p: P) => <Svg {...p}><path d="M2.06 12.35a1 1 0 0 1 0-.7
 export const IconEyeOff = (p: P) => <Svg {...p}><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c4.5 0 8.4 2.6 10 7a10.7 10.7 0 0 1-1.67 2.68M6.61 6.61A10.7 10.7 0 0 0 2 12c1.6 4.4 5.5 7 10 7a10.4 10.4 0 0 0 5.39-1.61M14.12 14.12a3 3 0 1 1-4.24-4.24M2 2l20 20" /></Svg>;
 export const IconStore = (p: P) => <Svg {...p}><path d="M3 9h18l-1.5-5h-15zM5 9v11h14V9M9 20v-6h6v6" /></Svg>;
 
+export const IconGoogleG = (p: SVGProps<SVGSVGElement>) => (
+  <svg viewBox="0 0 24 24" width="1em" height="1em" aria-hidden {...p}>
+    <path fill="#4285F4" d="M23.52 12.27c0-.85-.08-1.67-.22-2.45H12v4.64h6.48a5.54 5.54 0 0 1-2.4 3.63v3h3.87c2.27-2.09 3.57-5.17 3.57-8.82Z" />
+    <path fill="#34A853" d="M12 24c3.24 0 5.96-1.07 7.95-2.9l-3.87-3c-1.08.72-2.46 1.15-4.08 1.15-3.13 0-5.78-2.11-6.73-4.96H1.28v3.11A12 12 0 0 0 12 24Z" />
+    <path fill="#FBBC05" d="M5.27 14.3A7.2 7.2 0 0 1 4.89 12c0-.8.14-1.57.38-2.3V6.59H1.28a12 12 0 0 0 0 10.82l3.99-3.11Z" />
+    <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.6 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0A12 12 0 0 0 1.28 6.59l3.99 3.11C6.22 6.86 8.87 4.75 12 4.75Z" />
+  </svg>
+);
+
 export function Logo({ className = "", dark = false }: { className?: string; dark?: boolean }) {
   return (
     <span className={`inline-flex items-center gap-2.5 ${className}`}>
