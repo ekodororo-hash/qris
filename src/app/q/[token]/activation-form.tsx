@@ -3,12 +3,13 @@ import { useActionState } from "react";
 import { activate } from "./actions";
 import { AuthShell } from "@/components/auth-shell";
 import { PasswordInput } from "@/components/password-input";
+import { AddressSearch } from "@/components/address-search";
 
 type Field = [name: string, label: string, type: string];
 const GROUPS: { title: string; fields: Field[] }[] = [
   { title: "Data bisnis", fields: [
     ["businessName", "Nama toko / bisnis", "text"], ["ownerName", "Nama pemilik", "text"], ["phone", "Nomor WhatsApp (08…)", "tel"],
-    ["address", "Alamat bisnis", "text"], ["googleMapsUrl", "Link Google Maps bisnis", "url"], ["googleReviewUrl", "Google Review URL", "url"],
+    ["address", "Alamat bisnis", "address"], ["googleReviewUrl", "Google Review URL", "url"],
   ] },
   { title: "Akun dashboard", fields: [["email", "Email (untuk login dashboard)", "email"], ["password", "Password dashboard (min. 8)", "password"]] },
   { title: "Verifikasi", fields: [["pin", "PIN aktivasi dari admin", "password"]] },
@@ -23,7 +24,9 @@ export function ActivationForm({ token }: { token: string }) {
         {GROUPS.map((g, i) => (
           <fieldset key={g.title} className="space-y-4">
             <legend className="mb-1 flex items-center gap-2 text-sm font-semibold text-slate-900"><span className="grid size-6 place-items-center rounded-full bg-brand-600 text-xs font-bold text-white">{i + 1}</span>{g.title}</legend>
-            {g.fields.map(([n, l, t]) => (
+            {g.fields.map(([n, l, t]) => t === "address" ? (
+              <div key={n}><label className="label" htmlFor="address">{l}</label><AddressSearch id="address" defaultValue={state?.values?.address ?? ""} defaultMapsUrl={state?.values?.googleMapsUrl ?? ""} /></div>
+            ) : (
               <label key={n} className="block"><span className="label">{l}</span>{t === "password"
                 ? <PasswordInput name={n} required defaultValue={state?.values?.[n] ?? ""} inputMode={n === "pin" ? "numeric" : undefined} />
                 : <input name={n} type={t} required className="input" defaultValue={state?.values?.[n] ?? ""} />}</label>

@@ -4,6 +4,7 @@ import { prisma } from "@/lib/db";
 import { requireRole } from "@/lib/session";
 import { generatePin, generatePublicToken, hashPin } from "@/lib/tokens";
 import { adminBusinessSchema } from "@/lib/validators";
+import { mapsUrlFor } from "@/lib/maps";
 
 export async function createQr(count = 1): Promise<{ url: string; pin: string; id: string }[]> {
   const s = await requireRole("ADMIN");
@@ -96,7 +97,8 @@ export async function updateBusinessByAdmin(fd: FormData): Promise<{ ok?: boolea
   if (!p.success) return { error: p.error.issues[0].message };
   const qr = await prisma.qrCode.findUnique({ where: { id: String(fd.get("id")) }, select: { businessId: true } });
   if (!qr?.businessId) return { error: "Bisnis tidak ditemukan." };
-  await prisma.business.update({ where: { id: qr.businessId }, data: p.data });
+  const { googleMapsUrl, ...rest } = p.data;
+  await prisma.business.update({ where: { id: qr.businessId }, data: { ...rest, googleMapsUrl: googleMapsUrl || mapsUrlFor(rest.businessName, rest.address) } });
   await prisma.auditLog.create({ data: { actorId: s.id, action: "BUSINESS_UPDATED", targetId: qr.businessId } });
   revalidatePath("/admin", "layout");
   return { ok: true };

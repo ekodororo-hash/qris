@@ -3,6 +3,7 @@ import { prisma } from "./db";
 import { verifyPin } from "./tokens";
 import { MAX_PIN_ATTEMPTS } from "./qr-status";
 import { activationSchema } from "./validators";
+import { mapsUrlFor } from "./maps";
 
 type Result = { ok: true } | { ok: false; error: string };
 
@@ -26,7 +27,7 @@ export async function activateQr(input: unknown): Promise<Result> {
       const claimed = await tx.qrCode.updateMany({ where: { id: qr.id, status: "UNACTIVATED" }, data: { status: "ACTIVE", activatedAt: new Date() } });
       if (claimed.count !== 1) throw new Error("ALREADY_ACTIVATED");
       const user = await tx.user.create({ data: { name: d.ownerName, email: d.email, role: "OWNER", passwordHash } });
-      const biz = await tx.business.create({ data: { ownerId: user.id, businessName: d.businessName, ownerName: d.ownerName, phone: d.phone, address: d.address, googleMapsUrl: d.googleMapsUrl, googleReviewUrl: d.googleReviewUrl } });
+      const biz = await tx.business.create({ data: { ownerId: user.id, businessName: d.businessName, ownerName: d.ownerName, phone: d.phone, address: d.address, googleMapsUrl: d.googleMapsUrl || mapsUrlFor(d.businessName, d.address), googleReviewUrl: d.googleReviewUrl } });
       await tx.qrCode.update({ where: { id: qr.id }, data: { businessId: biz.id } });
       await tx.auditLog.create({ data: { actorId: user.id, action: "QR_ACTIVATED", targetId: qr.id } });
     });

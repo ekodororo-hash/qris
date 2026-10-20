@@ -1,12 +1,13 @@
 "use client";
 import { useState, useTransition } from "react";
 import { Spinner } from "@/components/buttons";
+import { AddressSearch } from "@/components/address-search";
 import { updateBusinessByAdmin } from "../../actions";
 
 type B = { businessName: string; ownerName: string; phone: string; address: string; googleMapsUrl: string; googleReviewUrl: string };
-const FIELDS: [keyof B, string, string][] = [
+const FIELDS: [Exclude<keyof B, "googleMapsUrl">, string, string][] = [
   ["businessName", "Nama toko / bisnis", "text"], ["ownerName", "Nama pemilik", "text"], ["phone", "Nomor WhatsApp (08…)", "tel"],
-  ["address", "Alamat bisnis", "text"], ["googleMapsUrl", "Link Google Maps bisnis", "url"], ["googleReviewUrl", "Google Review URL", "url"],
+  ["address", "Alamat bisnis", "text"], ["googleReviewUrl", "Google Review URL", "url"],
 ];
 
 export function BusinessEditForm({ qrId, b }: { qrId: string; b: B }) {
@@ -22,7 +23,9 @@ export function BusinessEditForm({ qrId, b }: { qrId: string; b: B }) {
     }}>
       <input type="hidden" name="id" value={qrId} />
       <div className="grid gap-4 sm:grid-cols-2">
-        {FIELDS.map(([n, l, t]) => <label key={n} className="block"><span className="label">{l}</span><input name={n} type={t} required defaultValue={b[n]} className="input" /></label>)}
+        {FIELDS.map(([n, l, t]) => n === "address"
+          ? <div key={n} className="sm:col-span-2"><label className="label" htmlFor="admin-address">{l}</label><AddressSearch id="admin-address" defaultValue={b.address} defaultMapsUrl={b.googleMapsUrl} /></div>
+          : <label key={n} className="block"><span className="label">{l}</span><input name={n} type={t} required defaultValue={b[n]} className="input" /></label>)}
       </div>
       {msg?.error && <p role="alert" className="rounded-xl bg-rose-50 px-3.5 py-2.5 text-sm text-rose-700 ring-1 ring-rose-200">{msg.error}</p>}
       <div className="flex gap-2">
