@@ -129,16 +129,16 @@ const STEPS = ["Pindai kode QR di sisi depan menggunakan kamera ponsel.", "Lengk
 function BackBody({ token }: { token: string }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
-      <div style={{ height: "2.6cqw", background: `linear-gradient(90deg,${G.blue} 0 25%,${G.red} 25% 50%,${G.yellow} 50% 75%,${G.green} 75%)` }} />
-      <div style={{ flex: 1, display: "flex", flexDirection: "column", padding: "11cqw 9cqw 8cqw", gap: "7cqw" }}>
+      <div style={{ flex: "none", height: "2.6cqw", background: `linear-gradient(90deg,${G.blue} 0 25%,${G.red} 25% 50%,${G.yellow} 50% 75%,${G.green} 75%)` }} />
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", padding: "8cqw 9cqw 7cqw", gap: "5cqw" }}>
         <h2 style={{ margin: 0, fontSize: "6.4cqw", fontWeight: 800, color: "#202124" }}>Panduan Aktivasi</h2>
-        <ol style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: "6cqw" }}>
+        <ol style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: "4.5cqw" }}>
           {STEPS.map((x, i) => (
             <li key={i} style={{ fontSize: "4.3cqw", fontWeight: 500, lineHeight: 1.3, color: "#202124", paddingLeft: "1.15em", textIndent: "-1.15em" }}>{i + 1}. {x}</li>
           ))}
         </ol>
         <div style={{ flex: "1 0 auto", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "2cqw", textAlign: "center" }}>
-          <IconGoogleG style={{ fontSize: "15cqw" }} />
+          <IconGoogleG style={{ fontSize: "12cqw" }} />
           <p style={{ margin: 0, fontSize: "4.6cqw", fontWeight: 700, color: "#202124" }}>Google Review</p>
         </div>
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "2.4cqw", textAlign: "center" }}>
