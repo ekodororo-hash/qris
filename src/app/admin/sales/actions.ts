@@ -7,7 +7,8 @@ import { getPrice, PRICE_KEY } from "@/lib/sales";
 
 type Res = { ok?: boolean; error?: string };
 const refresh = () => revalidatePath("/admin", "layout");
-const rupiahInt = z.coerce.number({ invalid_type_error: "Nominal harus berupa angka." }).int("Nominal harus bilangan bulat.").min(1, "Nominal minimal Rp1.").max(1_000_000_000, "Nominal terlalu besar.");
+// terima "150.000", "Rp 150.000", "150000" -> semua jadi 150000 (titik/koma hanyalah pemisah ribuan)
+const rupiahInt = z.preprocess((v) => String(v ?? "").replace(/\D/g, ""), z.coerce.number().int().min(1, "Nominal minimal Rp1.").max(1_000_000_000, "Nominal terlalu besar."));
 
 export async function savePrice(fd: FormData): Promise<Res> {
   const s = await requireRole("ADMIN");

@@ -1,7 +1,7 @@
 import { prisma } from "./db";
 
 export const PRICE_KEY = "QR_PRICE";
-export const rupiah = (n: number) => "Rp" + n.toLocaleString("id-ID");
+export const rupiah = (n: number) => (n < 0 ? "-Rp" : "Rp") + String(Math.abs(Math.round(n))).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 
 // setoran wajib per QR (null = belum diatur)
 export async function getPrice(): Promise<number | null> {

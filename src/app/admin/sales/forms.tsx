@@ -4,6 +4,12 @@ import { Spinner } from "@/components/buttons";
 import { addPayment, assignQrs, createSalesperson, savePrice } from "./actions";
 
 type Res = { ok?: boolean; error?: string; assigned?: number };
+const fmt = (v: string | number) => String(v).replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+// input nominal: hanya angka, pemisah ribuan otomatis (150000 -> 150.000). Bukan type=number, supaya "150.000" tidak dibaca 150.
+function MoneyInput({ name, defaultValue, placeholder }: { name: string; defaultValue?: number | null; placeholder?: string }) {
+  return <input name={name} type="text" inputMode="numeric" autoComplete="off" required placeholder={placeholder} defaultValue={defaultValue ? fmt(defaultValue) : ""}
+    onInput={(e) => { e.currentTarget.value = fmt(e.currentTarget.value); }} className="input tabular-nums" />;
+}
 const Err = ({ m }: { m?: string }) => (m ? <p role="alert" className="rounded-xl bg-rose-50 px-3.5 py-2.5 text-sm text-rose-700 ring-1 ring-rose-200">{m}</p> : null);
 
 // pola umum: kirim FormData ke server action, tampilkan error / pesan sukses, kosongkan form bila berhasil
@@ -28,7 +34,7 @@ export function PriceForm({ current }: { current: number | null }) {
   return (
     <form onSubmit={f.onSubmit} className="space-y-3">
       <label className="block"><span className="label">Setoran wajib per QR (Rp)</span>
-        <input name="price" type="number" inputMode="numeric" min={1} step={1} required defaultValue={current ?? ""} placeholder="mis. 100000" className="input" /></label>
+        <MoneyInput name="price" defaultValue={current} placeholder="mis. 100.000" /></label>
       <p className="text-xs text-slate-500">Harga dikunci saat QR diserahkan ke sales. Mengubahnya hanya berlaku untuk serah terima berikutnya.</p>
       <Err m={f.msg?.error} />
       {f.msg?.ok && <p className="text-sm text-emerald-700">{f.msg.ok}</p>}
@@ -72,7 +78,7 @@ export function PaymentForm({ salespersonId, today }: { salespersonId: string; t
       <input type="hidden" name="salespersonId" value={salespersonId} />
       <div className="grid gap-3 sm:grid-cols-2">
         <label className="block"><span className="label">Jumlah setoran (Rp)</span>
-          <input name="amount" type="number" inputMode="numeric" min={1} step={1} required className="input" /></label>
+          <MoneyInput name="amount" placeholder="mis. 100.000" /></label>
         <label className="block"><span className="label">Tanggal</span>
           <input name="paidAt" type="date" required defaultValue={today} className="input" /></label>
       </div>
