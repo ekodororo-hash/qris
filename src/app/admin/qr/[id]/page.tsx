@@ -19,6 +19,7 @@ export default async function QrDetail({ params }: { params: Promise<{ id: strin
       <div className="card flex flex-col items-center gap-4 sm:flex-row">
         <div className="w-56 shrink-0" dangerouslySetInnerHTML={{ __html: svg }} />
         <div className="space-y-2 text-sm"><p className="break-all font-mono">{url}</p><p>Status: <b>{qr.status}</b> · Scan: {qr._count.scanEvents}</p>
+          {qr.status === "UNACTIVATED" && qr.pin && <p className="print:hidden">PIN aktivasi: <b className="font-mono text-base">{qr.pin}</b></p>}
           <div className="flex flex-wrap gap-2 print:hidden"><a className="btn-ghost" href={`/api/qr/download?id=${qr.id}&fmt=png`}>PNG</a><a className="btn-ghost" href={`/api/qr/download?id=${qr.id}&fmt=svg`}>SVG</a><PrintButton /><CopyButton text={url} /></div></div>
       </div>
       {b && <div className="card space-y-1 text-sm print:hidden"><h2 className="font-semibold">{b.businessName}</h2><p>Pemilik: {b.ownerName} · {b.phone}</p><p>{b.address}</p><p className="break-all">Review: {b.googleReviewUrl}</p></div>}

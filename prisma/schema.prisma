@@ -59,6 +59,7 @@ model QrCode {
   id           String      @id @default(cuid())
   publicToken  String      @unique            // di URL /q/[token]; tidak pernah berubah
   pinHash      String                          // bcrypt dari PIN aktivasi
+  pin          String?                         // PIN aktivasi, terlihat admin selama QR belum aktif
   businessId   String?     @unique             // unik: 1 QR = 1 bisnis
   business     Business?   @relation(fields: [businessId], references: [id])
   status       QrStatus    @default(UNACTIVATED)
