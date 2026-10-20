@@ -4,7 +4,9 @@ import { prisma } from "@/lib/db";
 import { requireRole } from "@/lib/session";
 import { PageHeader } from "@/components/page-header";
 import { AUDIT_LABEL } from "@/lib/audit";
+import type { QrStatusKey } from "@/lib/qr-status";
 import { AuditFilter } from "./audit-filter";
+import { QrTokenLink } from "./qr-token-link";
 
 const PER_PAGE = 50;
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
@@ -41,7 +43,7 @@ export default async function AuditPage({ searchParams }: { searchParams: Promis
   const ids = [...new Set(rows.map((r) => r.targetId).filter((x): x is string => !!x))];
   const qrs = ids.length ? await prisma.qrCode.findMany({
     where: { OR: [{ id: { in: ids } }, { businessId: { in: ids } }] },
-    select: { id: true, publicToken: true, businessId: true, business: { select: { businessName: true } } },
+    select: { id: true, publicToken: true, status: true, pin: true, businessId: true, activatedAt: true, failedPinAttempts: true, business: { select: { businessName: true, ownerName: true, phone: true, address: true, googleReviewUrl: true } } },
   }) : [];
   const sales = ids.length ? await prisma.salesperson.findMany({ where: { id: { in: ids } }, select: { id: true, name: true } }) : [];
   const salesById = new Map(sales.map((x) => [x.id, x.name]));
@@ -82,7 +84,7 @@ export default async function AuditPage({ searchParams }: { searchParams: Promis
                     <td className="px-3 py-3.5">{r.actor ? <><p className="font-medium text-slate-800">{r.actor.name}</p><p className="text-xs text-slate-500">{r.actor.email}</p></> : <span className="text-slate-300">—</span>}</td>
                     <td className="px-3 py-3.5 font-medium text-slate-800">{AUDIT_LABEL[r.action] ?? r.action}</td>
                     <td className="px-5 py-3.5">
-                      {t ? <><Link href={`/admin/qr/${t.id}`} className="font-mono text-[13px] font-medium text-brand-600 hover:underline">{t.publicToken}</Link>{t.business && <p className="text-xs text-slate-500">{t.business.businessName}</p>}</>
+                      {t ? <><QrTokenLink row={{ id: t.id, publicToken: t.publicToken, status: t.status as QrStatusKey, pin: t.pin, businessId: t.businessId, activatedAt: t.activatedAt, failedPinAttempts: t.failedPinAttempts, business: t.business }} />{t.business && <p className="text-xs text-slate-500">{t.business.businessName}</p>}</>
                         : salesName ? <Link href={`/admin/sales/${r.targetId}`} className="text-sm font-medium text-brand-600 hover:underline">Sales: {salesName}</Link>
                         : r.targetId ? <span className="text-xs text-slate-400">{r.action.startsWith("SALES_") || r.action.startsWith("PAYMENT_") ? "Sales sudah dihapus" : "QR sudah dihapus"}</span> : <span className="text-slate-300">—</span>}
                     </td>

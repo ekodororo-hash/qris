@@ -31,7 +31,6 @@ export default async function SalesDetail({ params }: { params: Promise<{ id: st
   const t = totals.get(id) ?? { held: 0, sold: 0, owed: 0, paid: 0 };
   const balance = t.owed - t.paid;
   const today = new Date().toLocaleDateString("sv-SE", { timeZone: "Asia/Jakarta" });
-  const base = process.env.NEXT_PUBLIC_APP_URL;
   const waiting = qrs.filter((q) => q.status === "UNACTIVATED" && q.pin);
   const stats = [
     { label: "QR dipegang", value: String(t.held) },
@@ -59,8 +58,8 @@ export default async function SalesDetail({ params }: { params: Promise<{ id: st
 
       <section className="card overflow-hidden p-0">
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 px-5 py-3.5">
-          <div><h2 className="text-base font-semibold">QR yang dipegang</h2><p className="text-xs text-slate-500">PIN hanya tampil untuk QR yang belum aktif. Salin daftar ini untuk dikirim ke sales.</p></div>
-          {waiting.length > 0 && <CopyButton label={`Salin ${waiting.length} QR belum aktif (URL + PIN)`} text={waiting.map((q) => `${base}/q/${q.publicToken}\t${q.pin}`).join("\n")} />}
+          <div><h2 className="text-base font-semibold">QR yang dipegang</h2><p className="text-xs text-slate-500">PIN hanya tampil untuk QR yang belum aktif. Token juga tercetak di belakang banner, jadi cocokkan token lalu pakai PIN-nya.</p></div>
+          {waiting.length > 0 && <CopyButton label={`Salin ${waiting.length} QR belum aktif (token + PIN)`} text={waiting.map((q) => `${q.publicToken} → ${q.pin}`).join("\n")} />}
         </div>
         <div className="overflow-x-auto">
           <table className="w-full min-w-[46rem] text-left text-sm">

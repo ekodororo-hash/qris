@@ -28,7 +28,7 @@ const TEMPLATES = {
 } as const;
 type TplKey = keyof typeof TEMPLATES;
 
-type Cfg = { size: SizeKey; tpl: TplKey; t: Texts };
+type Cfg = { size: SizeKey; tpl: TplKey; t: Texts; code?: string };
 
 function Wordmark({ size }: { size: string }) {
   const c = [G.blue, G.red, G.yellow, G.blue, G.green, G.red];
@@ -61,6 +61,7 @@ function Body({ cfg, svg }: { cfg: Cfg; svg: string }) {
         <Stars size="5cqw" />
         <Qr svg={svg} width="50cqw" />
         <p style={{ margin: 0, fontSize: "4.4cqw", fontWeight: 700, color: ink }}>{t.cta}</p>
+        {cfg.code && <p style={{ margin: 0, fontSize: "4.2cqw", fontWeight: 700, fontFamily: "ui-monospace, monospace", letterSpacing: "0.06em", color: "#64748b" }}>{cfg.code}</p>}
       </div>
     );
   }
@@ -122,14 +123,39 @@ function Body({ cfg, svg }: { cfg: Cfg; svg: string }) {
   );
 }
 
-function Sheet({ cfg, svg }: { cfg: Cfg; svg: string }) {
+const STEPS = ["Scan QR di sisi depan dengan kamera HP.", "Isi data bisnis, email, dan kata sandi.", "Masukkan PIN aktivasi, lalu kirim."];
+
+// Sisi belakang: token lengkap (untuk mencocokkan PIN) + cara aktivasi. PIN sengaja tidak dicetak.
+function BackBody({ token }: { token: string }) {
+  return (
+    <div style={{ ...col, height: "100%", padding: "9cqw 9cqw 7cqw", gap: "3.2cqw", justifyContent: "flex-start" }}>
+      <p style={{ margin: 0, fontSize: "3.4cqw", fontWeight: 700, letterSpacing: "0.18em", color: "#64748b" }}>KODE QR</p>
+      <div style={{ background: "#eef2ff", borderRadius: "4cqw", padding: "3.4cqw 4cqw", fontFamily: "ui-monospace, monospace", fontSize: "9.2cqw", fontWeight: 800, letterSpacing: "0.03em", lineHeight: 1.1, color: "#4338ca", whiteSpace: "nowrap" }}>{token}</div>
+      <div style={{ width: "100%", height: "0.3cqw", background: "#e2e8f0", margin: "1.5cqw 0" }} />
+      <h2 style={{ margin: 0, fontSize: "5.4cqw", fontWeight: 800 }}>Cara aktivasi</h2>
+      <ol style={{ listStyle: "none", margin: 0, padding: 0, width: "100%", display: "flex", flexDirection: "column", gap: "3.4cqw", textAlign: "left" }}>
+        {STEPS.map((x, i) => (
+          <li key={i} style={{ display: "flex", alignItems: "center", gap: "3.4cqw" }}>
+            <span style={{ flex: "none", width: "7.5cqw", height: "7.5cqw", borderRadius: "50%", background: "#4f46e5", color: "#fff", display: "grid", placeItems: "center", fontSize: "4cqw", fontWeight: 700 }}>{i + 1}</span>
+            <span style={{ fontSize: "3.9cqw", fontWeight: 500, lineHeight: 1.3, color: "#1e293b" }}>{x}</span>
+          </li>
+        ))}
+      </ol>
+      <p style={{ margin: "auto 0 0", fontSize: "3cqw", color: "#64748b", textWrap: "balance" }}>Setelah aktif, QR di sisi depan langsung mengarahkan pelanggan ke Google Review Anda.</p>
+    </div>
+  );
+}
+
+function Sheet({ cfg, svg, side = "front", token = "", breakAfter = false }: { cfg: Cfg; svg: string; side?: "front" | "back"; token?: string; breakAfter?: boolean }) {
   const { w, h } = SIZES[cfg.size];
   const { tpl } = cfg;
+  const back = side === "back";
   return (
     <>
       {/* ukuran cetak fisik; tinggi dikurangi 0,5mm agar tidak melahirkan halaman kosong */}
       <style>{`@media print{@page{size:${w}mm ${h}mm;margin:0}.tpl-sheet{width:${w}mm!important;height:${h - 0.5}mm!important;max-width:none!important;border-radius:0!important;box-shadow:none!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}}`}</style>
-      <div className="tpl-sheet relative w-full overflow-hidden rounded-2xl shadow-xl shadow-slate-900/10" style={{ containerType: "inline-size", aspectRatio: `${w} / ${h}`, background: TEMPLATES[tpl].bg, color: "#0f172a" }}>
+      <div className={`tpl-sheet relative w-full overflow-hidden rounded-2xl shadow-xl shadow-slate-900/10${back ? " ring-1 ring-slate-200 print:ring-0" : ""}${breakAfter ? " print:break-after-page" : ""}`} style={{ containerType: "inline-size", aspectRatio: `${w} / ${h}`, background: back ? "#fff" : TEMPLATES[tpl].bg, color: "#0f172a" }}>
+        {back ? <BackBody token={token} /> : (<>
         {tpl === "tepi" && (
           <>
             <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: "3.5cqw", background: STRIPE }} />
@@ -141,6 +167,7 @@ function Sheet({ cfg, svg }: { cfg: Cfg; svg: string }) {
             <Body cfg={cfg} svg={svg} />
           </div>
         </div>
+        </>)}
       </div>
     </>
   );
@@ -189,10 +216,12 @@ export function TemplateStudio({ options, initialId, owner = false }: { options:
   const [svg, setSvg] = useState("");
   const [saving, setSaving] = useState(false);
   const [saveErr, setSaveErr] = useState("");
+  const [sides, setSides] = useState<"1" | "2">("2");
   const sheetRef = useRef<HTMLDivElement>(null);
 
   const sel = options.find((o) => o.id === qrId);
   const token = sel?.publicToken;
+  const twoSided = !owner && size !== "sticker" && sides === "2";
   const t: Texts = { ...TEMPLATES[tpl].def, ...edits[tpl] };
   const setT = (k: keyof Texts, v: string) => setEdits((e) => ({ ...e, [tpl]: { ...e[tpl], [k]: v } }));
 
@@ -204,25 +233,29 @@ export function TemplateStudio({ options, initialId, owner = false }: { options:
     return () => { alive = false; };
   }, [token]);
 
-  const cfg: Cfg = { size, tpl, t };
+  const cfg: Cfg = { size, tpl, t, code: !owner && size === "sticker" && token ? token : undefined };
 
-  // simpan seluruh desain (bukan QR saja) sebagai PNG resolusi cetak 300 dpi
+  // simpan seluruh desain (bukan QR saja) sebagai PNG resolusi cetak 300 dpi; dua sisi = dua file
   async function saveImage() {
-    const node = sheetRef.current?.querySelector<HTMLElement>(".tpl-sheet");
-    if (!node || !svg) return;
+    const nodes = Array.from(sheetRef.current?.querySelectorAll<HTMLElement>(".tpl-sheet") ?? []);
+    if (!nodes.length || !svg) return;
     setSaving(true);
     setSaveErr("");
     try {
       const targetPx = (SIZES[size].w / 25.4) * 300;
-      const dataUrl = await toPng(node, {
-        pixelRatio: targetPx / node.offsetWidth,
-        backgroundColor: "#ffffff",
-        style: { borderRadius: "0", boxShadow: "none" },
-      });
-      const a = document.createElement("a");
-      a.href = dataUrl;
-      a.download = `template-${tpl}-${size}-${token}.png`;
-      a.click();
+      for (let i = 0; i < nodes.length; i++) {
+        const node = nodes[i];
+        const dataUrl = await toPng(node, {
+          pixelRatio: targetPx / node.offsetWidth,
+          backgroundColor: "#ffffff",
+          style: { borderRadius: "0", boxShadow: "none" },
+        });
+        const a = document.createElement("a");
+        a.href = dataUrl;
+        a.download = `template-${tpl}-${size}-${token}${nodes.length > 1 ? (i === 0 ? "-depan" : "-belakang") : ""}.png`;
+        a.click();
+        if (i < nodes.length - 1) await new Promise((r) => setTimeout(r, 400));
+      }
     } catch {
       setSaveErr("Gagal menyimpan gambar. Coba lagi, atau pakai Cetak template lalu simpan sebagai PDF.");
     } finally {
@@ -261,6 +294,9 @@ export function TemplateStudio({ options, initialId, owner = false }: { options:
         )}
 
         <div><span className="label">Ukuran</span><Seg value={size} onChange={setSize} options={(Object.keys(SIZES) as SizeKey[]).map((k) => ({ value: k, label: SIZES[k].label, hint: SIZES[k].hint }))} /></div>
+        {!owner && size !== "sticker" && (
+          <div><span className="label">Sisi cetak</span><Seg value={sides} onChange={setSides} options={[{ value: "1", label: "Satu sisi" }, { value: "2", label: "Dua sisi", hint: "belakang: kode & aktivasi" }]} /></div>
+        )}
         <div><span className="label">Template</span><TplPicker value={tpl} onChange={setTpl} /></div>
 
         <details className="group rounded-xl border border-slate-200 open:bg-slate-50/50">
@@ -295,9 +331,10 @@ export function TemplateStudio({ options, initialId, owner = false }: { options:
 
       <div className="rounded-2xl bg-slate-100 p-4 sm:p-8 print:bg-transparent print:p-0">
         <div ref={sheetRef} className={`mx-auto w-full print:m-0 print:max-w-none ${size === "sticker" ? "max-w-[20rem]" : "max-w-[24rem]"}`}>
-          <Sheet cfg={cfg} svg={svg} />
+          <Sheet cfg={cfg} svg={svg} breakAfter={twoSided} />
+          {twoSided && token && <div className="mt-6 print:mt-0"><Sheet cfg={cfg} svg={svg} side="back" token={token} /></div>}
         </div>
-        <p className="mt-5 text-center text-xs text-slate-500 print:hidden">Pratinjau · ukuran cetak asli {SIZES[size].hint}</p>
+        <p className="mt-5 text-center text-xs text-slate-500 print:hidden">Pratinjau · {twoSided ? "depan lalu belakang · " : ""}ukuran cetak asli {SIZES[size].hint}</p>
       </div>
     </div>
   );
