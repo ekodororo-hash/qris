@@ -48,7 +48,7 @@ export async function deleteQr(id: string) {
   const s = await requireRole("ADMIN");
   const qr = await prisma.qrCode.findUnique({ where: { id } });
   if (!qr) return;
-  // scanEvents ikut terhapus (onDelete: Cascade); bisnis terkait dihapus agar tidak yatim
+  // bisnis terkait dihapus agar tidak yatim
   await prisma.$transaction([
     prisma.qrCode.delete({ where: { id } }),
     ...(qr.businessId ? [prisma.business.delete({ where: { id: qr.businessId } })] : []),

@@ -38,7 +38,7 @@ export function QrModal({ row, onClose }: { row: QrRow; onClose: () => void }) {
         <div className="flex items-start justify-between gap-4">
           <div className="min-w-0">
             <p className="break-all font-mono text-sm font-semibold text-slate-900">{row.publicToken}</p>
-            <div className="mt-2 flex flex-wrap items-center gap-3"><StatusBadge status={row.status} /><span className="text-sm text-slate-500">{row._count.scanEvents} scan</span></div>
+            <div className="mt-2"><StatusBadge status={row.status} /></div>
           </div>
           <button type="button" className="btn-ghost btn-sm shrink-0" onClick={onClose} aria-label="Tutup"><IconClose className="size-4" /></button>
         </div>
@@ -70,7 +70,7 @@ export function QrModal({ row, onClose }: { row: QrRow; onClose: () => void }) {
         <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 pt-5">
           {confirming ? (
             <div className="w-full space-y-3 rounded-xl bg-rose-50 p-4 ring-1 ring-rose-200">
-              <p className="text-sm text-rose-800">Hapus permanen QR ini{b ? <>, bisnis <b>{b.businessName}</b>,</> : ""} beserta {row._count.scanEvents} data scan? Tindakan ini tidak bisa dibatalkan. Kalau hanya ingin menyembunyikan, pakai Arsipkan.</p>
+              <p className="text-sm text-rose-800">Hapus permanen QR ini{b ? <>, bisnis <b>{b.businessName}</b>,</> : ""}? Tindakan ini tidak bisa dibatalkan. Kalau hanya ingin menyembunyikan, pakai Arsipkan.</p>
               <div className="flex gap-2">
                 <button type="button" disabled={pending} className="btn !bg-rose-600 hover:!bg-rose-700" onClick={() => start(async () => { await deleteQr(row.id); onClose(); })}>{pending && <Spinner />}{pending ? "Menghapus…" : "Ya, hapus"}</button>
                 <button type="button" disabled={pending} className="btn-ghost" onClick={() => setConfirming(false)}>Batal</button>

@@ -18,4 +18,4 @@ pemilik scan -> isi form aktivasi (PIN dari admin) -> login dashboard.
 4. Deploy.
 
 ## Belum ada
-Reset aktivasi, OTP WhatsApp/email, halaman statistik terpisah, rate limit terdistribusi (Upstash), tes otomatis.
+Reset aktivasi, OTP WhatsApp/email, rate limit terdistribusi (Upstash), tes otomatis.

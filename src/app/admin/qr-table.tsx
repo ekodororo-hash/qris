@@ -8,7 +8,7 @@ import { QrModal } from "./qr-modal";
 
 export type QrRow = {
   id: string; publicToken: string; status: QrStatusKey; pin: string | null; businessId: string | null;
-  activatedAt: Date | null; _count: { scanEvents: number };
+  activatedAt: Date | null;
   business: { businessName: string; ownerName: string; phone: string; address: string; googleReviewUrl: string } | null;
 };
 
@@ -22,7 +22,7 @@ export function QrTable({ rows, empty = "Belum ada QR." }: { rows: QrRow[]; empt
           <thead>
             <tr className="border-b border-slate-200 bg-slate-50/80 text-xs font-semibold uppercase tracking-wide text-slate-500">
               <th className="w-12 px-5 py-3">No</th><th className="px-3 py-3">Token</th><th className="px-3 py-3">Status</th><th className="px-3 py-3">PIN</th><th className="px-3 py-3">Bisnis</th>
-              <th className="px-3 py-3 text-right">Scan</th><th className="px-3 py-3">Aktivasi</th><th className="px-5 py-3 text-right">Aksi</th>
+              <th className="px-3 py-3">Aktivasi</th><th className="px-5 py-3 text-right">Aksi</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
@@ -33,7 +33,6 @@ export function QrTable({ rows, empty = "Belum ada QR." }: { rows: QrRow[]; empt
                 <td className="px-3 py-3.5"><StatusBadge status={r.status} /></td>
                 <td className="px-3 py-3.5">{!r.businessId && r.pin ? <code className="rounded-md bg-slate-100 px-2 py-1 font-mono text-[13px] tracking-wider">{r.pin}</code> : <span className="text-slate-300">—</span>}</td>
                 <td className="px-3 py-3.5 font-medium text-slate-800">{r.business?.businessName ?? <span className="font-normal text-slate-300">—</span>}</td>
-                <td className="px-3 py-3.5 text-right tabular-nums">{r._count.scanEvents}</td>
                 <td className="px-3 py-3.5 text-slate-500">{r.activatedAt ? r.activatedAt.toLocaleDateString("id-ID") : <span className="text-slate-300">—</span>}</td>
                 <td className="px-5 py-3.5">
                   <div className="flex justify-end gap-2">
@@ -45,7 +44,7 @@ export function QrTable({ rows, empty = "Belum ada QR." }: { rows: QrRow[]; empt
                 </td>
               </tr>
             ))}
-            {rows.length === 0 && <tr><td colSpan={8} className="px-5 py-14 text-center text-slate-500">{empty}</td></tr>}
+            {rows.length === 0 && <tr><td colSpan={7} className="px-5 py-14 text-center text-slate-500">{empty}</td></tr>}
           </tbody>
         </table>
       </div>

@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 export default async function QrPage({ params }: { params: Promise<{ token: string }> }) {
   const { token } = await params;
   if (!/^[A-Za-z0-9]{8,32}$/.test(token)) notFound();
-  const qr = await prisma.qrCode.findUnique({ where: { publicToken: token }, select: { id: true, status: true, business: { select: { businessName: true, description: true, logoUrl: true } } } });
+  const qr = await prisma.qrCode.findUnique({ where: { publicToken: token }, select: { status: true, business: { select: { businessName: true, description: true, logoUrl: true } } } });
   if (!qr || qr.status === "ARCHIVED") notFound();
   if (qr.status === "DISABLED" || (qr.status === "ACTIVE" && !qr.business)) return (
     <main className="mx-auto flex min-h-dvh max-w-md flex-col items-center justify-center gap-2 p-6 text-center">
@@ -17,7 +17,6 @@ export default async function QrPage({ params }: { params: Promise<{ token: stri
     </main>);
   if (qr.status === "UNACTIVATED") return <ActivationForm token={token} />;
 
-  await prisma.scanEvent.create({ data: { qrCodeId: qr.id, eventType: "SCAN" } });
   const b = qr.business!;
   return (
     <main className="relative flex min-h-dvh flex-col items-center justify-center px-5 py-10">

@@ -1,24 +1,24 @@
 import Link from "next/link";
 import { FauxQr } from "@/components/faux-qr";
-import { IconArrowRight, IconCheck, IconPointer, IconRefresh, IconScan, IconShield, IconStar, IconStore, IconQr, Logo } from "@/components/icons";
+import { IconArrowRight, IconCheck, IconDownload, IconRefresh, IconShield, IconStar, IconStore, IconQr, Logo } from "@/components/icons";
 
 const STEPS = [
   { n: "01", title: "Admin membuat QR", desc: "Setiap QR mendapat token permanen dan PIN aktivasi yang diberikan terpisah ke pemilik bisnis." },
   { n: "02", title: "Pemilik mengaktivasi", desc: "Scan QR, isi data bisnis dan tautan Google Review, lalu masukkan PIN. Selesai dalam hitungan menit." },
-  { n: "03", title: "Cetak dan tempel", desc: "Unduh QR sebagai PNG atau SVG, taruh di meja atau kasir, dan pantau scan dari dashboard." },
+  { n: "03", title: "Cetak dan tempel", desc: "Unduh QR sebagai PNG atau SVG, lalu taruh di meja atau kasir." },
 ];
 
 const FEATURES = [
   { icon: IconQr, title: "QR sekali cetak", desc: "URL di QR tidak pernah berubah. Cetakan lama tetap berfungsi selamanya.", wide: true },
   { icon: IconRefresh, title: "Ubah kapan saja", desc: "Ganti nama toko, logo, atau tautan Google Review tanpa mencetak ulang.", wide: false },
-  { icon: IconScan, title: "Statistik scan & klik", desc: "Lihat berapa pelanggan yang scan dan lanjut ke halaman ulasan Google.", wide: false },
-  { icon: IconShield, title: "Privasi pelanggan terjaga", desc: "Kami hanya mencatat waktu scan. Tanpa IP dan tanpa data pribadi pelanggan.", wide: true },
+  { icon: IconDownload, title: "Siap cetak", desc: "Unduh QR dalam format PNG atau SVG beresolusi tinggi untuk meja, kasir, atau stiker.", wide: false },
+  { icon: IconShield, title: "Privasi pelanggan terjaga", desc: "Kami tidak mencatat data pelanggan. Tanpa IP dan tanpa data pribadi.", wide: true },
 ];
 
 const FAQ = [
   { q: "Apakah QR bisa diganti tujuannya setelah dicetak?", a: "Bisa. QR hanya menyimpan satu URL tetap. Tujuan ulasan diatur dari dashboard, jadi Anda tidak perlu mencetak ulang." },
   { q: "Apakah ulasan pelanggan dijamin bagus?", a: "Tidak. Semua pelanggan mendapat akses yang sama, dan ulasan selalu ditulis sendiri oleh pelanggan langsung di Google." },
-  { q: "Data apa yang disimpan dari pelanggan?", a: "Hanya waktu scan dan klik tombol review. Kami tidak menyimpan IP maupun data pribadi pelanggan." },
+  { q: "Data apa yang disimpan dari pelanggan?", a: "Tidak ada. Kami tidak menyimpan IP maupun data pribadi pelanggan." },
   { q: "Bagaimana cara mendapatkan QR?", a: "QR dibuat oleh admin. Pemilik bisnis menerima PIN aktivasi, lalu mengaktifkannya sendiri lewat halaman QR." },
 ];
 
@@ -40,10 +40,6 @@ function PhoneMock() {
       <div className="absolute -left-14 top-24 hidden w-32 rotate-[-6deg] rounded-2xl border border-slate-200 bg-white p-3 shadow-xl shadow-slate-900/10 sm:block">
         <FauxQr className="text-slate-900" />
         <p className="mt-2 text-center text-[10px] font-semibold text-slate-500">Scan untuk review</p>
-      </div>
-      <div className="absolute -right-10 bottom-16 hidden items-center gap-2 rounded-2xl border border-slate-200 bg-white px-3 py-2.5 shadow-xl shadow-slate-900/10 sm:flex">
-        <span className="grid size-8 place-items-center rounded-full bg-emerald-100 text-emerald-600"><IconPointer className="size-4" /></span>
-        <div><p className="text-[11px] text-slate-500">Klik ke Google</p><p className="text-sm font-bold leading-none">+ 1 hari ini</p></div>
       </div>
     </div>
   );
@@ -79,7 +75,7 @@ export default function Home() {
               <a href="#cara-kerja" className="btn-ghost px-6 py-3 text-base">Lihat cara kerja</a>
             </div>
             <ul className="mt-10 grid gap-3 text-sm text-slate-600 sm:grid-cols-2">
-              {["Tanpa cetak ulang", "Tanpa data pribadi pelanggan", "Unduh PNG & SVG", "Statistik scan dan klik"].map((t) => (
+              {["Tanpa cetak ulang", "Tanpa data pribadi pelanggan", "Unduh PNG & SVG", "Dashboard pemilik"].map((t) => (
                 <li key={t} className="flex items-center gap-2"><span className="grid size-5 place-items-center rounded-full bg-emerald-100 text-emerald-600"><IconCheck className="size-3" strokeWidth={3} /></span>{t}</li>
               ))}
             </ul>
