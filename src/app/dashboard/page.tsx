@@ -21,9 +21,9 @@ export default async function Dashboard() {
         {b.logoUrl
           ? /* eslint-disable-next-line @next/next/no-img-element */ <img src={b.logoUrl} alt="" className="size-12 shrink-0 rounded-xl object-cover ring-1 ring-slate-200" />
           : <span className="grid size-12 shrink-0 place-items-center rounded-xl bg-slate-100 text-slate-400"><IconStore className="size-6" /></span>}
-        <div className="min-w-0">
+        <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1">
           <h1 className="truncate text-xl font-bold tracking-tight sm:text-2xl">{b.businessName}</h1>
-          <div className="mt-1"><StatusBadge status={qr.status as QrStatusKey} /></div>
+          <StatusBadge status={qr.status as QrStatusKey} />
         </div>
       </div>
 
@@ -36,7 +36,7 @@ export default async function Dashboard() {
               <p className="mt-1 truncate text-sm text-slate-500" title={url}>{url}</p>
             </div>
             <div className="grid grid-cols-2 gap-2">
-              <a className="btn" href={`/api/qr/download?id=${qr.id}&fmt=png`}><IconDownload className="size-4" />Unduh PNG</a>
+              <a className="btn-ghost" href={`/api/qr/download?id=${qr.id}&fmt=png`}><IconDownload className="size-4" />Unduh PNG</a>
               <a className="btn-ghost" href={`/api/qr/download?id=${qr.id}&fmt=svg`}><IconDownload className="size-4" />Unduh SVG</a>
               <a className="btn-ghost" href={url} target="_blank" rel="noreferrer"><IconExternal className="size-4" />Lihat halaman</a>
               <CopyButton text={url} label="Salin tautan" className="btn-ghost w-full" />
@@ -50,7 +50,7 @@ export default async function Dashboard() {
           <h2 className="text-base font-semibold">Banner & poster siap cetak</h2>
           <p className="mt-1 text-sm text-slate-500">Pasang QR di kartu meja, poster, atau stiker dengan desain yang sudah jadi.</p>
         </div>
-        <Link href="/dashboard/banner" className="btn shrink-0"><IconPrinter className="size-4" />Buat banner</Link>
+        <Link href="/dashboard/banner" className="btn-ghost shrink-0"><IconPrinter className="size-4" />Buat banner</Link>
       </section>
 
       <SettingsForm b={b} />
