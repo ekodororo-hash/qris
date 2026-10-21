@@ -4,9 +4,9 @@ import { usePathname } from "next/navigation";
 import { IconClose, IconDownload } from "./icons";
 
 type InstallEvent = Event & { prompt: () => Promise<void>; userChoice: Promise<{ outcome: "accepted" | "dismissed" }> };
-type Ctx = { canInstall: boolean; installed: boolean; hasPrompt: boolean; ios: boolean; install: () => Promise<void> };
+type Ctx = { canInstall: boolean; ios: boolean; install: () => Promise<void> };
 
-const InstallCtx = createContext<Ctx>({ canInstall: false, installed: false, hasPrompt: false, ios: false, install: async () => {} });
+const InstallCtx = createContext<Ctx>({ canInstall: false, ios: false, install: async () => {} });
 export const useInstall = () => useContext(InstallCtx);
 
 const isStandalone = () =>
@@ -46,7 +46,7 @@ export function InstallProvider({ children }: { children: React.ReactNode }) {
   const showBanner = canInstall && !dismissed && !path.startsWith("/q/") && !path.startsWith("/login");
 
   return (
-    <InstallCtx.Provider value={{ canInstall, installed, hasPrompt: !!evt, ios, install }}>
+    <InstallCtx.Provider value={{ canInstall, ios, install }}>
       {children}
       {showBanner && (
         <div role="dialog" aria-label="Instal aplikasi" className="fixed inset-x-3 bottom-3 z-50 mx-auto max-w-md print:hidden">
@@ -58,7 +58,7 @@ export function InstallProvider({ children }: { children: React.ReactNode }) {
 }
 
 // kartu instal (tampilan sama untuk kotak ajakan dan untuk tombol permanen di halaman login)
-function InstallCard({ ios, desc, onInstall, onClose }: { ios: boolean; desc?: string; onInstall: () => void; onClose?: () => void }) {
+function InstallCard({ ios, onInstall, onClose }: { ios: boolean; onInstall: () => void; onClose?: () => void }) {
   return (
     <div className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white p-3.5 shadow-xl shadow-slate-900/10">
       {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -66,7 +66,7 @@ function InstallCard({ ios, desc, onInstall, onClose }: { ios: boolean; desc?: s
       <div className="min-w-0 flex-1">
         <p className="text-sm font-semibold text-slate-900">Instal ReviewQR</p>
         <p className="text-xs leading-snug text-slate-500">
-          {desc ?? (ios ? "Ketuk tombol Bagikan, lalu pilih “Tambah ke Layar Utama”." : "Buka lebih cepat dari layar utama, tanpa mengetik alamat.")}
+          {ios ? "Ketuk tombol Bagikan, lalu pilih “Tambah ke Layar Utama”." : "Buka lebih cepat dari layar utama, tanpa mengetik alamat."}
         </p>
       </div>
       {!ios && <button type="button" onClick={onInstall} className="btn btn-sm shrink-0"><IconDownload className="size-3.5" />Instal</button>}
@@ -75,17 +75,10 @@ function InstallCard({ ios, desc, onInstall, onClose }: { ios: boolean; desc?: s
   );
 }
 
-// kartu instal permanen (halaman login): selalu tampil selama belum dibuka sebagai aplikasi terpasang.
-// Kalau browser memberi sinyal instal, tombol langsung memasang; kalau tidak, tombol menampilkan petunjuk manual.
+// kartu instal di halaman login: sama seperti banner tapi tanpa tombol X (tidak bisa ditutup).
+// Tampil hanya saat browser memberi sinyal instal; hilang kalau aplikasi sudah terpasang.
 export function InstallButton() {
-  const { installed, ios, hasPrompt, install } = useInstall();
-  const [manual, setManual] = useState(false);
-  if (installed) return null;
-  return (
-    <InstallCard
-      ios={ios}
-      desc={manual ? "Buka menu browser (⋮), lalu pilih “Instal aplikasi” atau “Tambahkan ke layar utama”." : undefined}
-      onInstall={() => (hasPrompt ? install() : setManual(true))}
-    />
-  );
+  const { canInstall, ios, install } = useInstall();
+  if (!canInstall) return null;
+  return <InstallCard ios={ios} onInstall={install} />;
 }
