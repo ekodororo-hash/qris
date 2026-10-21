@@ -5,11 +5,10 @@ import { requireRole } from "@/lib/session";
 import { PageHeader } from "@/components/page-header";
 import { CopyButton, SubmitButton } from "@/components/buttons";
 import { IconArrowLeft } from "@/components/icons";
-import { StatusBadge } from "@/components/status-badge";
-import type { QrStatusKey } from "@/lib/qr-status";
 import { rupiah, salesTotals } from "@/lib/sales";
-import { deletePayment, unassignQr } from "../actions";
+import { deletePayment } from "../actions";
 import { AssignForm, PaymentForm } from "../forms";
+import { SalesQrTable } from "./qr-table-modal";
 
 const fmtDate = (d: Date) => d.toLocaleDateString("id-ID", { timeZone: "Asia/Jakarta", dateStyle: "medium" });
 
@@ -24,7 +23,11 @@ export default async function SalesDetail({ params }: { params: Promise<{ id: st
     prisma.payment.findMany({ where: { salespersonId: id }, orderBy: [{ paidAt: "desc" }, { createdAt: "desc" }], take: 200 }),
     prisma.qrCode.findMany({
       where: { salespersonId: id }, orderBy: { assignedAt: "desc" }, take: 500,
-      select: { id: true, publicToken: true, status: true, pin: true, activatedAt: true, assignedAt: true, price: true, business: { select: { businessName: true } } },
+      select: {
+        id: true, publicToken: true, status: true, pin: true, businessId: true, failedPinAttempts: true,
+        activatedAt: true, assignedAt: true, price: true,
+        business: { select: { businessName: true, ownerName: true, phone: true, address: true, googleReviewUrl: true } },
+      },
     }),
     prisma.qrCode.count({ where: { status: "UNACTIVATED", salespersonId: null, businessId: null } }),
   ]);
@@ -61,33 +64,7 @@ export default async function SalesDetail({ params }: { params: Promise<{ id: st
           <div><h2 className="text-base font-semibold">QR yang dipegang</h2><p className="text-xs text-slate-500">PIN hanya tampil untuk QR yang belum aktif. Token juga tercetak di belakang banner, jadi cocokkan token lalu pakai PIN-nya.</p></div>
           {waiting.length > 0 && <CopyButton label={`Salin ${waiting.length} QR belum aktif (token + PIN)`} text={waiting.map((q) => `${q.publicToken} → ${q.pin}`).join("\n")} />}
         </div>
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[46rem] text-left text-sm">
-            <thead>
-              <tr className="border-b border-slate-200 bg-slate-50/80 text-xs font-semibold uppercase tracking-wide text-slate-500">
-                <th className="px-5 py-3">Token</th><th className="px-3 py-3">Status</th><th className="px-3 py-3">PIN</th><th className="px-3 py-3">Bisnis</th>
-                <th className="px-3 py-3">Diserahkan</th><th className="px-3 py-3">Diaktivasi</th><th className="px-3 py-3 text-right">Setoran</th><th className="px-5 py-3 text-right">Aksi</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100">
-              {qrs.map((q) => (
-                <tr key={q.id} className="transition hover:bg-slate-50/70">
-                  <td className="px-5 py-3.5"><Link href={`/admin/qr/${q.id}`} className="font-mono text-[13px] font-medium text-brand-600 hover:underline">{q.publicToken}</Link></td>
-                  <td className="px-3 py-3.5"><StatusBadge status={q.status as QrStatusKey} /></td>
-                  <td className="px-3 py-3.5">{q.status === "UNACTIVATED" && q.pin ? <code className="rounded-md bg-slate-100 px-2 py-1 font-mono text-[13px] tracking-wider">{q.pin}</code> : <span className="text-slate-300">—</span>}</td>
-                  <td className="px-3 py-3.5 text-slate-800">{q.business?.businessName ?? <span className="text-slate-300">—</span>}</td>
-                  <td className="px-3 py-3.5 text-slate-500">{q.assignedAt ? fmtDate(q.assignedAt) : "—"}</td>
-                  <td className="px-3 py-3.5 text-slate-500">{q.activatedAt ? fmtDate(q.activatedAt) : <span className="text-slate-300">—</span>}</td>
-                  <td className="px-3 py-3.5 text-right tabular-nums">{q.activatedAt ? rupiah(q.price ?? 0) : <span className="text-slate-300">—</span>}</td>
-                  <td className="px-5 py-3.5 text-right">
-                    {q.status === "UNACTIVATED" && <form action={unassignQr}><input type="hidden" name="id" value={q.id} /><SubmitButton className="btn-ghost btn-sm" pendingText="Menarik…">Tarik kembali</SubmitButton></form>}
-                  </td>
-                </tr>
-              ))}
-              {qrs.length === 0 && <tr><td colSpan={8} className="px-5 py-12 text-center text-slate-500">Belum ada QR yang diserahkan ke sales ini.</td></tr>}
-            </tbody>
-          </table>
-        </div>
+        <SalesQrTable qrs={qrs} />
       </section>
 
       <section className="card overflow-hidden p-0">
