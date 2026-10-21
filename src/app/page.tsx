@@ -67,7 +67,7 @@ export default function Home() {
         </div>
         <div className="mx-auto grid max-w-6xl items-center gap-16 px-5 pb-24 pt-16 lg:grid-cols-[1.1fr_0.9fr] lg:pt-24">
           <div>
-            <span className="inline-flex items-center gap-2 rounded-full border border-brand-200 bg-white/80 px-3 py-1 text-xs font-semibold text-brand-700 shadow-sm"><span className="size-1.5 rounded-full bg-brand-500" />QR permanen untuk ulasan Google</span>
+            <span className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-white/80 px-3 py-1 text-xs font-semibold text-emerald-700 shadow-sm"><span className="size-1.5 rounded-full bg-emerald-500" />QR permanen untuk ulasan Google</span>
             <h1 className="mt-6 text-balance text-4xl font-extrabold leading-[1.08] tracking-tight sm:text-6xl">Satu QR untuk <span className="bg-gradient-to-r from-brand-600 to-violet-500 bg-clip-text text-transparent">semua ulasan</span> bisnis Anda.</h1>
             <p className="mt-6 max-w-xl text-lg leading-relaxed text-slate-600">Cetak sekali, tempel di meja atau kasir. Ubah nama bisnis atau tautan ulasan kapan saja tanpa mengganti QR. Ulasan selalu ditulis sendiri oleh pelanggan di Google.</p>
             <div className="mt-9 flex flex-wrap items-center gap-3">
