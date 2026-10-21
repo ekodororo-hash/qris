@@ -18,7 +18,7 @@ export function EmailForm({ email }: { email: string }) {
         <h2 className="text-base font-semibold">Email</h2>
         <p className="mt-0.5 text-sm text-slate-500">Email ini dipakai untuk masuk. Saat ini: <b className="text-slate-700">{email}</b></p>
       </div>
-      <label className="block"><span className="label">Email baru</span><input name="email" type="email" required autoComplete="email" className="input" /></label>
+      <label className="block"><span className="label">Email baru</span><input name="email" type="email" required autoComplete="email" className="input" defaultValue={s?.values?.email ?? ""} /></label>
       <label className="block"><span className="label">Kata sandi saat ini</span><PasswordInput name="password" required /></label>
       <Msg s={s} ok="Email berhasil diubah." />
       <button className="btn" disabled={pending}>{pending ? "Menyimpan…" : "Ubah email"}</button>
@@ -36,8 +36,8 @@ export function PasswordForm() {
       </div>
       <label className="block"><span className="label">Kata sandi saat ini</span><PasswordInput name="current" required /></label>
       <div className="grid gap-4 sm:grid-cols-2">
-        <label className="block"><span className="label">Kata sandi baru</span><PasswordInput name="next" required /></label>
-        <label className="block"><span className="label">Ulangi kata sandi baru</span><PasswordInput name="confirm" required /></label>
+        <label className="block"><span className="label">Kata sandi baru</span><PasswordInput name="next" required defaultValue={s?.values?.next ?? ""} /></label>
+        <label className="block"><span className="label">Ulangi kata sandi baru</span><PasswordInput name="confirm" required defaultValue={s?.values?.confirm ?? ""} /></label>
       </div>
       <Msg s={s} ok="Kata sandi berhasil diubah." />
       <button className="btn" disabled={pending}>{pending ? "Menyimpan…" : "Ubah kata sandi"}</button>
