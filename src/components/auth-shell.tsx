@@ -3,7 +3,7 @@ import { Logo } from "./icons";
 
 export function AuthShell({ title, desc, children, wide = false, noLogo = false }: { title: string; desc?: string; children: React.ReactNode; wide?: boolean; noLogo?: boolean }) {
   return (
-    <main className="relative flex min-h-dvh flex-col items-center justify-center px-5 py-6 sm:py-8">
+    <main className="relative flex min-h-dvh flex-col items-center px-5 pb-10 pt-20 sm:pt-28">
       <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-80 bg-gradient-to-b from-brand-100/70 to-transparent" />
       {!noLogo && <Link href="/" className="mb-5"><Logo /></Link>}
       <div className={`w-full ${wide ? "max-w-2xl" : "max-w-sm"}`}>
