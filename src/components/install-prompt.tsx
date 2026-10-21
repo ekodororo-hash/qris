@@ -26,11 +26,15 @@ export function InstallProvider({ children }: { children: React.ReactNode }) {
     if ("serviceWorker" in navigator && process.env.NODE_ENV === "production") navigator.serviceWorker.register("/sw.js").catch(() => {});
     if (isStandalone()) { setInstalled(true); return; }
     if (isIos()) { setIos(true); return; }
-    const onPrompt = (e: Event) => { e.preventDefault(); setEvt(e as InstallEvent); };
+    // sinyal instal ditangkap lebih awal oleh skrip kecil di <head> (lihat layout.tsx) dan disimpan di window.__bip,
+    // supaya tidak terlewat kalau Chrome mengirimnya sebelum komponen ini siap mendengarkan
+    const w = window as unknown as { __bip?: InstallEvent };
+    if (w.__bip) setEvt(w.__bip);
+    const onReady = () => { if (w.__bip) setEvt(w.__bip); };
     const onInstalled = () => setInstalled(true);
-    window.addEventListener("beforeinstallprompt", onPrompt);
+    window.addEventListener("bip-ready", onReady);
     window.addEventListener("appinstalled", onInstalled);
-    return () => { window.removeEventListener("beforeinstallprompt", onPrompt); window.removeEventListener("appinstalled", onInstalled); };
+    return () => { window.removeEventListener("bip-ready", onReady); window.removeEventListener("appinstalled", onInstalled); };
   }, []);
 
   const canInstall = !installed && (!!evt || ios);
