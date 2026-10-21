@@ -3,7 +3,7 @@
 ## Jalankan lokal
 npm install
 cp .env.example .env        # isi DATABASE_URL, AUTH_SECRET, SEED_ADMIN_*
-npx prisma migrate dev --name init   # buat & commit folder prisma/migrations
+npx prisma migrate dev              # terapkan semua migrasi di prisma/migrations
 npm run db:seed
 npm run dev
 
@@ -14,62 +14,28 @@ pemilik scan -> isi form aktivasi (PIN dari admin) -> login dashboard.
 ## Deploy Vercel
 1. Push ke GitHub, import di Vercel.
 2. Env: DATABASE_URL, AUTH_SECRET, NEXT_PUBLIC_APP_URL (domain Vercel).
-3. Migrasi produksi (sekali, dari lokal): DATABASE_URL=<prod> npx prisma migrate deploy, lalu db:seed.
-4. Deploy.
+3. Tambahkan env DIRECT_URL juga di Vercel (dipakai saat build untuk migrasi).
+4. Deploy. Migrasi di prisma/migrations dijalankan otomatis saat build (prisma migrate deploy).
 
 ## Sales & setoran
 Admin > Sales: atur setoran wajib per QR, tambah nama sales (tanpa login), serahkan QR ke sales (PIN tampil di halaman sales untuk QR yang belum aktif), catat setoran.
 QR berstatus aktivasi = terjual -> sales wajib setor sebesar harga yang dikunci saat serah terima. Sisa = wajib setor - total setoran.
 
-### WAJIB sebelum deploy fitur Sales (tanpa terminal)
-Kode Sales membaca tabel/kolom baru. Kalau kode ter-deploy sebelum DB diubah, halaman Daftar QR dan Ringkasan error.
-Urutan: (1) jalankan SQL di bawah di SQL Editor dashboard database (Supabase/Neon), klik Run; (2) baru push ke GitHub (Vercel deploy otomatis).
-SQL hanya menambah, tidak menghapus/mengubah data lama. Cukup dijalankan SEKALI (jalankan dua kali akan error "already exists", abaikan).
-Kalau pakai terminal: `npx prisma db push` (hasilnya sama).
+## Migrasi database (Prisma)
+Setiap perubahan struktur database dicatat sebagai folder di `prisma/migrations/<tanggal>_<nama>/migration.sql`.
+Saat build di Vercel, `prisma migrate deploy` menjalankan migrasi yang belum pernah dijalankan, lalu `next build`.
+Jadi urutan "SQL dulu baru push" tidak perlu lagi: cukup push ke GitHub.
 
-```sql
-CREATE TABLE "Salesperson" (
-  "id" TEXT NOT NULL,
-  "name" TEXT NOT NULL,
-  "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  CONSTRAINT "Salesperson_pkey" PRIMARY KEY ("id")
-);
+Mengubah struktur database:
+1. Ubah `prisma/schema.prisma`.
+2. Buat migrasinya dari terminal: `npx prisma migrate dev --name nama_perubahan` (menghasilkan folder migrasi baru).
+3. Commit folder `prisma/migrations/` bersama perubahan schema, push. Vercel menerapkannya saat build.
 
-CREATE TABLE "Payment" (
-  "id" TEXT NOT NULL,
-  "salespersonId" TEXT NOT NULL,
-  "amount" INTEGER NOT NULL,
-  "paidAt" TIMESTAMP(3) NOT NULL,
-  "note" TEXT,
-  "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  CONSTRAINT "Payment_pkey" PRIMARY KEY ("id")
-);
+Tanpa terminal: tulis sendiri `prisma/migrations/<YYYYMMDDHHMMSS>_nama/migration.sql` berisi SQL perubahan,
+upload ke GitHub bersama perubahan schema. Jangan mengubah isi migrasi yang sudah pernah dijalankan.
 
-CREATE TABLE "Setting" (
-  "key" TEXT NOT NULL,
-  "value" TEXT NOT NULL,
-  CONSTRAINT "Setting_pkey" PRIMARY KEY ("key")
-);
-
-ALTER TABLE "QrCode"
-  ADD COLUMN "salespersonId" TEXT,
-  ADD COLUMN "assignedAt" TIMESTAMP(3),
-  ADD COLUMN "price" INTEGER;
-
-CREATE INDEX "QrCode_salespersonId_idx" ON "QrCode"("salespersonId");
-CREATE INDEX "Payment_salespersonId_paidAt_idx" ON "Payment"("salespersonId", "paidAt");
-
-ALTER TABLE "QrCode" ADD CONSTRAINT "QrCode_salespersonId_fkey"
-  FOREIGN KEY ("salespersonId") REFERENCES "Salesperson"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-ALTER TABLE "Payment" ADD CONSTRAINT "Payment_salespersonId_fkey"
-  FOREIGN KEY ("salespersonId") REFERENCES "Salesperson"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-```
-
-### WAJIB sebelum deploy penanda "Sudah diunduh"
-Jalankan SQL ini SEKALI di SQL Editor database (atau `npx prisma db push`), baru push ke GitHub. Hanya menambah kolom.
-```sql
-ALTER TABLE "QrCode" ADD COLUMN "downloadedAt" TIMESTAMP(3);
-```
+`0_init` adalah kondisi database saat migrasi mulai dicatat. Database yang sudah ada cukup ditandai sekali
+dengan menjalankan `baseline-migrasi.sql` di SQL Editor (hanya mencatat, tidak mengubah tabel).
 
 ## Belum ada.
-Reset aktivasi, OTP WhatsApp/email, rate limit terdistribusi (Upstash), tes otomatis.
+Lupa/ganti password, OTP WhatsApp/email, rate limit terdistribusi (Upstash), tes otomatis.

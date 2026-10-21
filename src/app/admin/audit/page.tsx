@@ -1,36 +1,24 @@
 import Link from "next/link";
-import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/db";
 import { requireRole } from "@/lib/session";
 import { PageHeader } from "@/components/page-header";
 import { AUDIT_LABEL } from "@/lib/audit";
+import { auditWhere, cleanAuditFilter } from "@/lib/audit-where";
 import type { QrStatusKey } from "@/lib/qr-status";
 import { AuditFilter } from "./audit-filter";
 import { QrTokenLink } from "./qr-token-link";
+import { DeleteAllButton, DeleteLogButton } from "./delete-buttons";
 
 const PER_PAGE = 50;
-const DATE = /^\d{4}-\d{2}-\d{2}$/;
 type SP = { q?: string; action?: string; from?: string; to?: string; page?: string };
 
 export default async function AuditPage({ searchParams }: { searchParams: Promise<SP> }) {
   await requireRole("ADMIN");
   const sp = await searchParams;
-  const q = sp.q?.trim() ?? "";
-  const action = sp.action && sp.action in AUDIT_LABEL ? sp.action : "";
-  const from = sp.from && DATE.test(sp.from) ? sp.from : "";
-  const to = sp.to && DATE.test(sp.to) ? sp.to : "";
+  const { q, action, from, to } = cleanAuditFilter(sp);
   const page = Math.max(1, Math.floor(Number(sp.page)) || 1);
-
-  const where: Prisma.AuditLogWhereInput = {};
-  if (action) where.action = action;
-  if (from || to) where.createdAt = { ...(from ? { gte: new Date(`${from}T00:00:00+07:00`) } : {}), ...(to ? { lte: new Date(`${to}T23:59:59.999+07:00`) } : {}) };
-  if (q) {
-    const found = await prisma.qrCode.findMany({
-      where: { OR: [{ publicToken: { contains: q } }, { business: { businessName: { contains: q, mode: "insensitive" } } }] },
-      select: { id: true, businessId: true }, take: 500,
-    });
-    where.targetId = { in: found.flatMap((f) => (f.businessId ? [f.id, f.businessId] : [f.id])) };
-  }
+  const where = await auditWhere({ q, action, from, to });
+  const total = await prisma.auditLog.count({ where });
 
   const logs = await prisma.auditLog.findMany({
     where, orderBy: { createdAt: "desc" }, skip: (page - 1) * PER_PAGE, take: PER_PAGE + 1,
@@ -66,12 +54,13 @@ export default async function AuditPage({ searchParams }: { searchParams: Promis
     <div className="space-y-6">
       <PageHeader title="Audit Log" desc="Riwayat aksi pada QR dan data bisnis." />
       <AuditFilter initial={{ q, action, from, to }} options={Object.entries(AUDIT_LABEL).map(([value, label]) => ({ value, label }))} />
+      <div className="flex justify-end"><DeleteAllButton filter={{ q, action, from, to }} count={total} filtered={filtered} /></div>
       <div className="card overflow-hidden p-0">
         <div className="overflow-x-auto">
           <table className="w-full min-w-[48rem] text-left text-sm">
             <thead>
               <tr className="border-b border-slate-200 bg-slate-50/80 text-xs font-semibold uppercase tracking-wide text-slate-500">
-                <th className="px-5 py-3">Waktu</th><th className="px-3 py-3">Siapa</th><th className="px-3 py-3">Aksi</th><th className="px-5 py-3">QR</th>
+                <th className="px-5 py-3">Waktu</th><th className="px-3 py-3">Siapa</th><th className="px-3 py-3">Aksi</th><th className="px-5 py-3">QR</th><th className="w-px px-3 py-3"><span className="sr-only">Hapus</span></th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
@@ -88,10 +77,11 @@ export default async function AuditPage({ searchParams }: { searchParams: Promis
                         : salesName ? <Link href={`/admin/sales/${r.targetId}`} className="text-sm font-medium text-brand-600 hover:underline">Sales: {salesName}</Link>
                         : r.targetId ? <span className="text-xs text-slate-400">{r.action.startsWith("SALES_") || r.action.startsWith("PAYMENT_") ? "Sales sudah dihapus" : "QR sudah dihapus"}</span> : <span className="text-slate-300">—</span>}
                     </td>
+                    <td className="whitespace-nowrap px-3 py-3.5 text-right"><DeleteLogButton id={r.id} /></td>
                   </tr>
                 );
               })}
-              {rows.length === 0 && <tr><td colSpan={4} className="px-5 py-14 text-center text-slate-500">{filtered ? "Tidak ada log yang cocok dengan filter." : "Belum ada log."}</td></tr>}
+              {rows.length === 0 && <tr><td colSpan={5} className="px-5 py-14 text-center text-slate-500">{filtered ? "Tidak ada log yang cocok dengan filter." : "Belum ada log."}</td></tr>}
             </tbody>
           </table>
         </div>

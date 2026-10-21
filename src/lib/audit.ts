@@ -16,4 +16,5 @@ export const AUDIT_LABEL: Record<string, string> = {
   PAYMENT_ADDED: "Setoran dicatat",
   PAYMENT_DELETED: "Setoran dihapus",
   PRICE_CHANGED: "Harga setoran diubah",
+  AUDIT_DELETED: "Log audit dihapus",
 };
