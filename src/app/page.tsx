@@ -141,12 +141,12 @@ export default function Home() {
       </section>
 
       <section className="px-5 pb-24 pt-8">
-        <div className="relative mx-auto max-w-6xl overflow-hidden rounded-3xl bg-[linear-gradient(135deg,#4285F4_0%,#EA4335_35%,#FBBC05_65%,#34A853_100%)] px-8 py-16 text-center text-white">
-          <div className="pointer-events-none absolute -right-20 -top-20 size-72 rounded-full bg-white/10 blur-3xl" />
+        <div className="relative mx-auto max-w-6xl overflow-hidden rounded-3xl border border-slate-200 bg-white px-8 py-16 text-center shadow-sm">
+          <div className="absolute inset-x-0 top-0 flex h-2"><span className="flex-1 bg-[#4285F4]" /><span className="flex-1 bg-[#EA4335]" /><span className="flex-1 bg-[#FBBC05]" /><span className="flex-1 bg-[#34A853]" /></div>
           <h2 className="relative mx-auto max-w-2xl text-balance text-3xl font-bold tracking-tight sm:text-4xl">Mulai kumpulkan ulasan Google lebih mudah hari ini.</h2>
-          <p className="relative mx-auto mt-4 max-w-lg text-white/90">Sudah punya QR dan PIN aktivasi? Scan QR untuk aktivasi, atau masuk untuk membuka dashboard.</p>
+          <p className="relative mx-auto mt-4 max-w-lg text-slate-600">Sudah punya QR dan PIN aktivasi? Scan QR untuk aktivasi, atau masuk untuk membuka dashboard.</p>
           <div className="relative mt-8 flex flex-wrap items-center justify-center gap-3">
-            <Link href="/login" className="inline-flex items-center gap-2 rounded-xl bg-white px-6 py-3 font-semibold text-[#1a73e8] shadow-lg transition hover:bg-blue-50">Masuk <IconArrowRight className="size-4" /></Link>
+            <Link href="/login" className="inline-flex items-center gap-2 rounded-xl bg-[#4285F4] px-6 py-3 font-semibold text-white shadow-lg transition hover:bg-[#1a73e8]">Masuk <IconArrowRight className="size-4" /></Link>
             <a href="https://wa.me/62895379994528" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-xl bg-[#25D366] px-6 py-3 font-semibold text-white shadow-lg transition hover:bg-[#1ebe5b]"><IconWhatsApp className="size-5" />Hubungi via WhatsApp</a>
           </div>
         </div>
