@@ -19,11 +19,14 @@ const QUAD = `linear-gradient(${G.blue},${G.blue}) 0 0/50% 50% no-repeat,linear-
 const STRIPE = `linear-gradient(${G.blue} 0 25%,${G.red} 25% 50%,${G.yellow} 50% 75%,${G.green} 75%)`;
 const RAINBOW = `linear-gradient(135deg,${G.red},${G.yellow},${G.green},${G.blue})`;
 
+const DIAG = `url("data:image/svg+xml,${encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' preserveAspectRatio='none'><rect width='100' height='100' fill='${G.red}'/><polygon points='0,48 100,34 100,56 0,72' fill='${G.green}'/><polygon points='100,34 100,76 40,62 62,50' fill='${G.yellow}'/><polygon points='0,0 100,0 100,34 0,48' fill='${G.blue}'/></svg>`)}")`;
+
 type Texts = { kicker: string; headline: string; cta: string };
 const TEMPLATES = {
   blok: { label: "Blok warna", bg: QUAD, def: { kicker: "Bantu Kami Dengan", headline: "Google Review", cta: "Scan QR" } },
   tepi: { label: "Rate", bg: "#fff", def: { kicker: "", headline: "Beri Penilaian Anda", cta: "Scan QR Code" } },
   pelangi: { label: "Pelangi", bg: RAINBOW, def: { kicker: "Jadilah Bagian Dari Cerita Kami!", headline: "Scan QR Code Ini", cta: "Beri Kami Ulasan" } },
+  diagonal: { label: "Diagonal", bg: `${DIAG} center/100% 100% no-repeat`, def: { kicker: "Beri ulasan kami di", headline: "Google", cta: "Scan untuk review" } },
   bersih: { label: "Bersih", bg: "#fff", def: { kicker: "Ulas kami di", headline: "Google", cta: "Scan untuk memberi ulasan" } },
 } as const;
 type TplKey = keyof typeof TEMPLATES;
@@ -61,6 +64,26 @@ function Body({ cfg, svg }: { cfg: Cfg; svg: string }) {
         <Stars size="5cqw" />
         <Qr svg={svg} width="50cqw" />
         <p style={{ margin: 0, fontSize: "4.4cqw", fontWeight: 700, color: ink }}>{t.cta}</p>
+      </div>
+    );
+  }
+
+  if (tpl === "diagonal") {
+    return (
+      <div style={{ ...col, height: "100%", justifyContent: "space-between", padding: "10cqw 8cqw 9cqw", color: "#fff" }}>
+        <div>
+          <p style={{ margin: 0, fontSize: "7cqw", fontWeight: 700, lineHeight: 1.1 }}>{t.kicker}</p>
+          <h2 style={{ margin: "1cqw 0 0", fontSize: "17cqw", fontWeight: 800, lineHeight: 1, letterSpacing: "-0.02em" }}>{t.headline}</h2>
+        </div>
+        <div style={{ position: "relative", marginTop: "9cqw" }}>
+          <div style={{ position: "absolute", top: "-9cqw", left: "50%", transform: "translateX(-50%)", width: "18cqw", height: "18cqw", borderRadius: "50%", background: "#fff", display: "grid", placeItems: "center", boxShadow: "0 0 0 1.4cqw rgba(255,255,255,.35)", zIndex: 1 }}>
+            <IconGoogleG style={{ fontSize: "11cqw" }} />
+          </div>
+          <div style={{ background: "#fff", borderRadius: "6cqw", padding: "9cqw 4cqw 4cqw", boxShadow: "0 3cqw 6cqw rgba(0,0,0,.2)" }}>
+            <Qr svg={svg} width="52cqw" border={false} />
+          </div>
+        </div>
+        <p style={{ margin: 0, fontSize: "5.6cqw", fontWeight: 700 }}>{t.cta}</p>
       </div>
     );
   }
@@ -167,8 +190,8 @@ function Sheet({ cfg, svg, side = "front", token = "", breakAfter = false }: { c
             <div style={{ position: "absolute", right: 0, top: 0, bottom: 0, width: "3.5cqw", background: STRIPE }} />
           </>
         )}
-        <div style={{ height: "100%", boxSizing: "border-box", padding: tpl === "blok" ? "17cqw 8cqw 8cqw" : tpl === "pelangi" ? "2.4cqw" : 0 }}>
-          <div style={{ height: "100%", boxSizing: "border-box", background: "#fff", borderRadius: tpl === "blok" ? "7cqw" : tpl === "pelangi" ? "5cqw" : 0, border: tpl === "bersih" ? "0.4cqw solid #e5e7eb" : undefined, position: "relative", overflow: tpl === "blok" ? "visible" : "hidden" }}>
+        <div style={{ height: "100%", boxSizing: "border-box", padding: tpl === "blok" ? "17cqw 8cqw 8cqw" : tpl === "pelangi" || (tpl === "diagonal" && cfg.size === "sticker") ? "2.4cqw" : 0 }}>
+          <div style={{ height: "100%", boxSizing: "border-box", background: tpl === "diagonal" && cfg.size !== "sticker" ? "transparent" : "#fff", borderRadius: tpl === "blok" ? "7cqw" : tpl === "pelangi" || (tpl === "diagonal" && cfg.size === "sticker") ? "5cqw" : 0, border: tpl === "bersih" ? "0.4cqw solid #e5e7eb" : undefined, position: "relative", overflow: tpl === "blok" ? "visible" : "hidden" }}>
             <Body cfg={cfg} svg={svg} />
           </div>
         </div>
@@ -194,15 +217,15 @@ function Seg<T extends string>({ value, onChange, options }: { value: T; onChang
 
 function TplPicker({ value, onChange }: { value: TplKey; onChange: (v: TplKey) => void }) {
   return (
-    <div className="grid grid-cols-4 gap-2">
+    <div className="grid grid-cols-5 gap-1.5">
       {(Object.keys(TEMPLATES) as TplKey[]).map((k) => (
         <button key={k} type="button" aria-pressed={value === k} onClick={() => onChange(k)}
-          className={`cursor-pointer rounded-xl border p-1.5 text-center transition ${value === k ? "border-brand-500 bg-brand-50 ring-2 ring-brand-500/15" : "border-slate-200 bg-white hover:border-slate-300"}`}>
+          className={`cursor-pointer rounded-xl border p-1 text-center transition ${value === k ? "border-brand-500 bg-brand-50 ring-2 ring-brand-500/15" : "border-slate-200 bg-white hover:border-slate-300"}`}>
           <span className="relative mx-auto block aspect-[3/4] w-full overflow-hidden rounded-md ring-1 ring-slate-200" style={{ background: TEMPLATES[k].bg, padding: k === "blok" ? "10%" : k === "pelangi" ? "6%" : 0, boxSizing: "border-box" }}>
             {k === "tepi" && <><span className="absolute inset-y-0 left-0 w-[10%]" style={{ background: STRIPE }} /><span className="absolute inset-y-0 right-0 w-[10%]" style={{ background: STRIPE }} /></>}
-            <span className="block h-full w-full bg-white" style={{ borderRadius: k === "blok" ? "18%" : k === "pelangi" ? "12%" : 0 }}>
-              <span className="mx-auto mt-[22%] block size-[22%] rounded-full" style={{ background: G.blue }} />
-              <span className="mx-auto mt-[12%] block aspect-square w-[44%] bg-slate-800" />
+            <span className={`block h-full w-full ${k === "diagonal" ? "" : "bg-white"}`} style={{ borderRadius: k === "blok" ? "18%" : k === "pelangi" ? "12%" : 0 }}>
+              <span className="mx-auto mt-[22%] block size-[22%] rounded-full" style={{ background: k === "diagonal" ? "#fff" : G.blue }} />
+              <span className={`mx-auto mt-[12%] block aspect-square w-[44%] ${k === "diagonal" ? "bg-white ring-1 ring-slate-900/20" : "bg-slate-800"}`} />
             </span>
           </span>
           <span className="mt-1 block text-[10px] font-semibold leading-tight text-slate-600">{TEMPLATES[k].label}</span>
