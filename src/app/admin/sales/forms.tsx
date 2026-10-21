@@ -1,6 +1,7 @@
 "use client";
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { Spinner } from "@/components/buttons";
+import { IconCheck } from "@/components/icons";
 import { addPayment, assignQrs, createSalesperson, savePrice } from "./actions";
 
 type Res = { ok?: boolean; error?: string; assigned?: number };
@@ -29,16 +30,48 @@ function useSubmit(run: (fd: FormData) => Promise<Res>, okText: (r: Res) => stri
   return { msg, pending, onSubmit };
 }
 
+// harga tampil read-only (jelas sudah tersimpan); ubah lewat tombol "Edit harga"
 export function PriceForm({ current }: { current: number | null }) {
-  const f = useSubmit(savePrice, () => "Harga setoran tersimpan.");
+  const [value, setValue] = useState<number | null>(current);
+  const [editing, setEditing] = useState(current == null);
+  const [msg, setMsg] = useState<{ ok?: string; error?: string } | null>(null);
+  const [pending, start] = useTransition();
+  useEffect(() => { setValue(current); }, [current]);
+  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const fd = new FormData(e.currentTarget);
+    const n = Number(String(fd.get("price") ?? "").replace(/\D/g, ""));
+    start(async () => {
+      const r = await savePrice(fd);
+      if (r.ok) { setValue(n); setEditing(false); setMsg({ ok: "Harga setoran tersimpan." }); }
+      else setMsg({ error: r.error ?? "Gagal menyimpan." });
+    });
+  };
+  const note = <p className="text-xs text-slate-500">Harga dikunci saat QR diserahkan ke sales. Mengubahnya hanya berlaku untuk serah terima berikutnya.</p>;
+
+  if (!editing && value != null) {
+    return (
+      <div className="space-y-3">
+        <div>
+          <span className="label">Setoran wajib per QR</span>
+          <p className="text-2xl font-bold tabular-nums tracking-tight text-slate-900">Rp {fmt(value)}</p>
+        </div>
+        {note}
+        {msg?.ok && <p className="flex items-center gap-2 text-sm font-medium text-emerald-700"><span className="grid size-6 place-items-center rounded-lg bg-emerald-50 ring-1 ring-emerald-200"><IconCheck className="size-3.5" /></span>{msg.ok}</p>}
+        <button type="button" className="btn-ghost" onClick={() => { setMsg(null); setEditing(true); }}>Edit harga</button>
+      </div>
+    );
+  }
   return (
-    <form onSubmit={f.onSubmit} className="space-y-3">
+    <form onSubmit={onSubmit} className="space-y-3">
       <label className="block"><span className="label">Setoran wajib per QR (Rp)</span>
-        <MoneyInput name="price" defaultValue={current} placeholder="mis. 100.000" /></label>
-      <p className="text-xs text-slate-500">Harga dikunci saat QR diserahkan ke sales. Mengubahnya hanya berlaku untuk serah terima berikutnya.</p>
-      <Err m={f.msg?.error} />
-      {f.msg?.ok && <p className="text-sm text-emerald-700">{f.msg.ok}</p>}
-      <button className="btn" disabled={f.pending}>{f.pending && <Spinner />}{f.pending ? "Menyimpan…" : "Simpan harga"}</button>
+        <MoneyInput name="price" defaultValue={value} placeholder="mis. 100.000" /></label>
+      {note}
+      <Err m={msg?.error} />
+      <div className="flex gap-2">
+        <button className="btn" disabled={pending}>{pending && <Spinner />}{pending ? "Menyimpan…" : "Simpan harga"}</button>
+        {value != null && <button type="button" className="btn-ghost" disabled={pending} onClick={() => { setMsg(null); setEditing(false); }}>Batal</button>}
+      </div>
     </form>
   );
 }
