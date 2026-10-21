@@ -4,6 +4,7 @@ import { prisma } from "@/lib/db";
 import { requireRole } from "@/lib/session";
 import { businessUpdateSchema } from "@/lib/validators";
 import { mapsUrlFor } from "@/lib/maps";
+import { toReviewLink } from "@/lib/review-link";
 
 export async function updateBusiness(_: { error?: string; ok?: boolean } | null, fd: FormData): Promise<{ error?: string; ok?: boolean }> {
   const s = await requireRole("OWNER");
@@ -13,13 +14,15 @@ export async function updateBusiness(_: { error?: string; ok?: boolean } | null,
   if (!biz) return { error: "Bisnis tidak ditemukan." };
   const { address, googleMapsUrl, googleReviewUrl, ...rest } = p.data;
   const addr = address || null;
+  let review = googleReviewUrl || null;
+  if (review) { const r = await toReviewLink(review); if (!r.ok) return { error: r.error }; review = r.url; }
   await prisma.business.update({ where: { id: biz.id }, data: {
     ...rest,
     description: rest.description || null,
     logoUrl: rest.logoUrl || null,
     address: addr,
     googleMapsUrl: addr ? googleMapsUrl || mapsUrlFor(rest.businessName, addr) : null,
-    googleReviewUrl: googleReviewUrl || null,
+    googleReviewUrl: review,
   } });
   await prisma.auditLog.create({ data: { actorId: s.id, action: "BUSINESS_UPDATED", targetId: biz.id } });
   revalidatePath("/dashboard");

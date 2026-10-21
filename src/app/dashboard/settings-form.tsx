@@ -32,8 +32,9 @@ export function SettingsForm({ b }: { b: B }) {
       </div>
       <div className="space-y-3">
         <label className="block"><span className="label">Tautan Google Review</span>
-          <input name="googleReviewUrl" type="url" placeholder="https://g.page/r/.../review" defaultValue={b.googleReviewUrl ?? ""} className="input" />
+          <input name="googleReviewUrl" type="url" placeholder="Tempel tautan Google Maps atau tautan review" defaultValue={b.googleReviewUrl ?? ""} className="input" />
         </label>
+        <p className="-mt-1 text-xs text-slate-500">Boleh tempel tautan bisnis dari Google Maps, nanti diubah otomatis jadi tautan review.</p>
         <ReviewLinkGuide defaultOpen={startOpen} />
       </div>
       {s?.error && <p role="alert" className="rounded-xl bg-rose-50 px-3.5 py-2.5 text-sm text-rose-700 ring-1 ring-rose-200">{s.error}</p>}

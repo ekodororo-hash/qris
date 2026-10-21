@@ -5,6 +5,7 @@ import { requireRole } from "@/lib/session";
 import { generatePin, generatePublicToken, hashPin } from "@/lib/tokens";
 import { adminBusinessSchema } from "@/lib/validators";
 import { mapsUrlFor } from "@/lib/maps";
+import { toReviewLink } from "@/lib/review-link";
 
 export async function createQr(count = 1): Promise<{ url: string; pin: string; id: string }[]> {
   const s = await requireRole("ADMIN");
@@ -105,7 +106,9 @@ export async function updateBusinessByAdmin(fd: FormData): Promise<{ ok?: boolea
   if (!qr?.businessId) return { error: "Bisnis tidak ditemukan." };
   const { googleMapsUrl, address, googleReviewUrl, ...rest } = p.data;
   const addr = address || null;
-  await prisma.business.update({ where: { id: qr.businessId }, data: { ...rest, address: addr, googleReviewUrl: googleReviewUrl || null, googleMapsUrl: addr ? googleMapsUrl || mapsUrlFor(rest.businessName, addr) : null } });
+  let review = googleReviewUrl || null;
+  if (review) { const r = await toReviewLink(review); if (!r.ok) return { error: r.error }; review = r.url; }
+  await prisma.business.update({ where: { id: qr.businessId }, data: { ...rest, address: addr, googleReviewUrl: review, googleMapsUrl: addr ? googleMapsUrl || mapsUrlFor(rest.businessName, addr) : null } });
   await prisma.auditLog.create({ data: { actorId: s.id, action: "BUSINESS_UPDATED", targetId: qr.businessId } });
   revalidatePath("/admin", "layout");
   return { ok: true };

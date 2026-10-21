@@ -1,10 +1,5 @@
 // Panduan mengambil tautan Google Review. Tanpa state, jadi aman dipakai di server maupun client component.
-const STEPS_PROFIL = [
-  <>Buka Profil Bisnis Google Anda di <b>komputer</b>: cari nama bisnis di Google saat masuk dengan akun pengelola, atau buka <a href="https://business.google.com" target="_blank" rel="noopener noreferrer" className="font-medium text-brand-600 underline">business.google.com</a>.</>,
-  <>Pilih <b>Baca ulasan</b> (Read reviews), lalu <b>Dapatkan lebih banyak ulasan</b> (Get more reviews). Nama tombolnya bisa sedikit berbeda, cari ikon bagikan.</>,
-  <>Klik <b>Salin</b> pada bagian tautan ulasan. Bentuknya biasanya <code className="rounded bg-slate-100 px-1 py-0.5 text-xs">https://g.page/r/…/review</code>.</>,
-  <>Tempel ke kolom <b>Tautan Google Review</b>, lalu simpan.</>,
-];
+const A = "font-medium text-brand-600 underline";
 
 export function ReviewLinkGuide({ defaultOpen = false }: { defaultOpen?: boolean }) {
   return (
@@ -15,22 +10,23 @@ export function ReviewLinkGuide({ defaultOpen = false }: { defaultOpen?: boolean
       </summary>
       <div className="space-y-4 border-t border-slate-200 px-4 py-4">
         <section>
-          <h3 className="font-semibold text-slate-900">Cara 1: lewat Profil Bisnis Google (disarankan)</h3>
+          <h3 className="font-semibold text-slate-900">Cara 1: lewat Google Maps (termudah)</h3>
           <ol className="mt-2 list-decimal space-y-1.5 pl-5">
-            {STEPS_PROFIL.map((s, i) => <li key={i}>{s}</li>)}
+            <li>Buka Google Maps, lalu cari bisnis Anda sampai halaman bisnisnya terbuka.</li>
+            <li>Di HP: tekan <b>Bagikan</b>, lalu <b>Salin</b>. Di komputer: salin tautan dari kolom alamat browser.</li>
+            <li>Tempel ke kolom <b>Tautan Google Review</b>, lalu simpan. Tautan Maps otomatis diubah jadi tautan review.</li>
           </ol>
         </section>
         <section>
-          <h3 className="font-semibold text-slate-900">Cara 2: belum punya akses pengelola Profil Bisnis</h3>
+          <h3 className="font-semibold text-slate-900">Cara 2: lewat Profil Bisnis Google</h3>
           <ol className="mt-2 list-decimal space-y-1.5 pl-5">
-            <li>Buka <a href="https://developers.google.com/maps/documentation/places/web-service/place-id" target="_blank" rel="noopener noreferrer" className="font-medium text-brand-600 underline">Google Place ID Finder</a>, cari bisnis Anda, lalu salin <b>Place ID</b> (diawali <code className="rounded bg-slate-100 px-1 py-0.5 text-xs">ChIJ</code>).</li>
-            <li>Tempelkan ke bentuk ini, ganti <code className="rounded bg-slate-100 px-1 py-0.5 text-xs">PLACE_ID</code> dengan Place ID Anda:
-              <code className="mt-1.5 block break-all rounded-lg bg-white px-3 py-2 text-xs ring-1 ring-slate-200">https://search.google.com/local/writereview?placeid=PLACE_ID</code>
-            </li>
+            <li>Buka Profil Bisnis Anda di <b>komputer</b> lewat <a href="https://business.google.com" target="_blank" rel="noopener noreferrer" className={A}>business.google.com</a>.</li>
+            <li>Pilih <b>Baca ulasan</b>, lalu <b>Dapatkan lebih banyak ulasan</b> (nama tombol bisa sedikit berbeda, cari ikon bagikan).</li>
+            <li>Klik <b>Salin</b>, lalu tempel ke kolom di atas.</li>
           </ol>
         </section>
         <p className="rounded-lg bg-white px-3 py-2.5 text-xs leading-relaxed text-slate-600 ring-1 ring-slate-200">
-          <b>Cek dulu sebelum disimpan:</b> buka tautannya di HP. Yang muncul harus formulir ulasan (pilihan bintang), bukan sekadar halaman bisnis di Google Maps.
+          <b>Cek dulu:</b> setelah disimpan, buka halaman QR Anda dan tekan tombol review. Yang muncul harus formulir ulasan (pilihan bintang).
         </p>
       </div>
     </details>
