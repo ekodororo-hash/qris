@@ -2,6 +2,7 @@
 import { redirect } from "next/navigation";
 import { activateQr } from "@/lib/activation";
 import { allow } from "@/lib/ratelimit";
+import { createSession } from "@/lib/session";
 
 export type ActivateState = { error?: string; values?: Record<string, string> } | null;
 
@@ -11,5 +12,7 @@ export async function activate(_: ActivateState, fd: FormData): Promise<Activate
   if (!(await allow("activate", 10))) return { error: "Terlalu banyak percobaan. Silakan coba lagi nanti.", values };
   const r = await activateQr(Object.fromEntries(fd));
   if (!r.ok) return { error: r.error, values };
-  redirect(`/q/${String(fd.get("token"))}/activated`);
+  // Langsung masuk ke dashboard tanpa login ulang
+  await createSession({ id: r.userId, role: "OWNER" });
+  redirect("/dashboard");
 }

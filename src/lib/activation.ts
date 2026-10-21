@@ -5,7 +5,7 @@ import { MAX_PIN_ATTEMPTS } from "./qr-status";
 import { activationSchema } from "./validators";
 import { mapsUrlFor } from "./maps";
 
-type Result = { ok: true } | { ok: false; error: string };
+type Result = { ok: true; userId: string } | { ok: false; error: string };
 
 export async function activateQr(input: unknown): Promise<Result> {
   const parsed = activationSchema.safeParse(input);
@@ -26,11 +26,13 @@ export async function activateQr(input: unknown): Promise<Result> {
   const googleMapsUrl = address ? d.googleMapsUrl || mapsUrlFor(d.businessName, address) : null;
   const googleReviewUrl = d.googleReviewUrl || null;
 
+  let userId = "";
   try {
     await prisma.$transaction(async (tx) => {
       const claimed = await tx.qrCode.updateMany({ where: { id: qr.id, status: "UNACTIVATED" }, data: { status: "ACTIVE", activatedAt: new Date() } });
       if (claimed.count !== 1) throw new Error("ALREADY_ACTIVATED");
       const user = await tx.user.create({ data: { name: d.ownerName, email: d.email, role: "OWNER", passwordHash } });
+      userId = user.id;
       const biz = await tx.business.create({ data: { ownerId: user.id, businessName: d.businessName, ownerName: d.ownerName, phone: d.phone, address, googleMapsUrl, googleReviewUrl } });
       await tx.qrCode.update({ where: { id: qr.id }, data: { businessId: biz.id } });
       await tx.auditLog.create({ data: { actorId: user.id, action: "QR_ACTIVATED", targetId: qr.id } });
@@ -39,5 +41,5 @@ export async function activateQr(input: unknown): Promise<Result> {
     if ((e as Error).message === "ALREADY_ACTIVATED") return { ok: false, error: "QR ini sudah diaktifkan." };
     return { ok: false, error: "Aktivasi gagal. Email mungkin sudah terdaftar atau terjadi kendala sementara. Silakan coba lagi." };
   }
-  return { ok: true };
+  return { ok: true, userId };
 }
