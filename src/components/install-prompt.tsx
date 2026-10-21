@@ -49,34 +49,35 @@ export function InstallProvider({ children }: { children: React.ReactNode }) {
     <InstallCtx.Provider value={{ canInstall, ios, install }}>
       {children}
       {showBanner && (
-        <div role="dialog" aria-label="Instal aplikasi" className="fixed inset-x-3 bottom-3 z-50 mx-auto flex max-w-md items-center gap-3 rounded-2xl border border-slate-200 bg-white p-3.5 shadow-xl shadow-slate-900/10 print:hidden">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/icon-192.png" alt="" className="size-11 shrink-0 rounded-xl" />
-          <div className="min-w-0 flex-1">
-            <p className="text-sm font-semibold text-slate-900">Instal ReviewQR</p>
-            <p className="text-xs leading-snug text-slate-500">
-              {ios ? "Ketuk tombol Bagikan, lalu pilih “Tambah ke Layar Utama”." : "Buka lebih cepat dari layar utama, tanpa mengetik alamat."}
-            </p>
-          </div>
-          {!ios && <button type="button" onClick={install} className="btn btn-sm shrink-0"><IconDownload className="size-3.5" />Instal</button>}
-          <button type="button" onClick={() => setDismissed(true)} aria-label="Tutup" className="shrink-0 rounded-lg p-1.5 text-slate-400 transition hover:bg-slate-100 hover:text-slate-600"><IconClose className="size-4" /></button>
+        <div role="dialog" aria-label="Instal aplikasi" className="fixed inset-x-3 bottom-3 z-50 mx-auto max-w-md print:hidden">
+          <InstallCard ios={ios} onInstall={install} onClose={() => setDismissed(true)} />
         </div>
       )}
     </InstallCtx.Provider>
   );
 }
 
-// tombol instal permanen: tetap ada walau kotak ajakan sudah ditutup; hilang kalau aplikasi sudah terpasang
-export function InstallButton() {
-  const { canInstall, ios, install } = useInstall();
-  const [hint, setHint] = useState(false);
-  if (!canInstall) return null;
+// kartu instal (tampilan sama untuk kotak ajakan dan untuk tombol permanen di halaman login)
+function InstallCard({ ios, onInstall, onClose }: { ios: boolean; onInstall: () => void; onClose?: () => void }) {
   return (
-    <div className="space-y-2">
-      <button type="button" className="btn-ghost w-full" onClick={() => (ios ? setHint((v) => !v) : install())}>
-        <IconDownload className="size-4" />Instal aplikasi
-      </button>
-      {ios && hint && <p className="text-center text-xs text-slate-500">Ketuk tombol Bagikan, lalu pilih “Tambah ke Layar Utama”.</p>}
+    <div className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white p-3.5 shadow-xl shadow-slate-900/10">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src="/icon-192.png" alt="" className="size-11 shrink-0 rounded-xl" />
+      <div className="min-w-0 flex-1">
+        <p className="text-sm font-semibold text-slate-900">Instal ReviewQR</p>
+        <p className="text-xs leading-snug text-slate-500">
+          {ios ? "Ketuk tombol Bagikan, lalu pilih “Tambah ke Layar Utama”." : "Buka lebih cepat dari layar utama, tanpa mengetik alamat."}
+        </p>
+      </div>
+      {!ios && <button type="button" onClick={onInstall} className="btn btn-sm shrink-0"><IconDownload className="size-3.5" />Instal</button>}
+      {onClose && <button type="button" onClick={onClose} aria-label="Tutup" className="shrink-0 rounded-lg p-1.5 text-slate-400 transition hover:bg-slate-100 hover:text-slate-600"><IconClose className="size-4" /></button>}
     </div>
   );
+}
+
+// kartu instal permanen (di halaman login): tanpa tombol tutup; hilang kalau aplikasi sudah terpasang
+export function InstallButton() {
+  const { canInstall, ios, install } = useInstall();
+  if (!canInstall) return null;
+  return <InstallCard ios={ios} onInstall={install} />;
 }
