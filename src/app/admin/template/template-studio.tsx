@@ -28,7 +28,7 @@ const TEMPLATES = {
 } as const;
 type TplKey = keyof typeof TEMPLATES;
 
-type Cfg = { size: SizeKey; tpl: TplKey; t: Texts; code?: string };
+type Cfg = { size: SizeKey; tpl: TplKey; t: Texts };
 
 function Wordmark({ size }: { size: string }) {
   const c = [G.blue, G.red, G.yellow, G.blue, G.green, G.red];
@@ -61,7 +61,6 @@ function Body({ cfg, svg }: { cfg: Cfg; svg: string }) {
         <Stars size="5cqw" />
         <Qr svg={svg} width="50cqw" />
         <p style={{ margin: 0, fontSize: "4.4cqw", fontWeight: 700, color: ink }}>{t.cta}</p>
-        {cfg.code && <p style={{ margin: 0, fontSize: "4.2cqw", fontWeight: 700, fontFamily: "ui-monospace, monospace", letterSpacing: "0.06em", color: "#64748b" }}>{cfg.code}</p>}
       </div>
     );
   }
@@ -127,6 +126,24 @@ const STEPS = ["Pindai kode QR di sisi depan menggunakan kamera ponsel.", "Lengk
 
 // Sisi belakang (gaya Google): cara aktivasi + token kecil di bawah untuk mencocokkan PIN. PIN sengaja tidak dicetak.
 function BackBody({ token }: { token: string }) {
+  return (
+      <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
+        <div style={{ flex: "none", height: "2.6cqw", background: `linear-gradient(90deg,${G.blue} 0 25%,${G.red} 25% 50%,${G.yellow} 50% 75%,${G.green} 75%)` }} />
+        <div style={{ flex: 1, display: "flex", flexDirection: "column", padding: "5cqw 7cqw 5cqw", gap: "3cqw" }}>
+          <h2 style={{ margin: 0, fontSize: "5.6cqw", fontWeight: 800, color: "#202124" }}>Panduan Aktivasi</h2>
+          <ol style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: "2.2cqw" }}>
+            {STEPS.map((x, i) => (
+              <li key={i} style={{ fontSize: "3.5cqw", fontWeight: 500, lineHeight: 1.25, color: "#202124", paddingLeft: "1.15em", textIndent: "-1.15em" }}>{i + 1}. {x}</li>
+            ))}
+          </ol>
+          <div style={{ marginTop: "auto", display: "flex", flexDirection: "column", alignItems: "center", gap: "1.2cqw", textAlign: "center", borderTop: "0.3cqw solid #e2e8f0", paddingTop: "2.4cqw" }}>
+            <p style={{ margin: 0, fontSize: "2.4cqw", fontWeight: 700, letterSpacing: "0.18em", color: "#5f6368" }}>KODE QR</p>
+            <p style={{ margin: 0, fontFamily: "ui-monospace, monospace", fontSize: "6cqw", fontWeight: 700, color: "#202124", whiteSpace: "nowrap" }}>{token}</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
       <div style={{ flex: "none", height: "2.6cqw", background: `linear-gradient(90deg,${G.blue} 0 25%,${G.red} 25% 50%,${G.yellow} 50% 75%,${G.green} 75%)` }} />
@@ -239,7 +256,7 @@ export function TemplateStudio({ options, initialId, owner = false }: { options:
     return () => { alive = false; };
   }, [token]);
 
-  const cfg: Cfg = { size, tpl, t, code: !owner && size === "sticker" && token ? token : undefined };
+  const cfg: Cfg = { size, tpl, t };
 
   // simpan seluruh desain (bukan QR saja) sebagai PNG resolusi cetak 300 dpi; dua sisi = dua file
   async function saveImage() {
