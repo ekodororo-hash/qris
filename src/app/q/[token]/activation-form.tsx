@@ -21,7 +21,7 @@ const GROUPS: { title: string; fields: Field[] }[] = [
 export function ActivationForm({ token }: { token: string }) {
   const [state, action, pending] = useActionState(activate, null);
   return (
-    <AuthShell wide noLogo title="Aktivasi QR" desc="Lengkapi data bisnis Anda untuk mengaktifkan QR. Setelah aktif, QR akan terhubung secara permanen ke bisnis Anda. Alamat dan tautan Google Review dilengkapi nanti di dashboard.">
+    <AuthShell wide noLogo title="Aktivasi QR" desc="Lengkapi data bisnis Anda untuk mengaktifkan QR.">
       <form action={action} className="card space-y-5 p-5 shadow-xl shadow-slate-900/5 sm:p-6">
         <input type="hidden" name="token" value={token} />
         {GROUPS.map((g, i) => (
