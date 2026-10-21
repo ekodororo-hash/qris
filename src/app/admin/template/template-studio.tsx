@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { toPng } from "html-to-image";
-import { IconDownload, IconGoogleG, IconPrinter, IconStar } from "@/components/icons";
+import { IconCheck, IconDownload, IconGoogleG, IconPrinter, IconStar } from "@/components/icons";
 import { StatusBadge } from "@/components/status-badge";
 import type { QrStatusKey } from "@/lib/qr-status";
 import { markDownloaded } from "../actions";
@@ -347,12 +347,13 @@ export function TemplateStudio({ options, initialId, owner = false }: { options:
         <div>
           <label className="label" htmlFor="tpl-qr">QR yang dipakai</label>
           <select id="tpl-qr" className="input" value={qrId} onChange={(e) => setQrId(e.target.value)}>
-            {options.map((o) => <option key={o.id} value={o.id}>{done[o.id] ? `✓ ${o.publicToken} · sudah diunduh` : o.publicToken}</option>)}
+            {options.map((o) => <option key={o.id} value={o.id}>{done[o.id] ? `${o.publicToken} · sudah diunduh` : o.publicToken}</option>)}
           </select>
           {sel && (
-            <p className={`mt-2 flex flex-wrap items-center justify-between gap-2 rounded-xl p-2.5 text-xs ring-1 ${done[sel.id] ? "bg-slate-100 text-slate-700 ring-slate-300" : "bg-white text-slate-500 ring-slate-200"}`}>
-              <span>{done[sel.id] ? "✓ Sudah pernah diunduh/dicetak. Hati-hati jangan dobel." : "Belum pernah diunduh/dicetak."}</span>
-              <button type="button" className="cursor-pointer font-semibold text-brand-600 hover:text-brand-700" onClick={() => mark(sel.id, !done[sel.id])}>{done[sel.id] ? "Tandai belum" : "Tandai sudah"}</button>
+            <p className={`mt-2 flex items-center gap-2.5 rounded-xl p-2.5 text-xs ring-1 ${done[sel.id] ? "bg-emerald-50 text-emerald-800 ring-emerald-200" : "bg-white text-slate-500 ring-slate-200"}`}>
+              {done[sel.id] && <span className="grid size-8 shrink-0 place-items-center rounded-xl bg-white text-emerald-600 ring-1 ring-emerald-200"><IconCheck className="size-4" /></span>}
+              <span className="min-w-0 flex-1">{done[sel.id] ? "Sudah pernah diunduh/dicetak. Hati-hati jangan dobel." : "Belum pernah diunduh/dicetak."}</span>
+              <button type="button" className="shrink-0 cursor-pointer font-semibold text-brand-600 hover:text-brand-700" onClick={() => mark(sel.id, !done[sel.id])}>{done[sel.id] ? "Tandai belum" : "Tandai sudah"}</button>
             </p>
           )}
           {sel && sel.status === "ACTIVE" && (

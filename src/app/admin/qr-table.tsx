@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { SubmitButton } from "@/components/buttons";
+import { IconCheck } from "@/components/icons";
 import { StatusBadge } from "@/components/status-badge";
 import { MAX_PIN_ATTEMPTS, type QrStatusKey } from "@/lib/qr-status";
 import { archiveQr, resetPin, toggleQr, unarchiveQr } from "./actions";
@@ -30,7 +31,7 @@ export function QrTable({ rows, empty = "Belum ada QR." }: { rows: QrRow[]; empt
             {rows.map((r, i) => (
               <tr key={r.id} className="transition hover:bg-slate-50/70">
                 <td className="px-5 py-3.5 tabular-nums text-slate-400">{i + 1}</td>
-                <td className="px-3 py-3.5"><button type="button" className="cursor-pointer font-mono text-[13px] font-medium text-brand-600 hover:underline" onClick={() => setSelectedId(r.id)}>{r.publicToken}</button>{r.downloadedAt && <span className="badge ml-2 bg-slate-100 text-slate-600 ring-slate-500/20">Sudah diunduh</span>}</td>
+                <td className="px-3 py-3.5"><button type="button" className="cursor-pointer font-mono text-[13px] font-medium text-brand-600 hover:underline" onClick={() => setSelectedId(r.id)}>{r.publicToken}</button>{r.downloadedAt && <span className="badge ml-2 gap-1 bg-emerald-50 text-emerald-700 ring-emerald-600/20"><IconCheck className="size-3" />Sudah diunduh</span>}</td>
                 <td className="px-3 py-3.5"><div className="flex flex-wrap items-center gap-1.5"><StatusBadge status={r.status} />{r.status === "UNACTIVATED" && r.failedPinAttempts >= MAX_PIN_ATTEMPTS && <span className="badge bg-rose-50 text-rose-700 ring-rose-600/20">Terkunci</span>}</div></td>
                 <td className="px-3 py-3.5">{!r.businessId && r.pin ? <code className="rounded-md bg-slate-100 px-2 py-1 font-mono text-[13px] tracking-wider">{r.pin}</code> : <span className="text-slate-300">—</span>}</td>
                 <td className="px-3 py-3.5 font-medium text-slate-800">{r.business?.businessName ?? <span className="font-normal text-slate-300">—</span>}</td>
