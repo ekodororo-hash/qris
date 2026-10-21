@@ -6,7 +6,7 @@ import { AuthShell } from "@/components/auth-shell";
 export default function LoginPage() {
   const [state, action, pending] = useActionState(login, null);
   return (
-    <AuthShell title="Selamat datang kembali" desc="Masuk sebagai admin atau pemilik bisnis.">
+    <AuthShell title="Selamat datang kembali">
       <form action={action} className="card space-y-4 p-6 shadow-xl shadow-slate-900/5">
         <label className="block"><span className="label">Email</span><input name="email" type="email" placeholder="nama@bisnis.com" required className="input" autoComplete="email" /></label>
         <label className="block"><span className="label">Password</span><input name="password" type="password" placeholder="••••••••" required className="input" autoComplete="current-password" /></label>
