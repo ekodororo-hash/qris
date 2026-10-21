@@ -40,9 +40,21 @@ export const IconGoogleG = (p: SVGProps<SVGSVGElement>) => (
 export function Logo({ className = "", dark = false }: { className?: string; dark?: boolean }) {
   return (
     <span className={`inline-flex items-center gap-2.5 ${className}`}>
-      <span className="grid size-9 place-items-center rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 text-white shadow-md shadow-brand-600/30">
-        <IconQr className="size-5" />
-      </span>
+      <svg viewBox="0 0 52 52" className="size-9 shrink-0 drop-shadow-sm" aria-hidden="true">
+        <rect x="1.5" y="1.5" width="49" height="49" rx="13" fill="#fff" />
+        <g fill="none" strokeWidth="3" pathLength={100}>
+          <rect x="1.5" y="1.5" width="49" height="49" rx="13" pathLength={100} stroke="#4285F4" strokeDasharray="25 75" strokeDashoffset="0" />
+          <rect x="1.5" y="1.5" width="49" height="49" rx="13" pathLength={100} stroke="#EA4335" strokeDasharray="25 75" strokeDashoffset="-25" />
+          <rect x="1.5" y="1.5" width="49" height="49" rx="13" pathLength={100} stroke="#FBBC05" strokeDasharray="25 75" strokeDashoffset="-50" />
+          <rect x="1.5" y="1.5" width="49" height="49" rx="13" pathLength={100} stroke="#34A853" strokeDasharray="25 75" strokeDashoffset="-75" />
+        </g>
+        <g transform="translate(12.8 12.8) scale(1.1)" fill="none" stroke="#111" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <rect width="5" height="5" x="3" y="3" rx="1" />
+          <rect width="5" height="5" x="16" y="3" rx="1" />
+          <rect width="5" height="5" x="3" y="16" rx="1" />
+          <path d="M21 16h-3a2 2 0 0 0-2 2v3M21 21v.01M12 7v3a2 2 0 0 1-2 2H7M3 12h.01M12 3h.01M12 16v.01M16 12h1M21 12v.01M12 21v-1" />
+        </g>
+      </svg>
       <span className={`text-lg font-bold tracking-tight ${dark ? "text-white" : "text-slate-900"}`}>ReviewQR</span>
     </span>
   );
