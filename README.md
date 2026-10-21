@@ -65,5 +65,5 @@ ALTER TABLE "Payment" ADD CONSTRAINT "Payment_salespersonId_fkey"
   FOREIGN KEY ("salespersonId") REFERENCES "Salesperson"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 ```
 
-## Belum ada
+## Belum ada.
 Reset aktivasi, OTP WhatsApp/email, rate limit terdistribusi (Upstash), tes otomatis.
