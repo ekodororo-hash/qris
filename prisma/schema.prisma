@@ -20,11 +20,6 @@ enum QrStatus {
   ARCHIVED
 }
 
-enum EventType {
-  SCAN
-  REVIEW_CLICK
-}
-
 model User {
   id           String     @id @default(cuid())
   name         String
@@ -70,20 +65,10 @@ model QrCode {
   assignedAt   DateTime?                       // kapan diserahkan ke sales
   downloadedAt DateTime?                       // kapan QR/template diunduh atau dicetak (penanda agar tidak dobel)
   price        Int?                            // setoran wajib per QR (rupiah), dikunci saat diserahkan
-  scanEvents   ScanEvent[]
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
   @@index([status])
   @@index([salespersonId])
-}
-
-model ScanEvent {
-  id        String    @id @default(cuid())
-  qrCodeId  String
-  qrCode    QrCode    @relation(fields: [qrCodeId], references: [id], onDelete: Cascade)
-  eventType EventType
-  createdAt DateTime  @default(now())   // tanpa IP / data pribadi pelanggan
-  @@index([qrCodeId, createdAt])
 }
 
 model AuditLog {
