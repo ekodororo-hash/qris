@@ -1,1 +1,0 @@
-ALTER TABLE "QrCode" ADD COLUMN "downloadedAt" TIMESTAMP(3);
