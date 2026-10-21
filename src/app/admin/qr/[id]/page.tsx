@@ -17,7 +17,7 @@ export default async function QrDetail({ params }: { params: Promise<{ id: strin
   const url = `${process.env.NEXT_PUBLIC_APP_URL}/q/${qr.publicToken}`;
   const svg = await QRCode.toString(url, { type: "svg", margin: 2 });
   const b = qr.business;
-  const row = (l: string, v: string) => <div><dt className="text-xs font-semibold uppercase tracking-wide text-slate-500">{l}</dt><dd className="mt-1 break-words text-sm text-slate-800">{v}</dd></div>;
+  const row = (l: string, v: string | null) => <div><dt className="text-xs font-semibold uppercase tracking-wide text-slate-500">{l}</dt><dd className="mt-1 break-words text-sm text-slate-800">{v || "—"}</dd></div>;
   return (
     <div className="space-y-6">
       <Link href="/admin/qr" className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 hover:text-slate-900 print:hidden"><IconArrowLeft className="size-4" />Kembali ke daftar</Link>
@@ -43,7 +43,7 @@ export default async function QrDetail({ params }: { params: Promise<{ id: strin
           <dl className="mt-5 grid gap-5 sm:grid-cols-2">
             {row("Pemilik", b.ownerName)}{row("Telepon", b.phone)}{row("Alamat", b.address)}{row("Link review", b.googleReviewUrl)}
           </dl>
-          <BusinessEditForm qrId={qr.id} b={{ businessName: b.businessName, ownerName: b.ownerName, phone: b.phone, address: b.address, googleMapsUrl: b.googleMapsUrl, googleReviewUrl: b.googleReviewUrl }} />
+          <BusinessEditForm qrId={qr.id} b={{ businessName: b.businessName, ownerName: b.ownerName, phone: b.phone, address: b.address ?? "", googleMapsUrl: b.googleMapsUrl ?? "", googleReviewUrl: b.googleReviewUrl ?? "" }} />
         </div>
       )}
     </div>

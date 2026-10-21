@@ -103,8 +103,9 @@ export async function updateBusinessByAdmin(fd: FormData): Promise<{ ok?: boolea
   if (!p.success) return { error: p.error.issues[0].message };
   const qr = await prisma.qrCode.findUnique({ where: { id: String(fd.get("id")) }, select: { businessId: true } });
   if (!qr?.businessId) return { error: "Bisnis tidak ditemukan." };
-  const { googleMapsUrl, ...rest } = p.data;
-  await prisma.business.update({ where: { id: qr.businessId }, data: { ...rest, googleMapsUrl: googleMapsUrl || mapsUrlFor(rest.businessName, rest.address) } });
+  const { googleMapsUrl, address, googleReviewUrl, ...rest } = p.data;
+  const addr = address || null;
+  await prisma.business.update({ where: { id: qr.businessId }, data: { ...rest, address: addr, googleReviewUrl: googleReviewUrl || null, googleMapsUrl: addr ? googleMapsUrl || mapsUrlFor(rest.businessName, addr) : null } });
   await prisma.auditLog.create({ data: { actorId: s.id, action: "BUSINESS_UPDATED", targetId: qr.businessId } });
   revalidatePath("/admin", "layout");
   return { ok: true };

@@ -10,7 +10,7 @@ import { QrModal } from "./qr-modal";
 export type QrRow = {
   id: string; publicToken: string; status: QrStatusKey; pin: string | null; businessId: string | null;
   activatedAt: Date | null; failedPinAttempts: number; downloadedAt?: Date | null;
-  business: { businessName: string; ownerName: string; phone: string; address: string; googleReviewUrl: string } | null;
+  business: { businessName: string; ownerName: string; phone: string; address: string | null; googleReviewUrl: string | null } | null;
   salesperson?: { name: string } | null;
 };
 

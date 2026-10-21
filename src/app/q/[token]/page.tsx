@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 export default async function QrPage({ params }: { params: Promise<{ token: string }> }) {
   const { token } = await params;
   if (!/^[A-Za-z0-9]{8,32}$/.test(token)) notFound();
-  const qr = await prisma.qrCode.findUnique({ where: { publicToken: token }, select: { status: true, business: { select: { businessName: true, description: true, logoUrl: true } } } });
+  const qr = await prisma.qrCode.findUnique({ where: { publicToken: token }, select: { status: true, business: { select: { businessName: true, description: true, logoUrl: true, googleReviewUrl: true } } } });
   if (!qr || qr.status === "ARCHIVED") notFound();
   if (qr.status === "DISABLED" || (qr.status === "ACTIVE" && !qr.business)) return (
     <main className="mx-auto flex min-h-dvh max-w-md flex-col items-center justify-center gap-2 p-6 text-center">
@@ -18,6 +18,13 @@ export default async function QrPage({ params }: { params: Promise<{ token: stri
   if (qr.status === "UNACTIVATED") return <ActivationForm token={token} />;
 
   const b = qr.business!;
+  if (!b.googleReviewUrl) return (
+    <main className="mx-auto flex min-h-dvh max-w-md flex-col items-center justify-center gap-2 p-6 text-center">
+      <span className="grid size-14 place-items-center rounded-2xl bg-slate-100 text-slate-400"><IconStore className="size-7" /></span>
+      <p className="mt-2 text-sm font-semibold text-slate-500">{b.businessName}</p>
+      <h1 className="text-2xl font-bold tracking-tight">Halaman review belum siap</h1>
+      <p className="text-slate-500">Pemilik bisnis sedang menyiapkan halaman ini. Silakan coba lagi nanti.</p>
+    </main>);
   return (
     <main className="relative flex min-h-dvh flex-col items-center justify-center px-5 py-10">
       <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-72 bg-gradient-to-b from-[#e8f0fe] to-transparent" />

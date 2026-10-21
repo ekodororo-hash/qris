@@ -39,11 +39,11 @@ model Business {
   businessName    String
   ownerName       String
   phone           String
-  address         String
+  address         String?
   description     String?
   logoUrl         String?
-  googleMapsUrl   String
-  googleReviewUrl String
+  googleMapsUrl   String?
+  googleReviewUrl String?
   qrCode          QrCode?
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt

@@ -6,8 +6,8 @@ type Place = { name: string; address: string; mapsUrl: string };
 
 // Kolom alamat dengan pencarian lokasi (Geoapify). Memilih hasil mengisi alamat + link Maps (hidden).
 // Kalau pencarian tidak tersedia / tidak ketemu, pengguna tetap bisa mengetik alamat manual.
-export function AddressSearch({ id, defaultValue = "", defaultMapsUrl = "", name = "address", mapsName = "googleMapsUrl" }: {
-  id: string; defaultValue?: string; defaultMapsUrl?: string; name?: string; mapsName?: string;
+export function AddressSearch({ id, defaultValue = "", defaultMapsUrl = "", name = "address", mapsName = "googleMapsUrl", required = true }: {
+  id: string; required?: boolean; defaultValue?: string; defaultMapsUrl?: string; name?: string; mapsName?: string;
 }) {
   const [value, setValue] = useState(defaultValue);
   const [mapsUrl, setMapsUrl] = useState(defaultMapsUrl);
@@ -63,7 +63,7 @@ export function AddressSearch({ id, defaultValue = "", defaultMapsUrl = "", name
     <div ref={box} className="relative">
       <div className="relative">
         <IconSearch className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
-        <input id={id} name={name} required minLength={5} maxLength={300} autoComplete="off" className="input pl-10"
+        <input id={id} name={name} required={required} minLength={5} maxLength={300} autoComplete="off" className="input pl-10"
           placeholder="Cari nama bisnis atau alamat" value={value}
           onChange={(e) => { setValue(e.target.value); setMapsUrl(""); setOpen(true); }}
           onFocus={() => setOpen(true)} />

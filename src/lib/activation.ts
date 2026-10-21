@@ -22,12 +22,16 @@ export async function activateQr(input: unknown): Promise<Result> {
   if (await prisma.user.findUnique({ where: { email: d.email } })) return { ok: false, error: "Email ini sudah terdaftar." };
   const passwordHash = await bcrypt.hash(d.password, 12);
 
+  const address = d.address || null;
+  const googleMapsUrl = address ? d.googleMapsUrl || mapsUrlFor(d.businessName, address) : null;
+  const googleReviewUrl = d.googleReviewUrl || null;
+
   try {
     await prisma.$transaction(async (tx) => {
       const claimed = await tx.qrCode.updateMany({ where: { id: qr.id, status: "UNACTIVATED" }, data: { status: "ACTIVE", activatedAt: new Date() } });
       if (claimed.count !== 1) throw new Error("ALREADY_ACTIVATED");
       const user = await tx.user.create({ data: { name: d.ownerName, email: d.email, role: "OWNER", passwordHash } });
-      const biz = await tx.business.create({ data: { ownerId: user.id, businessName: d.businessName, ownerName: d.ownerName, phone: d.phone, address: d.address, googleMapsUrl: d.googleMapsUrl || mapsUrlFor(d.businessName, d.address), googleReviewUrl: d.googleReviewUrl } });
+      const biz = await tx.business.create({ data: { ownerId: user.id, businessName: d.businessName, ownerName: d.ownerName, phone: d.phone, address, googleMapsUrl, googleReviewUrl } });
       await tx.qrCode.update({ where: { id: qr.id }, data: { businessId: biz.id } });
       await tx.auditLog.create({ data: { actorId: user.id, action: "QR_ACTIVATED", targetId: qr.id } });
     });

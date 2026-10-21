@@ -13,9 +13,9 @@ export const activationSchema = z.object({
   businessName: z.string().trim().min(2).max(100),
   ownerName: z.string().trim().min(2).max(100),
   phone: z.string().trim().regex(/^(\+62|62|0)8\d{7,12}$/, "Nomor WhatsApp tidak valid. Gunakan format 08xxxxxxxxxx."),
-  address: z.string().trim().min(5).max(300),
+  address: z.union([z.string().trim().min(5).max(300), z.literal("")]).optional(), // opsional: dilengkapi setelah aktivasi
   googleMapsUrl: optionalGoogleUrl, // otomatis dari pilihan Maps / dibuat dari nama + alamat
-  googleReviewUrl: googleUrl,
+  googleReviewUrl: optionalGoogleUrl, // opsional: dilengkapi setelah aktivasi
   email: z.string().trim().toLowerCase().email("Alamat email tidak valid."),
   password: z.string().min(8, "Kata sandi minimal 8 karakter.").max(100),
   pin: z.string().regex(/^\d{6,8}$/, "PIN aktivasi terdiri dari 6 sampai 8 angka."),
@@ -31,7 +31,9 @@ export const businessUpdateSchema = z.object({
   businessName: z.string().trim().min(2).max(100),
   description: z.string().trim().max(300).optional(),
   logoUrl: logoValue.optional(),
-  googleReviewUrl: googleUrl,
+  address: activationSchema.shape.address,
+  googleMapsUrl: optionalGoogleUrl,
+  googleReviewUrl: optionalGoogleUrl,
 });
 
 export const adminBusinessSchema = activationSchema.pick({ businessName: true, ownerName: true, phone: true, address: true, googleMapsUrl: true, googleReviewUrl: true });
