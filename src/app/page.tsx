@@ -3,23 +3,23 @@ import { FauxQr } from "@/components/faux-qr";
 import { IconArrowRight, IconCheck, IconDownload, IconRefresh, IconShield, IconStar, IconStore, IconQr, Logo } from "@/components/icons";
 
 const STEPS = [
-  { n: "01", title: "Admin membuat QR", desc: "Setiap QR mendapat token permanen dan PIN aktivasi yang diberikan terpisah ke pemilik bisnis." },
-  { n: "02", title: "Pemilik mengaktivasi", desc: "Scan QR, isi data bisnis dan tautan Google Review, lalu masukkan PIN. Selesai dalam hitungan menit." },
-  { n: "03", title: "Cetak dan tempel", desc: "Unduh QR sebagai PNG atau SVG, lalu taruh di meja atau kasir." },
+  { n: "01", title: "Terima QR Anda", desc: "Setiap bisnis mendapat QR dengan token permanen dan PIN aktivasi khusus." },
+  { n: "02", title: "Aktivasi dalam hitungan menit", desc: "Scan QR, lengkapi data bisnis dan tautan ulasan Google, lalu masukkan PIN." },
+  { n: "03", title: "Tempel dan mulai", desc: "Taruh QR di meja atau kasir — ulasan pelanggan langsung masuk ke Google." },
 ];
 
 const FEATURES = [
   { icon: IconQr, title: "QR sekali cetak", desc: "URL di QR tidak pernah berubah. Cetakan lama tetap berfungsi selamanya.", wide: true },
-  { icon: IconRefresh, title: "Ubah kapan saja", desc: "Ganti nama toko, logo, atau tautan Google Review tanpa mencetak ulang.", wide: false },
+  { icon: IconRefresh, title: "Ubah kapan saja", desc: "Ganti nama bisnis, logo, atau tautan ulasan Google tanpa perlu mencetak ulang.", wide: false },
   { icon: IconDownload, title: "Siap cetak", desc: "Unduh QR dalam format PNG atau SVG beresolusi tinggi untuk meja, kasir, atau stiker.", wide: false },
-  { icon: IconShield, title: "Privasi pelanggan terjaga", desc: "Kami tidak mencatat data pelanggan. Tanpa IP dan tanpa data pribadi.", wide: true },
+  { icon: IconShield, title: "Privasi pelanggan terjaga", desc: "Kami tidak mencatat data pelanggan — tanpa IP, tanpa data pribadi.", wide: true },
 ];
 
 const FAQ = [
-  { q: "Apakah QR bisa diganti tujuannya setelah dicetak?", a: "Bisa. QR hanya menyimpan satu URL tetap. Tujuan ulasan diatur dari dashboard, jadi Anda tidak perlu mencetak ulang." },
+  { q: "Apakah tujuan QR bisa diganti setelah dicetak?", a: "Bisa. QR hanya menyimpan satu URL tetap, sementara tautan ulasan diatur dari dashboard — jadi Anda tidak perlu mencetak ulang." },
   { q: "Apakah ulasan pelanggan dijamin bagus?", a: "Tidak. Semua pelanggan mendapat akses yang sama, dan ulasan selalu ditulis sendiri oleh pelanggan langsung di Google." },
   { q: "Data apa yang disimpan dari pelanggan?", a: "Tidak ada. Kami tidak menyimpan IP maupun data pribadi pelanggan." },
-  { q: "Bagaimana cara mendapatkan QR?", a: "QR dibuat oleh admin. Pemilik bisnis menerima PIN aktivasi, lalu mengaktifkannya sendiri lewat halaman QR." },
+  { q: "Bagaimana cara mendapatkan QR?", a: "QR disertai token permanen dan PIN aktivasi khusus untuk bisnis Anda. Setelah menerimanya, Anda tinggal mengaktifkannya sendiri melalui halaman QR." },
 ];
 
 function PhoneMock() {
@@ -33,13 +33,13 @@ function PhoneMock() {
           <p className="mt-1 text-lg font-bold leading-snug tracking-tight">Bagaimana pengalaman Anda?</p>
           <div className="mt-3 flex gap-0.5 text-amber-400">{[0, 1, 2, 3, 4].map((i) => <IconStar key={i} className="size-5" />)}</div>
           <p className="mt-3 text-xs leading-relaxed text-slate-500">Ulasan Anda membantu kami dan pelanggan lain.</p>
-          <div className="btn mt-5 w-full text-xs">Berikan Review di Google</div>
+          <div className="btn mt-5 w-full text-xs">Beri Ulasan di Google</div>
         </div>
         <div className="h-5" />
       </div>
       <div className="absolute -left-14 top-24 hidden w-32 rotate-[-6deg] rounded-2xl border border-slate-200 bg-white p-3 shadow-xl shadow-slate-900/10 sm:block">
         <FauxQr className="text-slate-900" />
-        <p className="mt-2 text-center text-[10px] font-semibold text-slate-500">Scan untuk review</p>
+        <p className="mt-2 text-center text-[10px] font-semibold text-slate-500">Scan untuk ulasan</p>
       </div>
     </div>
   );
@@ -69,13 +69,13 @@ export default function Home() {
           <div>
             <span className="inline-flex items-center gap-2 rounded-full border border-brand-200 bg-white/80 px-3 py-1 text-xs font-semibold text-brand-700 shadow-sm"><span className="size-1.5 rounded-full bg-brand-500" />QR permanen untuk ulasan Google</span>
             <h1 className="mt-6 text-balance text-4xl font-extrabold leading-[1.08] tracking-tight sm:text-6xl">Satu QR untuk <span className="bg-gradient-to-r from-brand-600 to-violet-500 bg-clip-text text-transparent">semua ulasan</span> bisnis Anda.</h1>
-            <p className="mt-6 max-w-xl text-lg leading-relaxed text-slate-600">Cetak sekali, tempel di meja atau kasir. Ubah nama toko atau tautan ulasan kapan saja tanpa mengganti QR. Ulasan selalu diselesaikan sendiri oleh pelanggan di Google.</p>
+            <p className="mt-6 max-w-xl text-lg leading-relaxed text-slate-600">Cetak sekali, tempel di meja atau kasir. Ubah nama bisnis atau tautan ulasan kapan saja tanpa mengganti QR. Ulasan selalu ditulis sendiri oleh pelanggan di Google.</p>
             <div className="mt-9 flex flex-wrap items-center gap-3">
               <Link href="/login" className="btn px-6 py-3 text-base">Masuk ke dashboard <IconArrowRight className="size-4" /></Link>
               <a href="#cara-kerja" className="btn-ghost px-6 py-3 text-base">Lihat cara kerja</a>
             </div>
             <ul className="mt-10 grid gap-3 text-sm text-slate-600 sm:grid-cols-2">
-              {["Tanpa cetak ulang", "Tanpa data pribadi pelanggan", "Unduh PNG & SVG", "Dashboard pemilik"].map((t) => (
+              {["Tanpa cetak ulang", "Tanpa data pribadi pelanggan", "Unduh PNG & SVG", "Dashboard untuk pemilik bisnis"].map((t) => (
                 <li key={t} className="flex items-center gap-2"><span className="grid size-5 place-items-center rounded-full bg-emerald-100 text-emerald-600"><IconCheck className="size-3" strokeWidth={3} /></span>{t}</li>
               ))}
             </ul>
@@ -87,7 +87,7 @@ export default function Home() {
       <section id="cara-kerja" className="scroll-mt-20 border-y border-slate-200/70 bg-white py-24">
         <div className="mx-auto max-w-6xl px-5">
           <p className="text-sm font-semibold text-brand-600">Cara kerja</p>
-          <h2 className="mt-2 max-w-xl text-3xl font-bold tracking-tight sm:text-4xl">Tiga langkah, langsung siap dipakai.</h2>
+          <h2 className="mt-2 max-w-xl text-3xl font-bold tracking-tight sm:text-4xl">Siap pakai dalam tiga langkah.</h2>
           <div className="mt-14 grid gap-5 md:grid-cols-3">
             {STEPS.map((s) => (
               <div key={s.n} className="group relative rounded-2xl border border-slate-200 bg-slate-50/60 p-7 transition hover:-translate-y-1 hover:bg-white hover:shadow-xl hover:shadow-slate-900/5">
