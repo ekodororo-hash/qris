@@ -20,6 +20,12 @@ export async function createQr(count = 1): Promise<{ url: string; pin: string; i
   revalidatePath("/admin", "layout");
   return created.map((q) => ({ id: q.id, url: `${process.env.NEXT_PUBLIC_APP_URL}/q/${q.publicToken}`, pin: q.pin ?? "" }));
 }
+// penanda "sudah diunduh/dicetak" supaya admin tidak mengunduh QR yang sama dua kali
+export async function markDownloaded(id: string, on = true) {
+  await requireRole("ADMIN");
+  await prisma.qrCode.update({ where: { id }, data: { downloadedAt: on ? new Date() : null } });
+  revalidatePath("/admin", "layout");
+}
 export async function toggleQr(fd: FormData) {
   const s = await requireRole("ADMIN");
   const qr = await prisma.qrCode.findUnique({ where: { id: String(fd.get("id")) } });

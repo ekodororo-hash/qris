@@ -68,6 +68,7 @@ model QrCode {
   salespersonId String?                        // sales yang memegang QR ini (null = belum diserahkan)
   salesperson  Salesperson? @relation(fields: [salespersonId], references: [id])
   assignedAt   DateTime?                       // kapan diserahkan ke sales
+  downloadedAt DateTime?                       // kapan QR/template diunduh atau dicetak (penanda agar tidak dobel)
   price        Int?                            // setoran wajib per QR (rupiah), dikunci saat diserahkan
   scanEvents   ScanEvent[]
   createdAt    DateTime    @default(now())

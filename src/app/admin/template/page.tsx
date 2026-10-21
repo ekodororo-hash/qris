@@ -12,9 +12,9 @@ export default async function TemplatePage({ searchParams }: { searchParams: Pro
     where: { status: { not: "ARCHIVED" } },
     orderBy: { createdAt: "desc" },
     take: 200,
-    select: { id: true, publicToken: true, status: true, business: { select: { businessName: true } } },
+    select: { id: true, publicToken: true, status: true, downloadedAt: true, business: { select: { businessName: true } } },
   });
-  const options = rows.map((r) => ({ id: r.id, publicToken: r.publicToken, status: r.status as QrStatusKey, businessName: r.business?.businessName ?? null }));
+  const options = rows.map((r) => ({ id: r.id, publicToken: r.publicToken, status: r.status as QrStatusKey, businessName: r.business?.businessName ?? null, downloaded: !!r.downloadedAt }));
   return (
     <div className="space-y-6">
       <div className="print:hidden">

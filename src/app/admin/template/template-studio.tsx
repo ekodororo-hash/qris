@@ -4,8 +4,9 @@ import { toPng } from "html-to-image";
 import { IconDownload, IconGoogleG, IconPrinter, IconStar } from "@/components/icons";
 import { StatusBadge } from "@/components/status-badge";
 import type { QrStatusKey } from "@/lib/qr-status";
+import { markDownloaded } from "../actions";
 
-export type QrOption = { id: string; publicToken: string; status: QrStatusKey; businessName: string | null };
+export type QrOption = { id: string; publicToken: string; status: QrStatusKey; businessName: string | null; downloaded?: boolean };
 
 const SIZES = {
   a6: { label: "Kartu meja", hint: "A6 · 105×148 mm", w: 105, h: 148 },
@@ -284,6 +285,13 @@ export function TemplateStudio({ options, initialId, owner = false }: { options:
   const [saving, setSaving] = useState(false);
   const [saveErr, setSaveErr] = useState("");
   const [nfc, setNfc] = useState(false);
+  // penanda sudah diunduh/dicetak per QR (disimpan di database, hanya admin)
+  const [done, setDone] = useState<Record<string, boolean>>(() => Object.fromEntries(options.map((o) => [o.id, !!o.downloaded])));
+  const mark = (id: string, on: boolean) => {
+    if (owner) return;
+    setDone((d) => ({ ...d, [id]: on }));
+    markDownloaded(id, on).catch(() => setDone((d) => ({ ...d, [id]: !on })));
+  };
   const [sides, setSides] = useState<"1" | "2">("2");
   const sheetRef = useRef<HTMLDivElement>(null);
 
@@ -324,6 +332,7 @@ export function TemplateStudio({ options, initialId, owner = false }: { options:
         a.click();
         if (i < nodes.length - 1) await new Promise((r) => setTimeout(r, 400));
       }
+      if (sel) mark(sel.id, true);
     } catch {
       setSaveErr("Gagal menyimpan gambar. Coba lagi, atau pakai Cetak template lalu simpan sebagai PDF.");
     } finally {
@@ -338,8 +347,14 @@ export function TemplateStudio({ options, initialId, owner = false }: { options:
         <div>
           <label className="label" htmlFor="tpl-qr">QR yang dipakai</label>
           <select id="tpl-qr" className="input" value={qrId} onChange={(e) => setQrId(e.target.value)}>
-            {options.map((o) => <option key={o.id} value={o.id}>{o.publicToken}</option>)}
+            {options.map((o) => <option key={o.id} value={o.id}>{done[o.id] ? `✓ ${o.publicToken} · sudah diunduh` : o.publicToken}</option>)}
           </select>
+          {sel && (
+            <p className={`mt-2 flex flex-wrap items-center justify-between gap-2 rounded-xl p-2.5 text-xs ring-1 ${done[sel.id] ? "bg-slate-100 text-slate-700 ring-slate-300" : "bg-white text-slate-500 ring-slate-200"}`}>
+              <span>{done[sel.id] ? "✓ Sudah pernah diunduh/dicetak. Hati-hati jangan dobel." : "Belum pernah diunduh/dicetak."}</span>
+              <button type="button" className="cursor-pointer font-semibold text-brand-600 hover:text-brand-700" onClick={() => mark(sel.id, !done[sel.id])}>{done[sel.id] ? "Tandai belum" : "Tandai sudah"}</button>
+            </p>
+          )}
           {sel && sel.status === "ACTIVE" && (
             <p className="mt-2 flex flex-wrap items-center gap-2 rounded-xl bg-emerald-50 p-2.5 text-xs text-emerald-800 ring-1 ring-emerald-200">
               <StatusBadge status={sel.status} />
@@ -386,10 +401,10 @@ export function TemplateStudio({ options, initialId, owner = false }: { options:
         </details>
 
         <div className="space-y-2 border-t border-slate-100 pt-4">
-          <button type="button" className="btn w-full" onClick={() => window.print()}><IconPrinter className="size-4" />Cetak template</button>
+          <button type="button" className="btn w-full" onClick={() => { window.print(); if (sel) mark(sel.id, true); }}><IconPrinter className="size-4" />Cetak template</button>
           <div className="grid grid-cols-2 gap-2">
             <button type="button" className="btn-ghost" disabled={!svg || saving} onClick={saveImage}><IconDownload className="size-4" />{saving ? "Menyimpan..." : "Simpan gambar"}</button>
-            {sel ? <a className="btn-ghost" href={`/api/qr/download?id=${sel.id}&fmt=png`}><IconDownload className="size-4" />QR saja</a> : <span />}
+            {sel ? <a className="btn-ghost" href={`/api/qr/download?id=${sel.id}&fmt=png`} onClick={() => mark(sel.id, true)}><IconDownload className="size-4" />QR saja</a> : <span />}
           </div>
         </div>
         {saveErr && <p className="text-xs text-rose-600">{saveErr}</p>}

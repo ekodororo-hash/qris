@@ -65,5 +65,11 @@ ALTER TABLE "Payment" ADD CONSTRAINT "Payment_salespersonId_fkey"
   FOREIGN KEY ("salespersonId") REFERENCES "Salesperson"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 ```
 
+### WAJIB sebelum deploy penanda "Sudah diunduh"
+Jalankan SQL ini SEKALI di SQL Editor database (atau `npx prisma db push`), baru push ke GitHub. Hanya menambah kolom.
+```sql
+ALTER TABLE "QrCode" ADD COLUMN "downloadedAt" TIMESTAMP(3);
+```
+
 ## Belum ada.
 Reset aktivasi, OTP WhatsApp/email, rate limit terdistribusi (Upstash), tes otomatis.
