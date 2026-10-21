@@ -42,8 +42,8 @@ export function InstallProvider({ children }: { children: React.ReactNode }) {
     if (outcome === "accepted") setInstalled(true);
   };
 
-  // halaman QR untuk pelanggan (/q/...) tidak perlu ajakan instal
-  const showBanner = canInstall && !dismissed && !path.startsWith("/q/");
+  // tanpa kotak di halaman QR pelanggan (/q/...) dan di /login (di sana sudah ada tombol instal sendiri)
+  const showBanner = canInstall && !dismissed && !path.startsWith("/q/") && !path.startsWith("/login");
 
   return (
     <InstallCtx.Provider value={{ canInstall, ios, install }}>
