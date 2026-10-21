@@ -5,7 +5,7 @@ import { IconClose, IconDownload } from "./icons";
 
 type InstallEvent = Event & { prompt: () => Promise<void>; userChoice: Promise<{ outcome: "accepted" | "dismissed" }> };
 const KEY = "pwa-install-dismissed";
-const HIDE_DAYS = 7;
+const HIDE_DAYS = 1;
 
 const isStandalone = () =>
   window.matchMedia("(display-mode: standalone)").matches || (navigator as Navigator & { standalone?: boolean }).standalone === true;
