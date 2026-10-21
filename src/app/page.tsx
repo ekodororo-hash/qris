@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { FauxQr } from "@/components/faux-qr";
-import { IconArrowRight, IconCheck, IconDownload, IconRefresh, IconShield, IconStar, IconStore, IconQr, Logo } from "@/components/icons";
+import { IconArrowRight, IconCheck, IconDownload, IconRefresh, IconShield, IconStar, IconStore, IconQr, IconGoogleG, Logo } from "@/components/icons";
 
 const STEPS = [
   { n: "01", title: "Terima QR Anda", desc: "Setiap bisnis mendapat QR dengan token permanen dan PIN aktivasi khusus." },
@@ -41,7 +41,7 @@ function PhoneMock() {
           <p className="mt-1 text-lg font-bold leading-snug tracking-tight">Bagaimana pengalaman Anda?</p>
           <div className="mt-3 flex gap-0.5 text-amber-400">{[0, 1, 2, 3, 4].map((i) => <IconStar key={i} className="size-5" />)}</div>
           <p className="mt-3 text-xs leading-relaxed text-slate-500">Ulasan Anda membantu kami dan pelanggan lain.</p>
-          <div className="btn mt-5 w-full text-xs">Beri Ulasan di Google</div>
+          <div className="btn mt-5 w-full gap-2.5 !bg-[#1a73e8] py-3 text-xs !shadow-[#1a73e8]/25"><span className="grid size-5 place-items-center rounded-full bg-white"><IconGoogleG className="size-3.5" /></span>Berikan Review di Google</div>
         </div>
         <div className="h-5" />
       </div>
@@ -114,7 +114,7 @@ export default function Home() {
         <div className="mt-14 grid gap-5 md:grid-cols-5">
           {FEATURES.map((f) => (
             <div key={f.title} className={`card p-7 ${f.wide ? "md:col-span-3" : "md:col-span-2"}`}>
-              <span className="grid size-11 place-items-center rounded-xl bg-brand-50 text-brand-600"><f.icon className="size-5" /></span>
+              <span className="grid size-11 place-items-center rounded-xl bg-slate-100 text-slate-900"><f.icon className="size-5" /></span>
               <h3 className="mt-5 text-lg font-bold">{f.title}</h3>
               <p className="mt-2 max-w-md text-sm leading-relaxed text-slate-600">{f.desc}</p>
             </div>
