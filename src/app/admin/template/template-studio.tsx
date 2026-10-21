@@ -52,14 +52,14 @@ function Qr({ svg, width, border = true }: { svg: string; width: string; border?
 
 function NfcIcon({ width }: { width: number }) {
   return (
-    <svg viewBox="0 0 100 80" style={{ width: `${width}cqw`, height: "auto", display: "block" }} fill="none" stroke="#0f172a" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-      <rect x="52" y="6" width="30" height="58" rx="6" fill="#fff" />
-      <line x1="62" y1="12" x2="72" y2="12" />
-      <path d="M52 52 C44 54 40 60 30 62 L24 56 C30 48 38 44 52 42" />
-      <ellipse cx="30" cy="34" rx="26" ry="19" fill="#fff" />
-      <text x="30" y="38.5" textAnchor="middle" fontSize="12" fontWeight="800" fontFamily="Arial, sans-serif" fill="#0f172a" stroke="none">NFC</text>
-      <path d="M50 24 C54 30 54 38 50 44" />
-      <path d="M56 19 C62 28 62 40 56 49" />
+    <svg viewBox="0 0 110 76" style={{ width: `${width}cqw`, height: "auto", display: "block" }} fill="none" stroke="#0f172a" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <rect x="74" y="3" width="34" height="70" rx="7" fill="#fff" />
+      <line x1="85" y1="10" x2="97" y2="10" />
+      <ellipse cx="27" cy="38" rx="25" ry="18" fill="#fff" />
+      <text x="26" y="43" textAnchor="middle" fontSize="13" fontWeight="800" fontFamily="Arial, sans-serif" fill="#0f172a" stroke="none">NFC</text>
+      <path d="M56 31 A9 9 0 0 1 56 45" />
+      <path d="M62 26 A16 16 0 0 1 62 50" />
+      <path d="M68 21 A23 23 0 0 1 68 55" />
     </svg>
   );
 }
@@ -72,8 +72,8 @@ function QrArea({ svg, width, border = true, nfc }: { svg: string; width: number
   const lbl = { fontSize: fs, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.02em", color: "#0f172a", lineHeight: 1.2 } as const;
   return (
     <div style={{ display: "flex", alignItems: "stretch", justifyContent: "center", gap: "3cqw" }}>
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-end", gap: "2cqw", width: `${qw * 0.95}cqw`, textAlign: "center" }}>
-        <div style={{ flex: 1, display: "flex", alignItems: "center" }}><NfcIcon width={qw * 0.95} /></div>
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-end", gap: "2cqw", width: `${qw * 1.1}cqw`, textAlign: "center" }}>
+        <div style={{ flex: 1, display: "flex", alignItems: "center" }}><NfcIcon width={qw * 1.1} /></div>
         <span style={lbl}>Tempelkan HP kamu</span>
       </div>
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "1.4cqw" }}>
