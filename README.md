@@ -15,7 +15,7 @@ pemilik scan -> isi form aktivasi (PIN dari admin) -> login dashboard.
 1. Push ke GitHub, import di Vercel.
 2. Env: DATABASE_URL, AUTH_SECRET, NEXT_PUBLIC_APP_URL (domain Vercel).
 3. Tambahkan env DIRECT_URL juga di Vercel (dipakai saat build untuk migrasi).
-4. Deploy. Migrasi di prisma/migrations dijalankan otomatis saat build (prisma migrate deploy).
+4. Deploy. Migrasi di prisma/migrations dijalankan otomatis saat build (prisma migrate deploy)
 
 ## Sales & setoran
 Admin > Sales: atur setoran wajib per QR, tambah nama sales (tanpa login), serahkan QR ke sales (PIN tampil di halaman sales untuk QR yang belum aktif), catat setoran.
