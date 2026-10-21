@@ -52,14 +52,14 @@ function Qr({ svg, width, border = true }: { svg: string; width: string; border?
 
 function NfcIcon({ width }: { width: number }) {
   return (
-    <svg viewBox="0 0 110 76" style={{ width: `${width}cqw`, height: "auto", display: "block" }} fill="none" stroke="#0f172a" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-      <rect x="74" y="3" width="34" height="70" rx="7" fill="#fff" />
-      <line x1="85" y1="10" x2="97" y2="10" />
+    <svg viewBox="0 0 116 76" style={{ width: `${width}cqw`, height: "auto", display: "block" }} fill="none" stroke="#0f172a" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <rect x="80" y="3" width="34" height="70" rx="7" fill="#fff" />
+      <line x1="91" y1="10" x2="103" y2="10" />
       <ellipse cx="27" cy="38" rx="25" ry="18" fill="#fff" />
       <text x="26" y="43" textAnchor="middle" fontSize="13" fontWeight="800" fontFamily="Arial, sans-serif" fill="#0f172a" stroke="none">NFC</text>
-      <path d="M56 31 A9 9 0 0 1 56 45" />
-      <path d="M62 26 A16 16 0 0 1 62 50" />
-      <path d="M68 21 A23 23 0 0 1 68 55" />
+      <path d="M55 32 A8 8 0 0 1 55 44" />
+      <path d="M60 27 A14 14 0 0 1 60 49" />
+      <path d="M65 22 A21 21 0 0 1 65 54" />
     </svg>
   );
 }
