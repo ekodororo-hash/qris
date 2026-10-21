@@ -6,18 +6,11 @@
     <rect x="15" y="15" width="482" height="482" rx="112" pathLength="100" stroke="#FBBC05" stroke-dasharray="25 75" stroke-dashoffset="-50"/>
     <rect x="15" y="15" width="482" height="482" rx="112" pathLength="100" stroke="#34A853" stroke-dasharray="25 75" stroke-dashoffset="-75"/>
   </g>
-  <g transform="translate(112.64 112.64) scale(2.8672)" fill="#111">
-    <g fill="none" stroke="#111" stroke-width="9">
-      <rect x="4.5" y="4.5" width="27" height="27" rx="6"/>
-      <rect x="68.5" y="4.5" width="27" height="27" rx="6"/>
-      <rect x="4.5" y="68.5" width="27" height="27" rx="6"/>
-    </g>
-    <rect x="13" y="13" width="10" height="10" rx="3"/>
-    <rect x="77" y="13" width="10" height="10" rx="3"/>
-    <rect x="13" y="77" width="10" height="10" rx="3"/>
-    <rect x="64" y="64" width="16" height="16" rx="3"/>
-    <rect x="84" y="84" width="16" height="16" rx="3"/>
-    <rect x="64" y="84" width="16" height="16" rx="3"/>
-    <rect x="44" y="44" width="12" height="12" rx="3"/>
+  <g transform="translate(126.03 126.03) scale(10.831)" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect width="5" height="5" x="3" y="3" rx="1"/>
+    <rect width="5" height="5" x="16" y="3" rx="1"/>
+    <rect width="5" height="5" x="3" y="16" rx="1"/>
+    <path d="M12 3h.01M12 7v3a2 2 0 0 1-2 2H7M3 12h.01M16 12h1M21 12v.01M12 16v.01M12 21v-1"/>
+    <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z" transform="translate(12.4 12.4) scale(.5)" fill="#111" stroke="none"/>
   </g>
 </svg>
