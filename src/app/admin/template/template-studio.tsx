@@ -336,11 +336,11 @@ export function TemplateStudio({ options, initialId, owner = false }: { options:
       </div>
 
       <div className="rounded-2xl bg-slate-100 p-4 sm:p-8 print:bg-transparent print:p-0">
-        <div ref={sheetRef} className={`mx-auto w-full print:m-0 print:max-w-none ${size === "sticker" ? "max-w-[20rem]" : "max-w-[24rem]"}`}>
+        <div ref={sheetRef} className={`mx-auto w-full print:m-0 print:block print:max-w-none ${twoSided ? "grid max-w-[52rem] gap-6 sm:grid-cols-2" : size === "sticker" ? "max-w-[20rem]" : "max-w-[24rem]"}`}>
           <Sheet cfg={cfg} svg={svg} breakAfter={twoSided} />
-          {twoSided && token && <div className="mt-6 print:mt-0"><Sheet cfg={cfg} svg={svg} side="back" token={token} /></div>}
+          {twoSided && token && <div className="print:mt-0"><Sheet cfg={cfg} svg={svg} side="back" token={token} /></div>}
         </div>
-        <p className="mt-5 text-center text-xs text-slate-500 print:hidden">Pratinjau · {twoSided ? "depan lalu belakang · " : ""}ukuran cetak asli {SIZES[size].hint}</p>
+        <p className="mt-5 text-center text-xs text-slate-500 print:hidden">Pratinjau · {twoSided ? "depan (kiri) & belakang (kanan) · " : ""}ukuran cetak asli {SIZES[size].hint}</p>
       </div>
     </div>
   );
