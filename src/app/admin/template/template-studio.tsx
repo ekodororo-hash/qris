@@ -31,7 +31,7 @@ const TEMPLATES = {
 } as const;
 type TplKey = keyof typeof TEMPLATES;
 
-type Cfg = { size: SizeKey; tpl: TplKey; t: Texts };
+type Cfg = { size: SizeKey; tpl: TplKey; t: Texts; nfc: boolean };
 
 function Wordmark({ size }: { size: string }) {
   const c = [G.blue, G.red, G.yellow, G.blue, G.green, G.red];
@@ -50,6 +50,45 @@ function Qr({ svg, width, border = true }: { svg: string; width: string; border?
   );
 }
 
+function NfcIcon({ width }: { width: number }) {
+  return (
+    <svg viewBox="0 0 100 80" style={{ width: `${width}cqw`, height: "auto", display: "block" }} fill="none" stroke="#0f172a" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <rect x="52" y="6" width="30" height="58" rx="6" fill="#fff" />
+      <line x1="62" y1="12" x2="72" y2="12" />
+      <path d="M52 52 C44 54 40 60 30 62 L24 56 C30 48 38 44 52 42" />
+      <ellipse cx="30" cy="34" rx="26" ry="19" fill="#fff" />
+      <text x="30" y="38.5" textAnchor="middle" fontSize="12" fontWeight="800" fontFamily="Arial, sans-serif" fill="#0f172a" stroke="none">NFC</text>
+      <path d="M50 24 C54 30 54 38 50 44" />
+      <path d="M56 19 C62 28 62 40 56 49" />
+    </svg>
+  );
+}
+
+// QR saja, atau (jika NFC aktif) "Tempelkan HP kamu | ATAU | Scan QR"
+function QrArea({ svg, width, border = true, nfc }: { svg: string; width: number; border?: boolean; nfc: boolean }) {
+  if (!nfc) return <Qr svg={svg} width={`${width}cqw`} border={border} />;
+  const qw = width * 0.56;
+  const fs = `${Math.max(2.1, qw * 0.085)}cqw`;
+  const lbl = { fontSize: fs, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.02em", color: "#0f172a", lineHeight: 1.2 } as const;
+  return (
+    <div style={{ display: "flex", alignItems: "stretch", justifyContent: "center", gap: "3cqw" }}>
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-end", gap: "2cqw", width: `${qw * 0.95}cqw`, textAlign: "center" }}>
+        <div style={{ flex: 1, display: "flex", alignItems: "center" }}><NfcIcon width={qw * 0.95} /></div>
+        <span style={lbl}>Tempelkan HP kamu</span>
+      </div>
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "1.4cqw" }}>
+        <span style={{ flex: 1, width: "0.3cqw", background: "#0f172a" }} />
+        <span style={{ ...lbl, fontWeight: 600 }}>Atau</span>
+        <span style={{ flex: 1, width: "0.3cqw", background: "#0f172a" }} />
+      </div>
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "2cqw" }}>
+        <Qr svg={svg} width={`${qw}cqw`} border={border} />
+        <span style={lbl}>Scan QR</span>
+      </div>
+    </div>
+  );
+}
+
 const col = { display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center" } as const;
 
 function Body({ cfg, svg }: { cfg: Cfg; svg: string }) {
@@ -62,7 +101,7 @@ function Body({ cfg, svg }: { cfg: Cfg; svg: string }) {
       <div style={{ ...col, height: "100%", gap: "2.5cqw", padding: "5cqw" }}>
         {tpl === "tepi" ? <Wordmark size="9cqw" /> : <IconGoogleG style={{ fontSize: "10cqw" }} />}
         <Stars size="5cqw" />
-        <Qr svg={svg} width="50cqw" />
+        <QrArea svg={svg} width={50} nfc={cfg.nfc} />
         <p style={{ margin: 0, fontSize: "4.4cqw", fontWeight: 700, color: ink }}>{t.cta}</p>
       </div>
     );
@@ -80,7 +119,7 @@ function Body({ cfg, svg }: { cfg: Cfg; svg: string }) {
             <IconGoogleG style={{ fontSize: "11cqw" }} />
           </div>
           <div style={{ background: "#fff", borderRadius: "6cqw", padding: "9cqw 4cqw 4cqw", boxShadow: "0 3cqw 6cqw rgba(0,0,0,.2)" }}>
-            <Qr svg={svg} width="52cqw" border={false} />
+            <QrArea svg={svg} width={52} border={false} nfc={cfg.nfc} />
           </div>
         </div>
         <p style={{ margin: 0, fontSize: "5.6cqw", fontWeight: 700 }}>{t.cta}</p>
@@ -99,7 +138,7 @@ function Body({ cfg, svg }: { cfg: Cfg; svg: string }) {
           <h2 style={{ margin: "0.5cqw 0 0", fontSize: "9cqw", fontWeight: 800, lineHeight: 1.1, textWrap: "balance" }}>{t.headline}</h2>
         </div>
         <Stars size="5.4cqw" />
-        <Qr svg={svg} width="52cqw" border={false} />
+        <QrArea svg={svg} width={52} border={false} nfc={cfg.nfc} />
         <p style={{ margin: 0, fontSize: "3.2cqw", fontWeight: 600, color: "#64748b" }}>{t.cta}</p>
       </div>
     );
@@ -115,7 +154,7 @@ function Body({ cfg, svg }: { cfg: Cfg; svg: string }) {
           <Stars size="7cqw" />
         </div>
         <p style={{ margin: "1cqw 0 0", fontSize: "5cqw", fontWeight: 500 }}>{t.cta}</p>
-        <Qr svg={svg} width="58cqw" border={false} />
+        <QrArea svg={svg} width={58} border={false} nfc={cfg.nfc} />
       </div>
     );
   }
@@ -126,7 +165,7 @@ function Body({ cfg, svg }: { cfg: Cfg; svg: string }) {
         <p style={{ margin: 0, fontSize: "5.2cqw", fontWeight: 800, lineHeight: 1.2, textWrap: "balance" }}>{t.kicker}</p>
         <IconGoogleG style={{ fontSize: "14cqw" }} />
         <h2 style={{ margin: 0, fontSize: "7.2cqw", fontWeight: 700, lineHeight: 1.1 }}>{t.headline}</h2>
-        <Qr svg={svg} width="50cqw" />
+        <QrArea svg={svg} width={50} nfc={cfg.nfc} />
         <Stars size="6cqw" />
         <p style={{ margin: 0, fontSize: "4.4cqw", fontWeight: 700 }}>{t.cta}</p>
       </div>
@@ -139,7 +178,7 @@ function Body({ cfg, svg }: { cfg: Cfg; svg: string }) {
       <p style={{ margin: "1cqw 0 0", fontSize: "5cqw", fontWeight: 500, color: "#475569" }}>{t.kicker}</p>
       <h2 style={{ margin: 0, fontSize: "12cqw", fontWeight: 600, lineHeight: 1, color: "#5f6368" }}>{t.headline}</h2>
       <Stars size="7cqw" />
-      <Qr svg={svg} width="46cqw" border={false} />
+      <QrArea svg={svg} width={46} border={false} nfc={cfg.nfc} />
       <p style={{ margin: 0, fontSize: "3.6cqw", fontWeight: 600, color: "#64748b" }}>{t.cta}</p>
     </div>
   );
@@ -244,6 +283,7 @@ export function TemplateStudio({ options, initialId, owner = false }: { options:
   const [svg, setSvg] = useState("");
   const [saving, setSaving] = useState(false);
   const [saveErr, setSaveErr] = useState("");
+  const [nfc, setNfc] = useState(false);
   const [sides, setSides] = useState<"1" | "2">("2");
   const sheetRef = useRef<HTMLDivElement>(null);
 
@@ -261,7 +301,7 @@ export function TemplateStudio({ options, initialId, owner = false }: { options:
     return () => { alive = false; };
   }, [token]);
 
-  const cfg: Cfg = { size, tpl, t };
+  const cfg: Cfg = { size, tpl, t, nfc };
 
   // simpan seluruh desain (bukan QR saja) sebagai PNG resolusi cetak 300 dpi; dua sisi = dua file
   async function saveImage() {
@@ -326,6 +366,8 @@ export function TemplateStudio({ options, initialId, owner = false }: { options:
           <div><span className="label">Sisi cetak</span><Seg value={sides} onChange={setSides} options={[{ value: "1", label: "Satu sisi" }, { value: "2", label: "Dua sisi", hint: "belakang: kode & aktivasi" }]} /></div>
         )}
         <div><span className="label">Template</span><TplPicker value={tpl} onChange={setTpl} /></div>
+
+        <div><span className="label">NFC</span><Seg value={nfc ? "1" : "0"} onChange={(v) => setNfc(v === "1")} options={[{ value: "0", label: "Tanpa NFC" }, { value: "1", label: "Dengan NFC", hint: "tempel HP atau scan QR" }]} /></div>
 
         <details className="group rounded-xl border border-slate-200 open:bg-slate-50/50">
           <summary className="flex cursor-pointer list-none items-center justify-between px-3 py-2.5 text-sm font-semibold text-slate-700">
