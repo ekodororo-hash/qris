@@ -9,6 +9,8 @@ export const AUDIT_LABEL: Record<string, string> = {
   PIN_RESET: "PIN direset & kunci dibuka",
   ACTIVATION_RESET: "Aktivasi direset",
   BUSINESS_UPDATED: "Data bisnis diubah",
+  EMAIL_CHANGED: "Email pemilik diubah",
+  PASSWORD_CHANGED: "Kata sandi pemilik diubah",
   SALES_CREATED: "Sales ditambah",
   SALES_DELETED: "Sales dihapus",
   QR_ASSIGNED: "QR diserahkan ke sales",

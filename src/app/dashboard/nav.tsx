@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 const ITEMS = [
   { href: "/dashboard", label: "Ringkasan" },
   { href: "/dashboard/banner", label: "Banner & poster" },
+  { href: "/dashboard/akun", label: "Akun" },
 ];
 
 export function DashNav() {
