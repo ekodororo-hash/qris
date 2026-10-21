@@ -94,7 +94,7 @@ export default function Home() {
 
       <section id="cara-kerja" className="scroll-mt-20 border-y border-slate-200/70 bg-white py-24">
         <div className="mx-auto max-w-6xl px-5">
-          <p className="text-sm font-semibold text-brand-600">Cara kerja</p>
+          <p className="text-sm font-semibold text-slate-500">Cara kerja</p>
           <h2 className="mt-2 max-w-xl text-3xl font-bold tracking-tight sm:text-4xl">Siap pakai dalam tiga langkah.</h2>
           <div className="mt-14 grid gap-5 md:grid-cols-3">
             {STEPS.map((s) => (
@@ -109,7 +109,7 @@ export default function Home() {
       </section>
 
       <section id="fitur" className="mx-auto max-w-6xl scroll-mt-20 px-5 py-24">
-        <p className="text-sm font-semibold text-brand-600">Fitur</p>
+        <p className="text-sm font-semibold text-slate-500">Fitur</p>
         <h2 className="mt-2 max-w-xl text-3xl font-bold tracking-tight sm:text-4xl">Sederhana untuk pemilik, rapi untuk admin.</h2>
         <div className="mt-14 grid gap-5 md:grid-cols-5">
           {FEATURES.map((f) => (
@@ -124,7 +124,7 @@ export default function Home() {
 
       <section id="faq" className="scroll-mt-20 border-t border-slate-200/70 bg-white py-24">
         <div className="mx-auto max-w-3xl px-5">
-          <p className="text-sm font-semibold text-brand-600">FAQ</p>
+          <p className="text-sm font-semibold text-slate-500">FAQ</p>
           <h2 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">Pertanyaan yang sering muncul</h2>
           <div className="mt-10 divide-y divide-slate-200 rounded-2xl border border-slate-200">
             {FAQ.map((f) => (
