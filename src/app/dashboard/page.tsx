@@ -7,7 +7,6 @@ import { IconDownload, IconExternal, IconPrinter, IconShield, IconStore } from "
 import { StatusBadge } from "@/components/status-badge";
 import type { QrStatusKey } from "@/lib/qr-status";
 import { SettingsForm } from "./settings-form";
-import { ReviewLinkGuide } from "@/components/review-link-guide";
 
 export default async function Dashboard() {
   const s = await requireRole("OWNER");
@@ -32,7 +31,6 @@ export default async function Dashboard() {
         <section className="rounded-2xl bg-amber-50 p-5 ring-1 ring-amber-200">
           <h2 className="text-base font-semibold text-amber-900">Satu langkah lagi: tambahkan tautan Google Review</h2>
           <p className="mt-1 text-sm text-amber-900/80">QR Anda sudah aktif, tapi pelanggan belum bisa menulis ulasan sampai tautan ini diisi. Isi di bagian <a href="#pengaturan" className="font-semibold underline">Pengaturan bisnis</a> di bawah.</p>
-          <div className="mt-3"><ReviewLinkGuide /></div>
         </section>
       )}
 
