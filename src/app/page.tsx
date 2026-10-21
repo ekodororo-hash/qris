@@ -76,10 +76,10 @@ export default function Home() {
         <div className="mx-auto grid max-w-6xl items-center gap-16 px-5 pb-24 pt-16 lg:grid-cols-[1.1fr_0.9fr] lg:pt-24">
           <div>
             <span className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-white/80 px-3 py-1 text-xs font-semibold text-emerald-700 shadow-sm"><span className="size-1.5 rounded-full bg-emerald-500" />QR permanen untuk ulasan Google</span>
-            <h1 className="mt-6 text-balance text-4xl font-extrabold leading-[1.08] tracking-tight sm:text-6xl">Satu QR untuk <span className="text-[#4285F4]">semua ulasan</span> bisnis Anda.</h1>
+            <h1 className="mt-6 text-balance text-4xl font-extrabold leading-[1.08] tracking-tight sm:text-6xl">Satu QR untuk <span className="text-brand-500">semua ulasan</span> bisnis Anda.</h1>
             <p className="mt-6 max-w-xl text-lg leading-relaxed text-slate-600">Cetak sekali, tempel di meja atau kasir. Ubah nama bisnis atau tautan ulasan kapan saja tanpa mengganti QR. Ulasan selalu ditulis sendiri oleh pelanggan di Google.</p>
             <div className="mt-9 flex flex-wrap items-center gap-3">
-              <Link href="/login" className="inline-flex items-center gap-2 rounded-xl bg-[#4285F4] px-6 py-3 text-base font-semibold text-white shadow-lg transition hover:bg-[#1a73e8]">Masuk ke dashboard <IconArrowRight className="size-4" /></Link>
+              <Link href="/login" className="inline-flex items-center gap-2 rounded-xl bg-brand-600 px-6 py-3 text-base font-semibold text-white shadow-lg transition hover:bg-brand-700">Masuk ke dashboard <IconArrowRight className="size-4" /></Link>
               <a href="#cara-kerja" className="btn-ghost px-6 py-3 text-base">Lihat cara kerja</a>
             </div>
             <ul className="mt-10 grid gap-3 text-sm text-slate-600 sm:grid-cols-2">
@@ -146,7 +146,7 @@ export default function Home() {
           <h2 className="relative mx-auto max-w-2xl text-balance text-3xl font-bold tracking-tight sm:text-4xl">Mulai kumpulkan ulasan Google lebih mudah hari ini.</h2>
           <p className="relative mx-auto mt-4 max-w-lg text-slate-600">Sudah punya QR dan PIN aktivasi? Scan QR untuk aktivasi, atau masuk untuk membuka dashboard.</p>
           <div className="relative mt-8 flex flex-wrap items-center justify-center gap-3">
-            <Link href="/login" className="inline-flex items-center gap-2 rounded-xl bg-[#4285F4] px-6 py-3 font-semibold text-white shadow-lg transition hover:bg-[#1a73e8]">Masuk <IconArrowRight className="size-4" /></Link>
+            <Link href="/login" className="inline-flex items-center gap-2 rounded-xl bg-brand-600 px-6 py-3 font-semibold text-white shadow-lg transition hover:bg-brand-700">Masuk <IconArrowRight className="size-4" /></Link>
             <a href="https://wa.me/62895379994528" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-xl bg-[#25D366] px-6 py-3 font-semibold text-white shadow-lg transition hover:bg-[#1ebe5b]"><IconWhatsApp className="size-5" />Hubungi via WhatsApp</a>
           </div>
         </div>

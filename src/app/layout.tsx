@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     apple: "/apple-touch-icon.png",
   },
 };
-export const viewport: Viewport = { themeColor: "#4f46e5" };
+export const viewport: Viewport = { themeColor: "#ffffff" };
 
 // menangkap sinyal "boleh diinstal" dari Chrome sedini mungkin (sebelum React siap), lalu memberi tahu InstallProvider
 const CAPTURE_INSTALL = `window.addEventListener("beforeinstallprompt",function(e){e.preventDefault();window.__bip=e;window.dispatchEvent(new Event("bip-ready"))});`;
