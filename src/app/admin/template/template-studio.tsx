@@ -309,7 +309,7 @@ export function TemplateStudio({ options, initialId, owner = false }: { options:
     return () => { alive = false; };
   }, [token]);
 
-  const cfg: Cfg = { size, tpl, t, nfc };
+  const cfg: Cfg = { size, tpl, t, nfc: owner ? false : nfc };
 
   // simpan seluruh desain (bukan QR saja) sebagai PNG resolusi cetak 300 dpi; dua sisi = dua file
   async function saveImage() {
@@ -383,7 +383,10 @@ export function TemplateStudio({ options, initialId, owner = false }: { options:
         )}
         <div><span className="label">Template</span><TplPicker value={tpl} onChange={setTpl} /></div>
 
-        <div><span className="label">NFC</span><Seg value={nfc ? "1" : "0"} onChange={(v) => setNfc(v === "1")} options={[{ value: "0", label: "Tanpa NFC" }, { value: "1", label: "Dengan NFC", hint: "tempel HP atau scan QR" }]} /></div>
+        {/* NFC dipasang admin, jadi opsi ini hanya tampil di sisi admin */}
+        {!owner && (
+          <div><span className="label">NFC</span><Seg value={nfc ? "1" : "0"} onChange={(v) => setNfc(v === "1")} options={[{ value: "0", label: "Tanpa NFC" }, { value: "1", label: "Dengan NFC", hint: "tempel HP atau scan QR" }]} /></div>
+        )}
 
         <details className="group rounded-xl border border-slate-200 open:bg-slate-50/50">
           <summary className="flex cursor-pointer list-none items-center justify-between px-3 py-2.5 text-sm font-semibold text-slate-700">
