@@ -61,7 +61,7 @@ export function InstallProvider({ children }: { children: React.ReactNode }) {
     <InstallCtx.Provider value={{ canInstall, ios, manual, install }}>
       {children}
       {showBanner && (
-        <div role="dialog" aria-label="Instal aplikasi" className="fixed inset-x-3 bottom-3 z-50 mx-auto max-w-md print:hidden">
+        <div role="dialog" aria-label="Instal aplikasi" className="fixed inset-x-3 bottom-3 z-50 mx-auto max-w-md md:left-auto md:right-6 md:bottom-6 md:mx-0 md:w-[28rem] print:hidden">
           <InstallCard ios={ios} desc={manual ? MANUAL : undefined} onInstall={install} onClose={() => setDismissed(true)} />
         </div>
       )}
